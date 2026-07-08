@@ -42,3 +42,20 @@ was, so no idea gets re-litigated by vibe. New strategy ideas get added to
 **Not investment advice.** Survivors are candidates for forward paper-trading and
 deeper validation — never signals to trade. The default, expected result on
 daily large-cap data is that almost nothing survives.
+
+## Trading Terminal — everything in one place
+
+`terminal.html` is the unified console: one page, four tabs (Monitor · Returns ·
+Day-Type · Strategies) over all datasets. It loads `hub_data.js` via `<script src>`
+so it works from a plain file:// double-click — no server needed.
+
+Refresh the whole thing:
+```bash
+/opt/anaconda3/bin/python fetch_data.py        # 15y prices (slow, occasional)
+/opt/anaconda3/bin/python ~/stock-radar/collector.py   # daily monitor snapshot
+/opt/anaconda3/bin/python returns_matrix.py            # multi-horizon returns
+/opt/anaconda3/bin/python universe_daytype.py          # intraday day-type
+/opt/anaconda3/bin/python lab.py                       # strategy survey
+/opt/anaconda3/bin/python build_hub.py                 # assemble hub_data.js
+```
+Open `terminal.html` (or Command Center → Trading Terminal).
