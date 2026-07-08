@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Strategy Lab</title>
+<style>
+  :root{--bg:#0d1117;--panel:#161b22;--border:#30363d;--ink:#e6edf3;--ink2:#9198a1;
+    --muted:#6e7681;--up:#3fb950;--down:#f85149;--accent:#58a6ff;--warn:#d29922;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--ink);font:14px/1.5 -apple-system,"SF Pro Text",Helvetica,Arial,sans-serif;padding:22px 26px 60px;}
+  h1{font-size:22px;font-weight:700;}
+  .sub{color:var(--ink2);font-size:12.5px;margin-top:4px;}
+  header{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;}
+  .chip{background:var(--panel);border:1px solid var(--border);border-radius:999px;padding:3px 12px;font-size:12px;color:var(--ink2);}
+  .chip b{color:var(--ink);}
+  .legend{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin:16px 0;font-size:12.5px;color:var(--ink2);line-height:1.7;}
+  .legend b{color:var(--ink);}
+  table{width:100%;border-collapse:collapse;margin-top:12px;}
+  th{text-align:right;font-size:11px;color:var(--muted);font-weight:600;padding:8px 10px 6px;white-space:nowrap;border-bottom:1px solid var(--border);}
+  th:first-child,td:first-child{text-align:left;}
+  td{padding:8px 10px;text-align:right;font-variant-numeric:tabular-nums;border-top:1px solid #21262d;white-space:nowrap;}
+  tr:hover td{background:#1c2129;}
+  .fam{font-weight:600;}
+  .cfg{color:var(--muted);font-size:11.5px;}
+  .v{font-size:10.5px;font-weight:700;border-radius:4px;padding:2px 8px;letter-spacing:.4px;}
+  .v-survives{background:rgba(63,185,80,.15);color:var(--up);border:1px solid rgba(63,185,80,.4);}
+  .v-suspect{background:rgba(210,153,34,.15);color:var(--warn);border:1px solid rgba(210,153,34,.4);}
+  .v-OVERFIT{background:rgba(248,81,73,.15);color:var(--down);border:1px solid rgba(248,81,73,.4);}
+  .v-inconclusive{background:#21262d;color:var(--muted);border:1px solid var(--border);}
+  .pos{color:var(--up);}.neg{color:var(--down);}
+  .bad{color:var(--down);}.good{color:var(--up);}
+  h2{font-size:13px;letter-spacing:1px;color:var(--ink2);text-transform:uppercase;margin:26px 0 4px;border-bottom:1px solid var(--border);padding-bottom:6px;}
+  .card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-top:10px;}
+  footer{margin-top:30px;color:var(--muted);font-size:12px;border-top:1px solid var(--border);padding-top:10px;}
+  a{color:var(--accent);text-decoration:none;}
+</style>
+</head>
+<body>
+<header>
+  <h1>🧪 Strategy Lab</h1>
+  <span class="chip" id="bench"></span>
+  <span class="chip" id="win"></span>
+</header>
+<div class="sub" id="built"></div>
+
+<div class="legend">
+  <b>How to read this.</b> Every strategy family was tested across its whole parameter grid.
+  <b>Deflated Sharpe</b> discounts the best config for how many were tried — ≥&nbsp;0.95 means significant
+  after that penalty. <b>PBO</b> is the probability the in-sample winner underperforms out of sample —
+  &gt;&nbsp;0.5 is a red flag. <b>OOS Sharpe</b> is the winner's Sharpe on the untouched last 30% of history.
+  A real edge needs a high Deflated Sharpe, a low PBO, <i>and</i> an OOS Sharpe that survives.
+  The <b>Day-of-week</b> row is a deliberate noise control — it should be rejected.
+</div>
+
+<table id="tbl"><thead><tr>
+  <th>Family</th><th>Configs</th><th>Best Sharpe (IS)</th><th>Deflated Sharpe</th>
+  <th>PBO</th><th>Min backtest yrs</th><th>OOS Sharpe</th><th>Retained</th><th>Verdict</th>
+</tr></thead><tbody id="rows"></tbody></table>
+
+<h2>What survived both gates</h2>
+<div id="survived"></div>
+
+<footer id="foot"></footer>
+
+<script src="reports/data.json" type="application/json" id="dataScript"></script>
+<script>
+fetch('reports/data.json').then(r=>r.json()).then(D=>{
+  const bench = D.spy_buyhold_sharpe;
+  document.getElementById('bench').innerHTML = `SPY buy&hold Sharpe: <b>${bench}</b>`;
+  document.getElementById('win').innerHTML = `${D.n_tickers} tickers · ${D.cost_bps} bps cost`;
+  document.getElementById('built').textContent = `Window ${D.window} · built ${D.built}`;
+  const fmt = v => v==null||isNaN(v) ? '—' : v.toFixed(2);
+  const rows = D.results.map(r=>{
+    const dsrGood = r.deflated_sharpe>=0.95, pboBad = r.pbo>0.5, oosGood = r.oos_sharpe>bench;
+    return `<tr>
+      <td><span class="fam">${r.family}</span><br><span class="cfg">${r.oos_best_config}</span></td>
+      <td>${r.n_configs}</td>
+      <td>${fmt(r.best_sharpe_annual)}</td>
+      <td class="${dsrGood?'good':'bad'}">${fmt(r.deflated_sharpe)}</td>
+      <td class="${pboBad?'bad':'good'}">${fmt(r.pbo)}</td>
+      <td>${fmt(r.min_backtest_len_years)}</td>
+      <td class="${oosGood?'good':(r.oos_sharpe<0?'bad':'')}">${fmt(r.oos_sharpe)}</td>
+      <td>${(r.oos_retention*100).toFixed(0)}%</td>
+      <td><span class="v v-${r.verdict}">${r.verdict}</span></td>
+    </tr>`;
+  }).join('');
+  document.getElementById('rows').innerHTML = rows;
+
+  const surv = D.results.filter(r=>r.verdict==='survives');
+  document.getElementById('survived').innerHTML = surv.length
+    ? surv.map(r=>`<div class="card"><b>${r.family}</b> — best OOS config <span class="cfg">${r.oos_best_config}</span>.
+        OOS Sharpe <span class="good">${fmt(r.oos_sharpe)}</span> (kept ${(r.oos_retention*100).toFixed(0)}% of in-sample).
+        A forward-test candidate — worth paper-trading, not betting on.</div>`).join('')
+    : `<div class="card">Nothing cleared both gates. That is the honest, expected result for daily strategies on
+        liquid large-caps — the most arbitraged data there is. The value is the <i>map of what's ruled out</i>,
+        so you stop re-testing dead ideas. Same standard as spy-trading and zero-dte-lab.</div>`;
+
+  document.getElementById('foot').innerHTML =
+    'Gate: backtest-overfitting (Deflated Sharpe + PBO/CSCV, Bailey & López de Prado) · data: Yahoo daily, free · '+
+    'A research survey, not investment advice. Survivors are forward-test candidates, nothing more.';
+});
+</script>
+</body>
+</html>
