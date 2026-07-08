@@ -30,6 +30,8 @@ def main():
         "returns": load(os.path.join(LAB, "reports", "returns_matrix.json")),
         "daytype": load(os.path.join(LAB, "reports", "universe_daytype.json")),
         "strategies": load(os.path.join(LAB, "reports", "data.json")),
+        "intraday_study": load(os.path.join(LAB, "reports", "intraday_study.json")),
+        "intraday_discover": load(os.path.join(LAB, "reports", "intraday_discover.json")),
     }
     out = os.path.join(LAB, "hub_data.js")
     with open(out, "w") as f:
@@ -37,7 +39,8 @@ def main():
     print(f"hub_data.js built: monitor {len(hub['monitor']['equities'])} names · "
           f"returns {hub['returns'].get('n_tickers','?')} · "
           f"daytype {hub['daytype'].get('n','?')} · "
-          f"strategies {len(hub['strategies'].get('results',[]))} families")
+          f"strategies {len(hub['strategies'].get('results',[]))} families · "
+          f"intraday {len(hub['intraday_study'].get('time_of_day',[]))} slots")
 
 
 if __name__ == "__main__":

@@ -1,0 +1,50 @@
+{
+ "strategies": [
+  {
+   "strategy": "opening-range breakout",
+   "trades": 719,
+   "avg_pct": -0.213,
+   "hit_pct": 45.2,
+   "tstat": -1.45,
+   "basket_sharpe": -2.64,
+   "read": "no edge"
+  },
+  {
+   "strategy": "opening-range fade",
+   "trades": 719,
+   "avg_pct": 0.013,
+   "hit_pct": 51.9,
+   "tstat": 0.09,
+   "basket_sharpe": 0.29,
+   "read": "no edge"
+  },
+  {
+   "strategy": "first-hour momentum",
+   "trades": 775,
+   "avg_pct": -0.129,
+   "hit_pct": 48.3,
+   "tstat": -1.07,
+   "basket_sharpe": -1.41,
+   "read": "no edge"
+  },
+  {
+   "strategy": "first-hour reversal",
+   "trades": 775,
+   "avg_pct": -0.071,
+   "hit_pct": 48.1,
+   "tstat": -0.59,
+   "basket_sharpe": -0.86,
+   "read": "no edge"
+  },
+  {
+   "strategy": "open-fade (short the pop)",
+   "trades": 776,
+   "avg_pct": 0.089,
+   "hit_pct": 45.9,
+   "tstat": 1.02,
+   "basket_sharpe": 0.77,
+   "read": "no edge"
+  }
+ ],
+ "note": "~20 sessions/name; enter-at-signal exit-at-close net of costs"
+}

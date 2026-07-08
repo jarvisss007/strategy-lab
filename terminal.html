@@ -74,6 +74,7 @@
   <div class="tab on" data-p="monitor">Monitor</div>
   <div class="tab" data-p="returns">Returns</div>
   <div class="tab" data-p="daytype">Day-Type</div>
+  <div class="tab" data-p="intraday">Intraday</div>
   <div class="tab" data-p="strategies">Strategies</div>
 </div>
 
@@ -114,6 +115,17 @@
     <th data-k="avg_path_pct">Opportunity</th><th data-k="pct_trend">Trend%</th>
     <th data-k="pct_chop">Chop%</th><th data-k="tradeable_pct">Tradeable%</th></tr></thead>
     <tbody id="drows"></tbody></table>
+</div>
+
+<!-- INTRADAY -->
+<div class="pane" id="p-intraday">
+  <div class="legend" id="intro-note"></div>
+  <h3>Time-of-day profile — when the high-opportunity names actually move</h3>
+  <div id="tod"></div>
+  <h3>Honest intraday-strategy test (enter at signal, exit at close, net of costs)</h3>
+  <table><thead><tr><th>Strategy</th><th>Trades</th><th>Avg/trade</th><th>Hit%</th><th>t-stat</th><th>Basket Sharpe</th><th>Read</th></tr></thead>
+    <tbody id="idrows"></tbody></table>
+  <div class="legend" id="intro-verdict"></div>
 </div>
 
 <!-- STRATEGIES -->
@@ -227,6 +239,36 @@ function strategies(){
      <td><span class="c v-${r.verdict}">${r.verdict}</span></td></tr>`).join('');
 }
 
+// ---- INTRADAY ----
+function intraday(){
+  const st=H.intraday_study||{}, dc=H.intraday_discover||{};
+  document.getElementById('intro-note').innerHTML=
+    `<b>${st.n_names||'?'} high-opportunity names, ~20 sessions each (15m bars).</b> The moves are `+
+    `concentrated at the open and fade through the day — the classic volatility smile that makes `+
+    `"trade the open" real. Below: does any intraday pattern actually make money once you enter at `+
+    `the realistic price? (Descriptive — ~20 sessions can't be conclusive; the recorder grows it.)`;
+  const tod=st.time_of_day||[];
+  const mx=Math.max(1,...tod.map(p=>p.abs_move_pct));
+  document.getElementById('tod').innerHTML=`<table><tbody>`+tod.map(p=>{
+    const w=Math.round(p.abs_move_pct/mx*260);
+    const col=p.avg_move_pct>0?'var(--up)':'var(--down)';
+    return `<tr><td style="width:60px">${p.time}</td>
+      <td style="width:80px;text-align:right;color:${col}">${p.avg_move_pct>0?'+':''}${p.avg_move_pct.toFixed(3)}%</td>
+      <td><span style="display:inline-block;height:11px;border-radius:2px;background:var(--purple);width:${w}px"></span>
+      <span class="note">${p.abs_move_pct.toFixed(2)}% abs</span></td></tr>`;}).join('')+`</tbody></table>`;
+  document.getElementById('idrows').innerHTML=(dc.strategies||[]).map(r=>{
+    const c=r.avg_pct>0?'pos':'neg';
+    return `<tr><td class="tick">${r.strategy}</td><td>${r.trades}</td>
+      <td class="${c}">${r.avg_pct>0?'+':''}${r.avg_pct}%</td><td>${r.hit_pct}%</td>
+      <td class="${Math.abs(r.tstat)>2?c:'flat'}">${r.tstat}</td><td class="${c}">${r.basket_sharpe}</td>
+      <td>${r.read}</td></tr>`;}).join('');
+  document.getElementById('intro-verdict').innerHTML=
+    `<b>The reckoning:</b> the opening-range breakout "closes in the break direction ~90%" — but `+
+    `entering at the break and exiting at the close <b>loses</b> money net of costs. That 90% was `+
+    `the move that already happened. No intraday edge survived here; the faint one (short the opening `+
+    `pop) isn't significant. The recorder logs every session to <code>daytype_log.csv</code> so this becomes conclusive over time.`;
+}
+
 // header sort on any pane
 document.querySelectorAll('th[data-k]').forEach(th=>th.addEventListener('click',()=>{
   const pane=th.closest('.pane').id, k=th.dataset.k;
@@ -235,7 +277,7 @@ document.querySelectorAll('th[data-k]').forEach(th=>th.addEventListener('click',
   else if(pane==='p-daytype'){dS===k?dA=!dA:(dS=k,dA=false);daytype();}
 }));
 
-monitor();returns();daytype();strategies();
+monitor();returns();daytype();strategies();intraday();
 document.getElementById('foot').innerHTML=
   'One console over Stock Radar + Strategy Lab. Data: Yahoo (free). Refresh: '+
   '<code>collector.py</code> (monitor) · <code>returns_matrix.py</code> · <code>universe_daytype.py</code> · '+

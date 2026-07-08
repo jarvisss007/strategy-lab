@@ -1,0 +1,6 @@
+strategy,trades,avg_pct,hit_pct,tstat,basket_sharpe,read
+opening-range breakout,719,-0.213,45.2,-1.45,-2.64,no edge
+opening-range fade,719,0.013,51.9,0.09,0.29,no edge
+first-hour momentum,775,-0.129,48.3,-1.07,-1.41,no edge
+first-hour reversal,775,-0.071,48.1,-0.59,-0.86,no edge
+open-fade (short the pop),776,0.089,45.9,1.02,0.77,no edge
