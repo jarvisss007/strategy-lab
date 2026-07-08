@@ -50,6 +50,11 @@
   .v-OVERFIT{background:rgba(248,81,73,.15);color:var(--down);border:1px solid rgba(248,81,73,.4);}
   .v-inconclusive{background:#21262d;color:var(--muted);border:1px solid var(--border);}
   .bar{display:inline-block;height:7px;border-radius:2px;background:var(--purple);vertical-align:middle;margin-left:6px;}
+  svg.spark{vertical-align:middle;} .spark path{fill:none;stroke:var(--accent);stroke-width:1.5;}
+  .ma{display:inline-block;width:7px;height:7px;border-radius:50%;margin-left:4px;}
+  .ma.on{background:var(--up);} .ma.off{background:#30363d;border:1px solid var(--muted);}
+  .sec{font-size:12px;letter-spacing:1px;color:var(--ink2);text-transform:uppercase;border-bottom:1px solid var(--border);padding:14px 0 6px 2px;margin-top:8px;}
+  .sec span{color:var(--muted);}
   .legend{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:11px 14px;margin:10px 0;font-size:12px;color:var(--ink2);line-height:1.6;}
   .legend b{color:var(--ink);}
   footer{margin-top:26px;color:var(--muted);font-size:11.5px;border-top:1px solid var(--border);padding-top:10px;}
@@ -82,11 +87,9 @@
       <option value="above_lo">% above 52w low</option><option value="ticker">ticker A–Z</option>
     </select>
     <label class="sub"><input type="checkbox" id="mflag"> short-flagged only</label>
+    <label class="sub"><input type="checkbox" id="mgroup" checked> group by sector</label>
   </div>
-  <table><thead><tr>
-    <th data-k="ticker">Ticker</th><th data-k="last">Last</th><th data-k="d1">1D</th>
-    <th data-k="w1">1W</th><th data-k="m1">1M</th><th data-k="off_hi">% off hi</th>
-    <th data-k="above_lo">% abv lo</th></tr></thead><tbody id="mrows"></tbody></table>
+  <div id="mtables"></div>
 </div>
 
 <!-- RETURNS -->
@@ -144,22 +147,41 @@ document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
 }));
 
 // ---- MONITOR ----
-let mS='off_hi',mA=true;
+const MHEAD=`<tr><th>Ticker</th><th>3M trend</th><th>Last</th><th>1D</th><th>1W</th><th>1M</th><th>% off hi</th><th>% abv lo</th><th>50/200MA</th></tr>`;
+function mspark(vals){
+  if(!vals||vals.length<2)return '';
+  const mn=Math.min(...vals),mx=Math.max(...vals),r=(mx-mn)||1;
+  const pts=vals.map((v,i)=>[(i/(vals.length-1))*70,16-((v-mn)/r)*14+1]);
+  return `<svg class="spark" width="70" height="18"><path d="M${pts.map(p=>p[0].toFixed(1)+' '+p[1].toFixed(1)).join('L')}"/></svg>`;
+}
+function mrow(e){
+  const b=(e.new_hi?'<span class="badge b-hi">HI</span>':'')+(e.new_lo?'<span class="badge b-lo">LO</span>':'')+(e.flag==='short'?'<span class="badge b-short">SHORT</span>':'');
+  return `<tr><td><span class="tick">${e.ticker}</span>${b}${e.notes?`<span class="note">${e.notes}</span>`:''}</td>
+    <td>${mspark(e.spark)}</td><td>${f2(e.last)}</td><td>${pct(e.d1,1)}</td><td>${pct(e.w1,1)}</td><td>${pct(e.m1,1)}</td>
+    <td>${pct(e.off_hi)}</td><td>${pct(e.above_lo)}</td>
+    <td title="above 50-day / 200-day MA"><span class="ma ${e.above_ma50?'on':'off'}"></span><span class="ma ${e.above_ma200?'on':'off'}"></span></td></tr>`;
+}
 function monitor(){
   const q=document.getElementById('mq').value.toLowerCase();
   const flag=document.getElementById('mflag').checked;
+  const group=document.getElementById('mgroup').checked;
+  const key=document.getElementById('msort').value;
   let rows=(H.monitor?.equities||[]).filter(e=>
     (!q||e.ticker.toLowerCase().includes(q)||(e.notes||'').toLowerCase().includes(q))&&(!flag||e.flag==='short'));
-  const cmp=mS==='ticker'?(a,b)=>a.ticker.localeCompare(b.ticker):(a,b)=>((a[mS]??1e9)-(b[mS]??1e9));
-  rows.sort(cmp); if(!mA&&mS!=='ticker')rows.reverse();
-  document.getElementById('mrows').innerHTML=rows.map(e=>{
-    const b=(e.new_hi?'<span class="badge b-hi">HI</span>':'')+(e.new_lo?'<span class="badge b-lo">LO</span>':'')+(e.flag==='short'?'<span class="badge b-short">SHORT</span>':'');
-    return `<tr><td><span class="tick">${e.ticker}</span>${b}${e.notes?`<span class="note">${e.notes}</span>`:''}</td>
-      <td>${f2(e.last)}</td><td>${pct(e.d1,1)}</td><td>${pct(e.w1,1)}</td><td>${pct(e.m1,1)}</td>
-      <td>${pct(e.off_hi)}</td><td>${pct(e.above_lo)}</td></tr>`;}).join('');
+  const cmp=key==='ticker'?(a,b)=>a.ticker.localeCompare(b.ticker):(a,b)=>((a[key]??1e9)-(b[key]??1e9));
+  const box=document.getElementById('mtables');
+  if(group){
+    const secs=[...new Set((H.monitor?.equities||[]).map(e=>e.sector))];
+    box.innerHTML=secs.map(s=>{
+      const g=rows.filter(e=>e.sector===s).sort(cmp);
+      return g.length?`<div class="sec">${s} <span>${g.length}</span></div>
+        <table><thead>${MHEAD}</thead><tbody>${g.map(mrow).join('')}</tbody></table>`:'';
+    }).join('');
+  }else{
+    box.innerHTML=`<table><thead>${MHEAD}</thead><tbody>${rows.sort(cmp).map(mrow).join('')}</tbody></table>`;
+  }
 }
-document.getElementById('msort').addEventListener('change',e=>{mS=e.target.value;monitor();});
-['mq','mflag'].forEach(id=>document.getElementById(id).addEventListener('input',monitor));
+['mq','msort','mflag','mgroup'].forEach(id=>document.getElementById(id).addEventListener('input',monitor));
 
 // ---- RETURNS ----
 let rS='r5d',rA=false;
