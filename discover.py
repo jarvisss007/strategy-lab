@@ -26,10 +26,14 @@ FOLDS = 5
 
 
 def load():
-    o = pd.read_csv(os.path.join(BASE, "data", "open.csv"), parse_dates=["date"]).set_index("date").sort_index()
-    c = pd.read_csv(os.path.join(BASE, "data", "close.csv"), parse_dates=["date"]).set_index("date").sort_index()
-    common = o.columns.intersection(c.columns)
-    return o[common], c[common]
+    rd = lambda n: pd.read_csv(os.path.join(BASE, "data", n), parse_dates=["date"]).set_index("date").sort_index()
+    o, c = rd("open.csv"), rd("close.csv")
+    try:
+        v = rd("volume.csv")
+    except FileNotFoundError:
+        v = pd.DataFrame(index=c.index)
+    common = o.columns.intersection(c.columns).intersection(v.columns) if len(v.columns) else o.columns.intersection(c.columns)
+    return o[common], c[common], (v[common] if len(common) and len(v.columns) else v)
 
 
 def ann_sharpe(r):
@@ -40,7 +44,7 @@ def ann_sharpe(r):
 
 
 # ------------------------------------------------------------ friction families
-def overnight_intraday(o, c):
+def overnight_intraday(o, c, v):
     """The structural centerpiece: split each day into overnight (prev close -> open)
     and intraday (open -> close). Holding either leg means a full round-trip EVERY day
     (2 trades/day), so costs are brutal — that gap is the whole story."""
@@ -64,7 +68,7 @@ def _third_friday(idx):
     return pd.Series([(d.weekday() == 4 and 15 <= d.day <= 21) for d in idx], index=idx)
 
 
-def opex(o, c):
+def opex(o, c, v):
     """Options-expiration flow: monthly expiry = 3rd Friday. Test holding the basket in
     the expiry week, the week after (post-OpEx drift), and quad-witching months only."""
     daily = c.pct_change().mean(axis=1)
@@ -89,7 +93,7 @@ def opex(o, c):
     return out
 
 
-def turn_of_month(o, c):
+def turn_of_month(o, c, v):
     """Month-end index/pension flow window: last t and first t trading days."""
     daily = c.pct_change().mean(axis=1)
     idx = c.index
@@ -109,6 +113,50 @@ def turn_of_month(o, c):
     return out
 
 
+def _xs(score, rets, q, H):
+    """Cross-sectional long-top / short-bottom by `score`, rebalanced every H days,
+    dollar-neutral. Returns (gross, net)."""
+    reb = np.arange(len(score)) // H
+    def rank_row(r):
+        vv = r.dropna()
+        if len(vv) < 10:
+            return pd.Series(0.0, index=r.index)
+        k = max(1, int(len(vv) * q))
+        w = pd.Series(0.0, index=r.index)
+        w[vv.nlargest(k).index] = 0.5 / k
+        w[vv.nsmallest(k).index] = -0.5 / k
+        return w
+    W = score.apply(rank_row, axis=1).groupby(reb).transform("first").fillna(0.0)
+    Wl = W.shift(1).fillna(0.0)
+    gross = (Wl * rets).sum(axis=1)
+    turn = (W - Wl).abs().sum(axis=1)
+    return gross, gross - turn * COST
+
+
+def microstructure(o, c, v):
+    """Liquidity/volume microstructure premia (free-data subset — true options flow
+    needs paid data). Documented effects: high-volume-return premium, volume-shock
+    reversal, Amihud illiquidity premium. Note: these live mostly in small illiquid
+    names; this universe is liquid large-caps, so expect them weak."""
+    if not len(v.columns):
+        return {}
+    rets = c.pct_change()
+    relvol = v / v.rolling(20).mean()
+    dollar = c * v
+    out = {}
+    for q in (0.1, 0.2):
+        for H in (5, 21):
+            out[f"high-volume-premium q{q} H{H}"] = _xs(relvol, rets, q, H)
+    shock = (-rets).where(relvol > 1.5, 0.0)              # buy capitulation on volume spikes
+    for q in (0.1, 0.2):
+        for H in (3, 5):
+            out[f"volume-shock-reversal q{q} H{H}"] = _xs(shock, rets, q, H)
+    illiq = (rets.abs() / dollar.replace(0, np.nan)).rolling(21).mean()
+    for q in (0.1, 0.2):
+        out[f"illiquidity-premium q{q}"] = _xs(illiq, rets, q, 21)
+    return out
+
+
 def _trade(pos, daily):
     """Given a 0/1 position series and the basket's close-to-close return, return
     (gross, net) daily return series. Turnover charged on entering/exiting the window."""
@@ -122,6 +170,7 @@ FAMILIES = {
     "Overnight vs intraday": overnight_intraday,
     "Options-expiry flow": opex,
     "Turn-of-month flow": turn_of_month,
+    "Volume/liquidity microstructure": microstructure,
 }
 
 
@@ -171,7 +220,7 @@ def judge(name, configs, bench):
 
 
 def main():
-    o, c = load()
+    o, c, v = load()
     bench = ann_sharpe(c.pct_change().mean(axis=1).iloc[WARMUP:].values)  # buy&hold the basket
     kb = os.path.join(BASE, "discoveries.csv")
     new = not os.path.exists(kb)
@@ -183,10 +232,9 @@ def main():
     print(f"(gross = is the pattern real? · net = tradeable after costs? · bar to beat = "
           f"basket buy&hold Sharpe {bench:.2f})\n")
     for fam, fn in FAMILIES.items():
-        rows = judge(fam, fn(o, c), bench)
+        rows = judge(fam, fn(o, c, v), bench)
         if not rows:
             continue
-        v = rows[0].get("verdict", "")
         print(f"{fam}")
         for r in rows:
             tag = f"   [{r.get('verdict')}] DSR {r.get('family_dsr')} PBO {r.get('family_pbo')}" if "verdict" in r else ""
