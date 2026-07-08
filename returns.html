@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Returns Matrix</title>
+<style>
+  :root{--bg:#0d1117;--panel:#161b22;--border:#30363d;--ink:#e6edf3;--ink2:#9198a1;
+    --muted:#6e7681;--up:#3fb950;--down:#f85149;--accent:#58a6ff;--warn:#d29922;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--ink);font:14px/1.5 -apple-system,"SF Pro Text",Helvetica,Arial,sans-serif;padding:22px 26px 60px;}
+  h1{font-size:22px;font-weight:700;}
+  header{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;}
+  .sub{color:var(--ink2);font-size:12.5px;margin-top:4px;}
+  .chip{background:var(--panel);border:1px solid var(--border);border-radius:999px;padding:3px 12px;font-size:12px;color:var(--ink2);}
+  .grid{display:grid;grid-template-columns:1.4fr 1fr;gap:18px;margin-top:16px;align-items:start;}
+  @media(max-width:900px){.grid{grid-template-columns:1fr;}}
+  .card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:14px 16px;}
+  .card h2{font-size:12px;letter-spacing:1px;color:var(--ink2);text-transform:uppercase;margin-bottom:8px;}
+  table{width:100%;border-collapse:collapse;}
+  th{text-align:right;font-size:11px;color:var(--muted);font-weight:600;padding:7px 8px 5px;cursor:pointer;white-space:nowrap;}
+  th:first-child,td:first-child{text-align:left;}
+  td{padding:5px 8px;text-align:right;font-variant-numeric:tabular-nums;border-top:1px solid #21262d;white-space:nowrap;}
+  .tick{font-weight:700;}
+  .controls{margin:12px 0;}
+  input{background:var(--panel);border:1px solid var(--border);color:var(--ink);border-radius:6px;padding:6px 10px;font-size:13px;width:170px;}
+  .pat td,.pat th{text-align:right;}
+  .mom{color:var(--up);}.rev{color:var(--warn);}
+  .note{color:var(--muted);font-size:12px;line-height:1.6;margin-top:8px;}
+  footer{margin-top:24px;color:var(--muted);font-size:12px;border-top:1px solid var(--border);padding-top:10px;}
+</style>
+</head>
+<body>
+<header><h1>📈 Returns Matrix</h1><span class="chip" id="cnt"></span></header>
+<div class="sub">Multi-horizon returns for every name — and an honest test of whether those returns predict the next move.</div>
+
+<div class="controls"><input type="search" id="q" placeholder="Search ticker…"></div>
+<div class="grid">
+  <div class="card">
+    <h2>Latest returns by horizon</h2>
+    <table id="tbl"><thead><tr>
+      <th data-k="ticker">Ticker</th><th data-k="r1d">1d</th><th data-k="r2d">2d</th>
+      <th data-k="r5d">5d</th><th data-k="r10d">10d</th><th data-k="r21d">21d</th><th data-k="r63d">63d</th>
+    </tr></thead><tbody id="rows"></tbody></table>
+  </div>
+  <div>
+    <div class="card">
+      <h2>Do the returns predict the next move? (15y, all names)</h2>
+      <table class="pat"><thead><tr><th>Horizon</th><th>Correlation</th><th>Sign-hit</th><th>Read</th></tr></thead>
+        <tbody id="pat"></tbody></table>
+      <div class="note" id="patnote"></div>
+    </div>
+    <div class="card" style="margin-top:14px;">
+      <h2>What happens after a big 1-day move</h2>
+      <table class="pat"><thead><tr><th></th><th>Next 1d</th><th>Next 5d</th></tr></thead><tbody id="big"></tbody></table>
+      <div class="note" id="bignote"></div>
+    </div>
+  </div>
+</div>
+<footer id="foot"></footer>
+
+<script>
+let DATA=null,sortK='r5d',asc=false;
+const cell=v=>`<td style="color:${v>0?'var(--up)':v<0?'var(--down)':'var(--ink2)'}">${v>0?'+':''}${v.toFixed(1)}%</td>`;
+fetch('reports/returns_matrix.json').then(r=>r.json()).then(D=>{
+  DATA=D; document.getElementById('cnt').textContent=`${D.n_tickers} names · 15y daily`;
+  // pattern table
+  document.getElementById('pat').innerHTML=D.pattern.map(p=>{
+    const sig=p.pvalue<0.01; const cls=p.corr>0?'mom':'rev';
+    return `<tr><td>${p.horizon}d</td><td class="${cls}">${p.corr.toFixed(4)}</td>
+      <td>${p.sign_hit.toFixed(1)}%</td><td class="${cls}">${sig?p.kind:'—'}</td></tr>`;}).join('');
+  document.getElementById('patnote').innerHTML=
+    'Correlations are tiny (sign-hit ≈ 50%). Statistically real at this sample size, '+
+    'economically trivial — nowhere near enough to beat costs. Weak 1d reversal + 10d momentum.';
+  const b=D.big_move;
+  document.getElementById('big').innerHTML=
+    `<tr><td>after big UP</td>${cell(b.after_big_up_next1d)}${cell(b.after_big_up_next5d)}</tr>
+     <tr><td>after big DOWN</td>${cell(b.after_big_down_next1d)}${cell(b.after_big_down_next5d)}</tr>
+     <tr><td style="color:var(--muted)">baseline</td>${cell(b.baseline_next1d)}${cell(b.baseline_next5d)}</tr>`;
+  document.getElementById('bignote').innerHTML=
+    'Big DOWN days are followed by above-baseline 5d bounces — the "buy the dip" effect, and the '+
+    'strongest pattern here. But it is the most survivorship-biased (losers that never recovered left the universe).';
+  document.getElementById('foot').textContent=
+    'Descriptive multi-horizon view + return autocorrelation. A pattern is not an edge — gross of costs, survivor universe. See Strategy Lab.';
+  render();
+});
+function render(){
+  const q=document.getElementById('q').value.toUpperCase();
+  let rows=DATA.snapshot.filter(r=>!q||r.ticker.includes(q));
+  rows.sort((a,b)=>{const x=a[sortK],y=b[sortK];const c=typeof x==='string'?x.localeCompare(y):x-y;return asc?c:-c;});
+  document.getElementById('rows').innerHTML=rows.map(r=>
+    `<tr><td class="tick">${r.ticker}</td>${cell(r.r1d)}${cell(r.r2d)}${cell(r.r5d)}${cell(r.r10d)}${cell(r.r21d)}${cell(r.r63d)}</tr>`).join('');
+}
+document.querySelectorAll('#tbl th').forEach(th=>th.addEventListener('click',()=>{
+  const k=th.dataset.k; if(k===sortK)asc=!asc; else{sortK=k;asc=false;} render();}));
+document.getElementById('q').addEventListener('input',render);
+</script>
+</body>
+</html>
