@@ -3,6 +3,7 @@ run_date,family,n_configs,best_sharpe_annual,deflated_sharpe,pbo,min_backtest_le
 2026-07-07,Turn-of-month seasonality,3,1.09,0.998,0.081,0.6,1.039,1.214,1.17,survives
 2026-07-07,Volatility-managed SPY,6,0.986,1.0,0.369,1.7,1.001,0.95,0.95,survives
 2026-07-07,Donchian breakout,6,1.185,1.0,0.567,1.2,1.109,1.345,1.21,suspect
+2026-07-07,52-week high/low,17,1.147,0.475,0.064,2.5,1.127,1.213,1.08,suspect
 2026-07-07,Time-series momentum,24,1.315,0.941,0.073,2.3,1.254,1.1,0.88,suspect
 2026-07-07,Cross-sectional momentum,36,0.501,0.748,0.205,18.3,0.602,0.198,0.33,suspect
 2026-07-07,Short-term reversal,18,0.049,0.002,0.468,1416.2,0.325,-0.736,-2.27,suspect

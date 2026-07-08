@@ -70,6 +70,22 @@
    "verdict_full": "suspect: fails one of {deflated significance, low PBO} \u2014 treat as unproven"
   },
   {
+   "family": "52-week high/low",
+   "n_configs": 17,
+   "n_obs": 3518,
+   "best_config_fullsample": "DeepDip-long off19pct",
+   "best_sharpe_annual": 1.147,
+   "deflated_sharpe": 0.475,
+   "pbo": 0.064,
+   "min_backtest_len_years": 2.5,
+   "oos_best_config": "DeepDip-long off19pct",
+   "is_sharpe": 1.127,
+   "oos_sharpe": 1.213,
+   "oos_retention": 1.08,
+   "verdict": "suspect",
+   "verdict_full": "suspect: fails one of {deflated significance, low PBO} \u2014 treat as unproven"
+  },
+  {
    "family": "Time-series momentum",
    "n_configs": 24,
    "n_obs": 3518,

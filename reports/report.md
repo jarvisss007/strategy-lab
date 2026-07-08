@@ -12,6 +12,7 @@ Each family was tested across its full parameter grid. `Deflated Sharpe` discoun
 | Turn-of-month seasonality | 3 | 1.09 | 0.998 | 0.081 | 1.214 | 1.17 | **survives** |
 | Volatility-managed SPY | 6 | 0.986 | 1.0 | 0.369 | 0.95 | 0.95 | **survives** |
 | Donchian breakout | 6 | 1.185 | 1.0 | 0.567 | 1.345 | 1.21 | **suspect** |
+| 52-week high/low | 17 | 1.147 | 0.475 | 0.064 | 1.213 | 1.08 | **suspect** |
 | Time-series momentum | 24 | 1.315 | 0.941 | 0.073 | 1.1 | 0.88 | **suspect** |
 | Cross-sectional momentum | 36 | 0.501 | 0.748 | 0.205 | 0.198 | 0.33 | **suspect** |
 | Short-term reversal | 18 | 0.049 | 0.002 | 0.468 | -0.736 | -2.27 | **suspect** |
@@ -35,6 +36,10 @@ The gate is working — it correctly rejected the **day-of-week** noise control 
 
 **Bottom line:** consistent with spy-trading and zero-dte-lab — no tradeable market-neutral edge here. The one durable, well-documented *lesson* (not a money machine) is that trend/vol filters improve the risk-adjusted return of long equity exposure. That is beta-timing, worth understanding, not an edge to bet on.
 
+## On the original sheet's idea ("% off high")
+
+The 52-week high/low family tested both directions. In this universe the **dip-buy direction won**: long-only screens that buy names deep off their high had the best OOS Sharpe (1.2–1.5), and even the market-neutral revert version (long most-off-high, short near-high) was mildly positive — while academic near-high momentum (George–Hwang) *lost money* here. So the sheet's instinct was directionally right on this data. **But** the family still failed deflation (DSR ≈ 0.47 — not significant once you count the configs tried), and this is the single result most poisoned by survivorship bias: in a universe of *today's* winners, 'buy the biggest dips' always looks brilliant because the names that dipped and never recovered were deleted from the universe before the test began. Verdict: interesting, not proven. A point-in-time universe (incl. delisted names) is the test that would make or break it.
+
 ## What may be worth watching
 
 Ranked by out-of-sample Sharpe (survivors + suspects). 'May work' means 'survived the holdout here' — it is a forward-test candidate, never a prediction:
@@ -42,7 +47,7 @@ Ranked by out-of-sample Sharpe (survivors + suspects). 'May work' means 'survive
 - Turn-of-month seasonality (`TurnOfMonth t5`): OOS 1.214 vs SPY 0.921 — survives
 - Volatility-managed SPY (`VolMgd SPY tgt20 lb21`): OOS 0.95 vs SPY 0.921 — survives
 - Donchian breakout (`Donchian hi200 lo50`): OOS 1.345 vs SPY 0.921 — suspect
-- Time-series momentum (`TSMOM L21 H63 long`): OOS 1.1 vs SPY 0.921 — suspect
+- 52-week high/low (`DeepDip-long off19pct`): OOS 1.213 vs SPY 0.921 — suspect
 
 ---
 *A research survey, not investment advice. Survivors are candidates for forward paper-trading and deeper validation, nothing more.*

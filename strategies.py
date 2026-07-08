@@ -108,6 +108,42 @@ def short_reversal(prices, rets):
     return out
 
 
+def fifty_two_week(prices, rets):
+    """Trade on position within the 52-week high/low range — the anomaly the original
+    Stock Master Sheet was built around ("% off high"). Tests BOTH directions honestly:
+      - near-high momentum (George & Hwang 2004): long names nearest their 52w high,
+        short those furthest — dollar-neutral.
+      - dip-buy reversion (the sheet's implicit thesis): the exact opposite — long the
+        names most off their high, short those near it.
+    Plus long-only screens: hold names near the high, and hold names deep off the high."""
+    out = {}
+    hi = prices.rolling(252, min_periods=200).max()
+    rhi = prices / hi                       # 1.0 = sitting at 52w high, lower = further off
+    for q in (0.1, 0.2, 0.3):
+        for H in (5, 21):
+            reb = np.arange(len(prices)) // H
+            def rank_row(r):
+                v = r.dropna()
+                if len(v) < 10:
+                    return pd.Series(0.0, index=r.index)
+                k = max(1, int(len(v) * q))
+                w = pd.Series(0.0, index=r.index)
+                w[v.nlargest(k).index] = 0.5 / k    # nearest the high
+                w[v.nsmallest(k).index] = -0.5 / k  # furthest off the high
+                return w
+            W = rhi.apply(rank_row, axis=1).groupby(reb).transform("first")
+            out[f"52wHigh-mom q{q} H{H}"] = backtest(W, rets)      # long near-high
+            out[f"52wHigh-revert q{q} H{H}"] = backtest(-W, rets)  # long most-off-high (the sheet)
+    # long-only screens
+    for thr in (0.90, 0.95):
+        out[f"NearHigh-long within{int((1-thr)*100)}pct"] = backtest(
+            _norm_long((rhi >= thr).astype(float)), rets)
+    for thr in (0.80, 0.70, 0.60):
+        out[f"DeepDip-long off{int((1-thr)*100)}pct"] = backtest(
+            _norm_long((rhi <= thr).astype(float)), rets)
+    return out
+
+
 def ma_trend(prices, rets):
     """Moving-average trend on the equal-weight basket and on SPY: long when close is
     above its n-day SMA, else flat."""
@@ -194,6 +230,7 @@ FAMILIES = {
     "Time-series momentum": ts_momentum,
     "Cross-sectional momentum": xs_momentum,
     "Short-term reversal": short_reversal,
+    "52-week high/low": fifty_two_week,
     "Moving-average trend": ma_trend,
     "Donchian breakout": donchian,
     "Volatility-managed SPY": vol_managed,

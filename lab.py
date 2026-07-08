@@ -184,6 +184,19 @@ def write_report(out):
           "market-neutral edge here. The one durable, well-documented *lesson* (not a money "
           "machine) is that trend/vol filters improve the risk-adjusted return of long equity "
           "exposure. That is beta-timing, worth understanding, not an edge to bet on.", "",
+          "## On the original sheet's idea (\"% off high\")", "",
+          "The 52-week high/low family tested both directions. In this universe the "
+          "**dip-buy direction won**: long-only screens that buy names deep off their high "
+          "had the best OOS Sharpe (1.2–1.5), and even the market-neutral revert version "
+          "(long most-off-high, short near-high) was mildly positive — while academic "
+          "near-high momentum (George–Hwang) *lost money* here. So the sheet's instinct was "
+          "directionally right on this data. **But** the family still failed deflation "
+          "(DSR ≈ 0.47 — not significant once you count the configs tried), and this is the "
+          "single result most poisoned by survivorship bias: in a universe of *today's* "
+          "winners, 'buy the biggest dips' always looks brilliant because the names that "
+          "dipped and never recovered were deleted from the universe before the test began. "
+          "Verdict: interesting, not proven. A point-in-time universe (incl. delisted names) "
+          "is the test that would make or break it.", "",
           "## What may be worth watching", "",
           "Ranked by out-of-sample Sharpe (survivors + suspects). 'May work' means "
           "'survived the holdout here' — it is a forward-test candidate, never a prediction:"]
