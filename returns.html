@@ -59,10 +59,11 @@
 </div>
 <footer id="foot"></footer>
 
+<script src="reports/returns_matrix.js"></script>
 <script>
 let DATA=null,sortK='r5d',asc=false;
 const cell=v=>`<td style="color:${v>0?'var(--up)':v<0?'var(--down)':'var(--ink2)'}">${v>0?'+':''}${v.toFixed(1)}%</td>`;
-fetch('reports/returns_matrix.json').then(r=>r.json()).then(D=>{
+Promise.resolve(window.RETURNS_DATA).then(D=>{
   DATA=D; document.getElementById('cnt').textContent=`${D.n_tickers} names · 15y daily`;
   // pattern table
   document.getElementById('pat').innerHTML=D.pattern.map(p=>{

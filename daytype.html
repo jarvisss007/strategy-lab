@@ -57,9 +57,10 @@
 </tr></thead><tbody id="rows"></tbody></table>
 <footer id="foot"></footer>
 
+<script src="reports/universe_daytype.js"></script>
 <script>
 let DATA=null, sortK='avg_path_pct', asc=false;
-fetch('reports/universe_daytype.json').then(r=>r.json()).then(D=>{
+Promise.resolve(window.DAYTYPE_DATA).then(D=>{
   DATA=D; document.getElementById('cnt').textContent=`${D.n} names · 15m bars`;
   document.getElementById('foot').textContent=
     `Opportunity threshold: path% ≥ ${D.tradeable_path_pct}. Intraday data: Yahoo 15m (~1 month/name). `+
