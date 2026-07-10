@@ -28,6 +28,19 @@ def _csv(path):
         return []
 
 
+def _latest_md(briefs_dir, morning=True):
+    """Newest brief file: morning briefs are YYYY-MM-DD.md; earnings notes are earnings-*.md."""
+    try:
+        names = [f for f in os.listdir(briefs_dir) if f.endswith(".md") and
+                 (f.startswith("earnings-") != morning)]
+        if not names:
+            return None
+        latest = sorted(names)[-1]
+        return {"file": latest, "text": open(os.path.join(briefs_dir, latest)).read()}
+    except Exception:
+        return None
+
+
 def main():
     radar = load(os.path.join(RADAR, "data", "radar.json"))
     hub = {
@@ -44,6 +57,8 @@ def main():
         "earnings": load(os.path.join(LAB, "reports", "earnings_radar.json")),
         "plans": _csv(os.path.join(RADAR, "agent", "plans.csv")),
         "ledger": radar.get("ledger", []),
+        "brief": _latest_md(os.path.join(RADAR, "agent", "briefs"), morning=True),
+        "earnings_note": _latest_md(os.path.join(RADAR, "agent", "briefs"), morning=False),
     }
     out = os.path.join(LAB, "hub_data.js")
     with open(out, "w") as f:

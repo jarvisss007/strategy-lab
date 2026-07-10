@@ -51,6 +51,12 @@
   .v-inconclusive{background:#21262d;color:var(--muted);border:1px solid var(--border);}
   .bar{display:inline-block;height:7px;border-radius:2px;background:var(--purple);vertical-align:middle;margin-left:6px;}
   svg.spark{vertical-align:middle;} .spark path{fill:none;stroke:var(--accent);stroke-width:1.5;}
+  .md{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:14px 18px;font-size:13px;line-height:1.65;}
+  .md h1{font-size:15px;margin:0 0 6px;} .md h2{font-size:12px;letter-spacing:.8px;color:var(--accent);text-transform:uppercase;margin:14px 0 4px;border:none;padding:0;}
+  .md p{margin:6px 0;} .md em{color:var(--ink2);} .md strong{color:var(--ink);}
+  .md ul{margin:4px 0 4px 18px;} .md li{margin:2px 0;}
+  .md code{background:#21262d;border-radius:4px;padding:1px 5px;font-size:12px;}
+  @media(max-width:900px){#briefgrid{grid-template-columns:1fr !important;}}
   .ma{display:inline-block;width:7px;height:7px;border-radius:50%;margin-left:4px;}
   .ma.on{background:var(--up);} .ma.off{background:#30363d;border:1px solid var(--muted);}
   .sec{font-size:12px;letter-spacing:1px;color:var(--ink2);text-transform:uppercase;border-bottom:1px solid var(--border);padding:14px 0 6px 2px;margin-top:8px;}
@@ -71,12 +77,27 @@
 <div class="strip" id="strip"></div>
 
 <div class="tabs" id="tabs">
+  <div class="tab" data-p="brief">Brief</div>
   <div class="tab on" data-p="monitor">Monitor</div>
   <div class="tab" data-p="returns">Returns</div>
   <div class="tab" data-p="daytype">Day-Type</div>
   <div class="tab" data-p="intraday">Intraday</div>
   <div class="tab" data-p="earnings">Earnings</div>
   <div class="tab" data-p="strategies">Strategies</div>
+</div>
+
+<!-- BRIEF -->
+<div class="pane" id="p-brief">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start;" id="briefgrid">
+    <div>
+      <h3 id="brief-title">Morning brief</h3>
+      <div class="md" id="brief-md"><span class="flat">no brief yet</span></div>
+    </div>
+    <div>
+      <h3 id="enote-title">Pre-earnings note</h3>
+      <div class="md" id="enote-md"><span class="flat">no note yet</span></div>
+    </div>
+  </div>
 </div>
 
 <!-- MONITOR -->
@@ -252,6 +273,29 @@ function daytype(){
 ['dq','dchar'].forEach(id=>document.getElementById(id).addEventListener('input',daytype));
 
 // ---- STRATEGIES ----
+// ---- BRIEF ----
+function mdToHtml(t){
+  const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const lines=esc(t).split('\n'); let out=[],inList=false;
+  const inline=s=>s.replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>')
+    .replace(/\*([^*]+)\*/g,'<em>$1</em>').replace(/`([^`]+)`/g,'<code>$1</code>');
+  for(const ln of lines){
+    if(/^#\s/.test(ln)){if(inList){out.push('</ul>');inList=false;}out.push('<h1>'+inline(ln.slice(2))+'</h1>');}
+    else if(/^##\s/.test(ln)){if(inList){out.push('</ul>');inList=false;}out.push('<h2>'+inline(ln.slice(3))+'</h2>');}
+    else if(/^\s*[-·]\s/.test(ln)||/^\s{2,}\S/.test(ln)&&/^\s+[A-Z]/.test(ln)===false&&false){out.push((inList?'':'<ul>')+'<li>'+inline(ln.replace(/^\s*[-·]\s/,''))+'</li>');inList=true;}
+    else if(/^\s*$/.test(ln)){if(inList){out.push('</ul>');inList=false;}}
+    else{if(inList){out.push('</ul>');inList=false;}out.push('<p>'+inline(ln)+'</p>');}
+  }
+  if(inList)out.push('</ul>');
+  return out.join('');
+}
+function brief(){
+  if(H.brief){document.getElementById('brief-title').textContent='Morning brief — '+H.brief.file.replace('.md','');
+    document.getElementById('brief-md').innerHTML=mdToHtml(H.brief.text);}
+  if(H.earnings_note){document.getElementById('enote-title').textContent='Pre-earnings note — '+H.earnings_note.file.replace('.md','').replace('earnings-','');
+    document.getElementById('enote-md').innerHTML=mdToHtml(H.earnings_note.text);}
+}
+
 // ---- EARNINGS ----
 function earnings(){
   const E=H.earnings||{}, study=E.event_study||{};
@@ -336,7 +380,7 @@ document.querySelectorAll('th[data-k]').forEach(th=>th.addEventListener('click',
   else if(pane==='p-daytype'){dS===k?dA=!dA:(dS=k,dA=false);daytype();}
 }));
 
-monitor();returns();daytype();strategies();intraday();earnings();
+monitor();returns();daytype();strategies();intraday();earnings();brief();
 document.getElementById('foot').innerHTML=
   'One console over Stock Radar + Strategy Lab. Data: Yahoo (free). Refresh: '+
   '<code>collector.py</code> (monitor) · <code>returns_matrix.py</code> · <code>universe_daytype.py</code> · '+
