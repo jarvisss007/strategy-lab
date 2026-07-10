@@ -16,4 +16,5 @@ if [ "$(date +%u)" = "1" ]; then
 fi
 "$PY" /Users/anupampatil/strategy-lab/learning_meter.py >> "$LOG" 2>&1
 "$PY" /Users/anupampatil/strategy-lab/build_hub.py >> "$LOG" 2>&1
+echo "window.LAST_REFRESH=\"$(date '+%Y-%m-%dT%H:%M:%S')\";" > /Users/anupampatil/command-center/freshness.js
 echo "done $(date '+%H:%M:%S')" >> "$LOG"
