@@ -19,6 +19,15 @@ def load(path, default=None):
         return default if default is not None else {}
 
 
+def _csv(path):
+    import csv
+    try:
+        with open(path) as f:
+            return list(csv.DictReader(f))
+    except Exception:
+        return []
+
+
 def main():
     radar = load(os.path.join(RADAR, "data", "radar.json"))
     hub = {
@@ -32,6 +41,9 @@ def main():
         "strategies": load(os.path.join(LAB, "reports", "data.json")),
         "intraday_study": load(os.path.join(LAB, "reports", "intraday_study.json")),
         "intraday_discover": load(os.path.join(LAB, "reports", "intraday_discover.json")),
+        "earnings": load(os.path.join(LAB, "reports", "earnings_radar.json")),
+        "plans": _csv(os.path.join(RADAR, "agent", "plans.csv")),
+        "ledger": radar.get("ledger", []),
     }
     out = os.path.join(LAB, "hub_data.js")
     with open(out, "w") as f:

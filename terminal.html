@@ -75,6 +75,7 @@
   <div class="tab" data-p="returns">Returns</div>
   <div class="tab" data-p="daytype">Day-Type</div>
   <div class="tab" data-p="intraday">Intraday</div>
+  <div class="tab" data-p="earnings">Earnings</div>
   <div class="tab" data-p="strategies">Strategies</div>
 </div>
 
@@ -126,6 +127,28 @@
   <table><thead><tr><th>Strategy</th><th>Trades</th><th>Avg/trade</th><th>Hit%</th><th>t-stat</th><th>Basket Sharpe</th><th>Read</th></tr></thead>
     <tbody id="idrows"></tbody></table>
   <div class="legend" id="intro-verdict"></div>
+</div>
+
+<!-- EARNINGS -->
+<div class="pane" id="p-earnings">
+  <div class="legend"><b>Evidence, not advice.</b> Base rates from 15y of gap+volume event days (a proxy for
+  earnings and other binary events), on a survivor universe. <b>Plans are conditional and post-event only</b> —
+  the gap direction itself is a coin flip; only the after-drift has base rates. Triggered plans are logged to the
+  shared ledger automatically by <code>check_plans.py</code> and scored later.</div>
+
+  <h3>Active & recent plans</h3>
+  <table><thead><tr><th>Plan</th><th>Ticker</th><th>Event</th><th>Trigger</th><th>Action</th>
+    <th>Basis</th><th>Status</th></tr></thead><tbody id="eplans"></tbody></table>
+
+  <h3>Upcoming reporters (next 14 days, universe)</h3>
+  <table><thead><tr><th>Date</th><th>Ticker</th><th>When</th><th>Events</th><th>Avg |gap|</th>
+    <th>% up</th><th>Up-gap 5d</th><th>Down-gap 5d</th><th>Peers (spillover)</th></tr></thead>
+    <tbody id="eupc"></tbody></table>
+
+  <h3>Shared ledger — all agents, scored</h3>
+  <div class="legend" id="escore"></div>
+  <table><thead><tr><th>Date</th><th>Ticker</th><th>Call</th><th>Thesis</th><th>Entry</th>
+    <th>Check by</th><th>Outcome</th></tr></thead><tbody id="eledger"></tbody></table>
 </div>
 
 <!-- STRATEGIES -->
@@ -229,6 +252,42 @@ function daytype(){
 ['dq','dchar'].forEach(id=>document.getElementById(id).addEventListener('input',daytype));
 
 // ---- STRATEGIES ----
+// ---- EARNINGS ----
+function earnings(){
+  const E=H.earnings||{}, study=E.event_study||{};
+  // plans
+  document.getElementById('eplans').innerHTML=(H.plans&&H.plans.length)?H.plans.map(p=>{
+    const st=p.status==='triggered'?'pos':p.status==='expired'?'flat':'';
+    return `<tr><td>${p.plan_id}</td><td class="tick">${p.ticker}</td><td>${p.event_date}</td>
+      <td>${p.trigger} ≥${(p.gap_threshold*100)}%</td><td>${p.action} +${p.hold_days}d</td>
+      <td style="white-space:normal;text-align:left">${p.basis}</td>
+      <td class="${st}">${p.status}${p.triggered_date?' '+p.triggered_date:''}</td></tr>`;
+  }).join(''):'<tr><td colspan="7" class="flat">no plans registered</td></tr>';
+  // upcoming
+  document.getElementById('eupc').innerHTML=(E.upcoming_universe||[]).map(r=>{
+    const s=study[r.ticker]||{};
+    const up=s.up||{}, dn=s.down||{};
+    const peers=(s.peers||[]).map(p=>p[0]).join(', ');
+    return `<tr><td>${r.date}</td><td class="tick">${r.ticker}</td><td>${(r.when||'').replace('time-','')}</td>
+      <td>${s.n_events??'—'}</td><td>${s.avg_abs_gap??'—'}%</td><td>${s.pct_gap_up??'—'}%</td>
+      <td class="${(up.drift_5d||0)>0?'pos':'neg'}">${up.drift_5d??'—'}%</td>
+      <td class="${(dn.drift_5d||0)>0?'pos':'neg'}">${dn.drift_5d??'—'}%</td>
+      <td style="text-align:left">${peers||'—'}</td></tr>`;
+  }).join('')||'<tr><td colspan="9" class="flat">no universe names reporting in the window</td></tr>';
+  // shared ledger + scorecard
+  const L=H.ledger||[];
+  const scored=L.filter(r=>r.outcome==='right'||r.outcome==='wrong');
+  const hit=scored.length?Math.round(100*scored.filter(r=>r.outcome==='right').length/scored.length):null;
+  document.getElementById('escore').innerHTML=scored.length
+    ? `Hit rate <b>${hit}%</b> over ${scored.length} scored · ${L.length-scored.length} pending. Compare this number against analysts/StockTrak over the same window before agreeing with anyone.`
+    : `${L.length} call(s) pending, none scored yet — the hit rate that decides who to trust is still being earned.`;
+  document.getElementById('eledger').innerHTML=L.map(r=>
+    `<tr><td>${r.date}</td><td class="tick">${r.ticker}</td><td>${r.call}</td>
+     <td style="white-space:normal;text-align:left">${r.thesis}</td><td>${r.price_at_call}</td>
+     <td>${r.check_date}</td><td class="${r.outcome==='right'?'pos':r.outcome==='wrong'?'neg':'flat'}">${r.outcome||'pending'}</td></tr>`).join('')
+    ||'<tr><td colspan="7" class="flat">ledger empty</td></tr>';
+}
+
 function strategies(){
   const S=H.strategies||{};
   document.getElementById('sbench').innerHTML=
@@ -277,7 +336,7 @@ document.querySelectorAll('th[data-k]').forEach(th=>th.addEventListener('click',
   else if(pane==='p-daytype'){dS===k?dA=!dA:(dS=k,dA=false);daytype();}
 }));
 
-monitor();returns();daytype();strategies();intraday();
+monitor();returns();daytype();strategies();intraday();earnings();
 document.getElementById('foot').innerHTML=
   'One console over Stock Radar + Strategy Lab. Data: Yahoo (free). Refresh: '+
   '<code>collector.py</code> (monitor) · <code>returns_matrix.py</code> · <code>universe_daytype.py</code> · '+

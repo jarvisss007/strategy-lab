@@ -5,5 +5,7 @@ PY=/opt/anaconda3/bin/python
 LOG=/Users/anupampatil/strategy-lab/refresh.log
 echo "=== refresh $(date '+%Y-%m-%d %H:%M:%S') ===" >> "$LOG"
 "$PY" /Users/anupampatil/stock-radar/collector.py >> "$LOG" 2>&1
+"$PY" /Users/anupampatil/stock-radar/check_plans.py >> "$LOG" 2>&1
+"$PY" /Users/anupampatil/stock-radar/collector.py >> "$LOG" 2>&1   # re-embed ledger if a plan fired
 "$PY" /Users/anupampatil/strategy-lab/build_hub.py >> "$LOG" 2>&1
 echo "done $(date '+%H:%M:%S')" >> "$LOG"
