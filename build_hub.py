@@ -28,6 +28,23 @@ def _csv(path):
         return []
 
 
+def _recorder_live(path):
+    """Live out-of-sample tracker: the recorder logs per-day returns for the intraday
+    strategies; this is their running forward-test (backtest said 'no edge')."""
+    rows = _csv(path)
+    if not rows:
+        return None
+    def stat(col):
+        vals = [float(r[col]) for r in rows if r.get(col) not in (None, "", "nan")]
+        if not vals:
+            return None
+        m = sum(vals) / len(vals)
+        return {"n": len(vals), "avg_pct": round(m, 3),
+                "hit_pct": round(100 * sum(1 for v in vals if v > 0) / len(vals), 1)}
+    return {"sessions": len({r["date"] for r in rows}), "namedays": len(rows),
+            "or_breakout": stat("or_breakout_ret"), "open_fade": stat("open_fade_ret")}
+
+
 def _latest_md(briefs_dir, morning=True):
     """Newest brief file: morning briefs are YYYY-MM-DD.md; earnings notes are earnings-*.md."""
     try:
@@ -59,6 +76,8 @@ def main():
         "ledger": radar.get("ledger", []),
         "brief": _latest_md(os.path.join(RADAR, "agent", "briefs"), morning=True),
         "earnings_note": _latest_md(os.path.join(RADAR, "agent", "briefs"), morning=False),
+        "progress": _csv(os.path.join(LAB, "progress.csv")),
+        "recorder_live": _recorder_live(os.path.join(LAB, "daytype_log.csv")),
     }
     out = os.path.join(LAB, "hub_data.js")
     with open(out, "w") as f:
