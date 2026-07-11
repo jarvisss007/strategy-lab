@@ -184,6 +184,13 @@
   <h3>Live forward-test — intraday strategies (recorder, real out-of-sample)</h3>
   <table><thead><tr><th>Strategy</th><th>Name-days</th><th>Avg %/trade</th><th>Hit %</th><th>Backtest said</th></tr></thead>
     <tbody id="prec"></tbody></table>
+
+  <h3>The Coach — grades every agent, weekly, against SPY buy-and-hold</h3>
+  <div class="legend" id="coachSummary"></div>
+  <table><thead><tr><th>Agent tag</th><th>N scored</th><th>Confidence</th><th>Hit rate</th>
+    <th>Avg P&L</th><th>Beat SPY %</th><th>Avg edge vs SPY</th></tr></thead><tbody id="coachTags"></tbody></table>
+  <div class="md" id="coachTweaks" style="margin-top:8px;"></div>
+
   <h3>What each learning loop is waiting on</h3>
   <div class="md" id="ploops"></div>
 </div>
@@ -366,10 +373,35 @@ function progress(){
   document.getElementById('ploops').innerHTML=[
     '<b>Morning agent</b> — daily 6:30 (app open): brief + plan check. Next scoring event: BABA short, 2026-07-29.',
     '<b>Earnings agent</b> — Sundays 16:00: upcoming reporters + plans. Live plans: ASML 7/15, TSLA 7/22.',
+    '<b>Coach</b> — Sundays 15:00 (before earnings agent + letter): grades every scored call vs SPY.',
     '<b>Recorder</b> — weekdays 13:21: +39 name-days/session into the intraday dataset.',
     '<b>Study re-learn</b> — Mondays 7:05 (launchd): returns, day-type, earnings base rates refresh on grown data.',
     '<b>Meter</b> — daily 7:05 (launchd): snapshots every counter above; flatline = something broke.'
   ].map(x=>`<p>· ${x}</p>`).join('');
+  coach();
+}
+
+function coach(){
+  const C=H.coach_report, log=H.coach_log||[];
+  if(!C){document.getElementById('coachSummary').innerHTML='<span class="flat">Coach has not run yet.</span>';
+    document.getElementById('coachTags').innerHTML='';document.getElementById('coachTweaks').innerHTML='';return;}
+  const o=C.overall;
+  document.getElementById('coachSummary').innerHTML = o
+    ? `Last graded ${C.run_date}: <b>${C.n_scored}</b> scored / ${C.n_total_calls} total calls (${C.n_pending} pending) — `+
+      `overall hit rate <b>${o.hit_rate}%</b>, avg P&L <b>${f2(o.avg_pnl_pct,true)}%</b>`+
+      (o.beat_spy_rate!=null?`, beat SPY <b>${o.beat_spy_rate}%</b> of the time (${o.confidence})`:` (${o.confidence})`)+
+      `. ${C.note}`
+    : `Last graded ${C.run_date}: ${C.n_scored} scored / ${C.n_total_calls} total, ${C.n_pending} pending. Nothing scored yet — the coach reports this honestly rather than guessing.`;
+  document.getElementById('coachTags').innerHTML = (C.by_agent_tag||[]).map(r=>
+    `<tr><td class="tick">[${r.label}]</td><td>${r.n}</td><td>${r.confidence}</td><td>${r.hit_rate}%</td>
+     <td class="${r.avg_pnl_pct>0?'pos':r.avg_pnl_pct<0?'neg':'flat'}">${f2(r.avg_pnl_pct,true)}%</td>
+     <td>${r.beat_spy_rate??'—'}${r.beat_spy_rate!=null?'%':''}</td>
+     <td class="${r.avg_edge_vs_spy_pct>0?'pos':r.avg_edge_vs_spy_pct<0?'neg':'flat'}">${f2(r.avg_edge_vs_spy_pct,true)}${r.avg_edge_vs_spy_pct!=null?'%':''}</td></tr>`
+  ).join('') || '<tr><td colspan="7" class="flat">no scored calls broken out by agent yet</td></tr>';
+  document.getElementById('coachTweaks').innerHTML =
+    '<b>Tweaks (recommended only — never auto-applied):</b>' +
+    (C.tweaks||[]).map(t=>`<p>· ${t}</p>`).join('') +
+    (log.length>1?`<p style="margin-top:8px;color:var(--muted)">Coaching history: ${log.length} weekly runs logged.</p>`:'');
 }
 
 // ---- EXTRA CHARTS on existing tabs ----

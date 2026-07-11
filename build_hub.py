@@ -45,11 +45,15 @@ def _recorder_live(path):
             "or_breakout": stat("or_breakout_ret"), "open_fade": stat("open_fade_ret")}
 
 
-def _latest_md(briefs_dir, morning=True):
-    """Newest brief file: morning briefs are YYYY-MM-DD.md; earnings notes are earnings-*.md."""
+def _latest_md(briefs_dir, kind="morning"):
+    """Newest brief file. kind: 'morning' (plain YYYY-MM-DD.md), 'earnings'
+    (earnings-*.md), or 'coach' (coach-*.md)."""
     try:
-        names = [f for f in os.listdir(briefs_dir) if f.endswith(".md") and
-                 (f.startswith("earnings-") != morning)]
+        allmd = [f for f in os.listdir(briefs_dir) if f.endswith(".md")]
+        if kind == "morning":
+            names = [f for f in allmd if not f.startswith(("earnings-", "coach-"))]
+        else:
+            names = [f for f in allmd if f.startswith(kind + "-")]
         if not names:
             return None
         latest = sorted(names)[-1]
@@ -74,8 +78,11 @@ def main():
         "earnings": load(os.path.join(LAB, "reports", "earnings_radar.json")),
         "plans": _csv(os.path.join(RADAR, "agent", "plans.csv")),
         "ledger": radar.get("ledger", []),
-        "brief": _latest_md(os.path.join(RADAR, "agent", "briefs"), morning=True),
-        "earnings_note": _latest_md(os.path.join(RADAR, "agent", "briefs"), morning=False),
+        "brief": _latest_md(os.path.join(RADAR, "agent", "briefs"), "morning"),
+        "earnings_note": _latest_md(os.path.join(RADAR, "agent", "briefs"), "earnings"),
+        "coach_note": _latest_md(os.path.join(RADAR, "agent", "briefs"), "coach"),
+        "coach_report": load(os.path.join(RADAR, "agent", "coach_report.json")),
+        "coach_log": _csv(os.path.join(RADAR, "agent", "coach_log.csv")),
         "progress": _csv(os.path.join(LAB, "progress.csv")),
         "recorder_live": _recorder_live(os.path.join(LAB, "daytype_log.csv")),
     }
