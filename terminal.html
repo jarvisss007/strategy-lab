@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Trading Terminal</title>
+<link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🖥️</text></svg>'>
 <style>
   :root{--bg:#0d1117;--panel:#161b22;--panel2:#1c2129;--border:#30363d;--ink:#e6edf3;
     --ink2:#9198a1;--muted:#6e7681;--up:#3fb950;--down:#f85149;--accent:#58a6ff;--warn:#d29922;--purple:#bc8cff;}
@@ -20,7 +21,9 @@
   .scard .p{font-size:14px;font-weight:600;font-variant-numeric:tabular-nums;}
   .scard .c{font-size:11.5px;font-variant-numeric:tabular-nums;}
   /* tabs */
-  .tabs{display:flex;gap:4px;border-bottom:1px solid var(--border);margin:14px 0 4px;flex-wrap:wrap;}
+  .tabs{display:flex;gap:4px;border-bottom:1px solid var(--border);margin:14px 0 4px;flex-wrap:wrap;
+    position:sticky;top:0;z-index:80;background:rgba(13,17,23,.88);
+    backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);padding-top:6px;}
   .tab{padding:8px 16px;font-size:13.5px;font-weight:600;color:var(--ink2);cursor:pointer;border:1px solid transparent;border-bottom:none;border-radius:7px 7px 0 0;}
   .tab:hover{color:var(--ink);}
   .tab.on{color:var(--ink);background:var(--panel);border-color:var(--border);}
@@ -30,7 +33,8 @@
   input,select{background:var(--panel);border:1px solid var(--border);color:var(--ink);border-radius:6px;padding:6px 10px;font-size:13px;}
   input[type=search]{width:170px;}
   table{width:100%;border-collapse:collapse;}
-  th{text-align:right;font-size:11px;color:var(--muted);font-weight:600;padding:7px 9px 5px;cursor:pointer;white-space:nowrap;user-select:none;}
+  th{text-align:right;font-size:11px;color:var(--muted);font-weight:600;padding:7px 9px 5px;cursor:pointer;white-space:nowrap;user-select:none;transition:color .12s;}
+  th:hover{color:var(--accent);}
   th:first-child,td:first-child{text-align:left;}
   td{padding:6px 9px;text-align:right;font-variant-numeric:tabular-nums;border-top:1px solid #21262d;white-space:nowrap;}
   tr:hover td{background:var(--panel2);}
@@ -146,6 +150,8 @@
 <header>
   <h1>🖥️ Trading Terminal</h1>
   <span class="sub" id="built"></span>
+  <span id="fresh" style="display:inline-flex;align-items:center;gap:6px;font-size:11.5px;color:var(--ink2);
+    border:1px solid var(--border);border-radius:14px;padding:3px 12px;margin-left:auto;cursor:default"></span>
 </header>
 <div class="sub">Everything in one place — daily monitor, multi-horizon returns, intraday day-type, and the honest strategy survey. A research console, not a signal.</div>
 
@@ -287,6 +293,16 @@ const H = window.HUB || {};
 const f2 = (v,s)=> v==null||isNaN(v)?'—':(s&&v>0?'+':'')+(+v).toFixed(2);
 const pct = (v,s)=> v==null||isNaN(v)?'—':`<span class="${v>0.001?'pos':v<-0.001?'neg':'flat'}">${(s&&v>0?'+':'')+(+v).toFixed(1)}%</span>`;
 document.getElementById('built').textContent = 'updated ' + (H.built||'—');
+// freshness pill — the terminal retrains itself daily; show that state honestly
+(function(){
+  const el=document.getElementById('fresh');if(!el)return;
+  const t=Date.parse((H.built||'').replace(' PDT','').replace(' PST','').replace(' ','T'));
+  const hrs=isNaN(t)?null:(Date.now()-t)/3.6e6;
+  const live=hrs!=null&&hrs<30;
+  el.innerHTML=`<span style="width:7px;height:7px;border-radius:50%;background:${live?'var(--up)':'var(--warn)'};${live?'box-shadow:0 0 6px var(--up)':''}"></span>`+
+    (hrs==null?'freshness unknown':live?`DATA LIVE — refreshed ${hrs<1?Math.round(hrs*60)+'m':Math.round(hrs)+'h'} ago`:`DATA STALE — ${Math.round(hrs)}h old`);
+  el.title='This console retrains itself daily:\n· 6:30 AM — morning agent (brief, plan checks, ledger scoring)\n· 7:05 AM + every 30 min — data refresh (launchd, survives reboots)\n· 1:21 PM — intraday day-type recorder (dataset grows daily)\n· Mondays — studies re-learned on grown data + fundamentals refresh\n· Sundays — coach grades every agent · earnings agent · caretaker audit\n· Saturdays — research sentinel re-validates every frozen verdict';
+})();
 
 // market strip
 document.getElementById('strip').innerHTML = (H.monitor?.strip||[]).map(s=>
@@ -294,6 +310,9 @@ document.getElementById('strip').innerHTML = (H.monitor?.strip||[]).map(s=>
    <div class="c ${s.d1>0?'pos':s.d1<0?'neg':'flat'}">${f2(s.d1,true)}%</div></div>`).join('');
 
 // tabs
+function goTab(p){closeTicker();document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x.dataset.p===p));
+  document.querySelectorAll('.pane').forEach(x=>x.classList.toggle('on',x.id==='p-'+p));
+  document.getElementById('tabs').scrollIntoView({behavior:'smooth'});}
 document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
   document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));
   document.querySelectorAll('.pane').forEach(x=>x.classList.remove('on'));
@@ -879,7 +898,7 @@ async function openTicker(T,anchor){
            +gate(g.current_ratio_ok,'Current ratio ≥ 2',g.current_ratio!=null?g.current_ratio:'—')+gate(g.dividend_ok,'Pays a dividend',g.dividend_yield!=null?g.dividend_yield+'%':'—')
            :'<div class="none">not scored yet</div>'}</div>
       <div class="tkcard"><h4>The agent desk</h4>
-        ${upc?`<div class="rowline"><span>Earnings</span><b>${upc.date}${upc.when?' · '+upc.when:''}</b></div>`:''}
+        ${upc?`<div class="rowline" style="cursor:pointer" title="click for the Earnings tab — base rates + conditional plans" onclick="goTab('earnings');event.stopPropagation()"><span>Earnings ↗</span><b>${upc.date}${upc.when?' · '+upc.when:''}</b></div>`:''}
         ${plans.map(p=>`<div class="rowline"><span>Plan · ${p.status}</span><b>${p.action||p.plan_id}</b></div>`).join('')}
         ${calls.map(c=>`<div class="rowline"><span>${c.date} call: <b>${c.call}</b> @ ${c.price_at_call}</span><b>${c.outcome||'pending'}</b></div>`).join('')}
         ${briefLine?`<div class="none" style="padding:4px 0">brief: ${briefLine.replace(/[#*]/g,'').trim()}</div>`:''}
@@ -888,9 +907,9 @@ async function openTicker(T,anchor){
         <div id="tkins" class="none">checking the live feed…</div></div>
       <div class="tkcard"><h4>The lab — every test on record</h4>
         <div class="tksub">strategy families (15y, deflation + PBO gate)</div>
-        ${(H.strategies?.results||[]).map(s=>`<div class="labrow"><span>${s.family}</span><span class="badge v-${(s.verdict||'').split(':')[0].replace(' ','')}">${(s.verdict||'?').split(':')[0]}</span></div>`).join('')}
+        ${(H.strategies?.results||[]).map(s=>`<div class="labrow" style="cursor:pointer" title="${(s.verdict_full||'').replace(/"/g,'&quot;')} — click for the Strategies tab" onclick="goTab('strategies');event.stopPropagation()"><span>${s.family}</span><span class="badge v-${(s.verdict||'').split(':')[0].replace(' ','')}">${(s.verdict||'?').split(':')[0]}</span></div>`).join('')}
         <div class="tksub">intraday strategies (realistic entries, net)</div>
-        ${(H.intraday_discover?.strategies||[]).map(s=>`<div class="labrow"><span>${s.strategy}</span><b class="${s.avg_pct>=0?'pos':'neg'}">${s.avg_pct>=0?'+':''}${s.avg_pct}%/trade · ${s.read}</b></div>`).join('')}
+        ${(H.intraday_discover?.strategies||[]).map(s=>`<div class="labrow" style="cursor:pointer" title="${s.trades} trades, hit ${s.hit_pct}%, t=${s.tstat} — click for the Intraday tab" onclick="goTab('intraday');event.stopPropagation()"><span>${s.strategy}</span><b class="${s.avg_pct>=0?'pos':'neg'}">${s.avg_pct>=0?'+':''}${s.avg_pct}%/trade · ${s.read}</b></div>`).join('')}
         <div class="none" style="margin-top:9px;line-height:1.6">Survivors are long-only beta-timing flattered by a bull tape + survivorship bias — not market-neutral edge. New ideas require a REGISTRY.md sign-off; the Saturday sentinel re-validates every frozen verdict weekly.</div>
       </div>
     </div>
