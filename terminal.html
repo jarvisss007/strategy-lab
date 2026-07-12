@@ -116,7 +116,22 @@
   .rowline:last-child{border-bottom:none;}
   .gate{display:flex;justify-content:space-between;padding:4px 0;font-size:12.5px;color:var(--ink2);}
   .gate .ok{color:var(--up);font-weight:600;} .gate .no{color:var(--muted);}
-  .read{background:var(--panel);border:1px solid #262c36;border-left:3px solid var(--accent);
+  .tkwide{grid-column:1/-1;}
+  .tkmeta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:9px;}
+  .tkmeta span,.tkmeta a{font-size:11px;color:var(--ink2);background:#0d1117;border:1px solid #21262d;
+    border-radius:12px;padding:3px 11px;text-decoration:none;}
+  .tkmeta a{color:var(--accent);border-color:rgba(88,166,255,.35);}
+  .tkmeta a:hover{border-color:var(--accent);}
+  .tkabout{font-size:12.5px;color:var(--ink2);line-height:1.7;}
+  .tkabout.clamp{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
+  .tkmore{background:none;border:none;color:var(--accent);font-size:11.5px;cursor:pointer;padding:4px 0 0;}
+  .labrow{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:4px 0;
+    font-size:12px;color:var(--ink2);border-bottom:1px solid #1b212a;}
+  .labrow:last-of-type{border-bottom:none;}
+  .labrow .badge{margin-left:0;flex:0 0 auto;}
+  .scard[data-t]{cursor:pointer;transition:border-color .15s;}
+  .scard[data-t]:hover{border-color:var(--accent);}
+    .read{background:var(--panel);border:1px solid #262c36;border-left:3px solid var(--accent);
     border-radius:0 10px 10px 0;padding:11px 15px;font-size:12.5px;color:var(--ink2);
     line-height:1.7;margin-top:13px;}
   .read b{color:var(--ink);}
@@ -273,7 +288,7 @@ document.getElementById('built').textContent = 'updated ' + (H.built||'—');
 
 // market strip
 document.getElementById('strip').innerHTML = (H.monitor?.strip||[]).map(s=>
-  `<div class="scard"><div class="t">${s.ticker}</div><div class="p">${(+s.last).toLocaleString()}</div>
+  `<div class="scard" data-t="${s.ticker}" title="click for the ${s.ticker} chart"><div class="t">${s.ticker}</div><div class="p">${(+s.last).toLocaleString()}</div>
    <div class="c ${s.d1>0?'pos':s.d1<0?'neg':'flat'}">${f2(s.d1,true)}%</div></div>`).join('');
 
 // tabs
@@ -766,11 +781,16 @@ async function openTicker(T,anchor){
   const again=TKOPEN===T;
   closeTicker();
   if(again)return;
-  const tr=anchor||document.querySelector(`tr[data-t="${T}"]`);
-  if(!tr)return;
+  let tr=anchor||document.querySelector(`tr[data-t="${T}"]`);
+  if(!tr){
+    const tb=document.querySelector('.pane.on tbody');
+    if(!tb)return;
+    tr={children:{length:(tb.querySelector('tr')||{children:{length:9}}).children.length},
+        after:x=>tb.prepend(x),classList:{add:()=>{}}};
+  }
   TKOPEN=T;
 
-  const e=(H.monitor?.equities||[]).find(x=>x.ticker===T);
+  const e=(H.monitor?.equities||[]).find(x=>x.ticker===T)||(H.monitor?.strip||[]).find(x=>x.ticker===T);
   const r=(H.returns?.snapshot||[]).find(x=>x.ticker===T);
   const d=(H.daytype?.rows||[]).find(x=>x.ticker===T);
   const g=H.graham&&H.graham.stocks?H.graham.stocks[T]:null;
@@ -801,6 +821,18 @@ async function openTicker(T,anchor){
           <span><i style="background:#f0b429"></i>MA50</span>
           <span><i style="background:#a371f7"></i>MA200</span></div>
       </div></div>`:''}
+    ${g&&g.about&&g.about.summary?`<div class="tkcard tkwide" style="margin-bottom:13px">
+      <h4>About ${T} — the business, in the ecosystem</h4>
+      <div class="tkmeta">
+        ${g.about.industry?`<span>${g.about.industry}</span>`:''}
+        ${e&&e.sector?`<span>${e.sector}</span>`:''}
+        ${g.about.employees?`<span>${Number(g.about.employees).toLocaleString()} employees</span>`:''}
+        ${g.about.city||g.about.country?`<span>${[g.about.city,g.about.country].filter(Boolean).join(', ')}</span>`:''}
+        ${g.about.website?`<a href="${g.about.website}" target="_blank" rel="noopener">website ↗</a>`:''}
+      </div>
+      <div class="tkabout clamp" id="tkabouttxt">${g.about.summary}</div>
+      <button class="tkmore" onclick="const t=document.getElementById('tkabouttxt');const c=t.classList.toggle('clamp');this.textContent=c?'read more':'read less';event.stopPropagation()">read more</button>
+    </div>`:''}
     <div class="tkgrid">
       ${e?`<div class="tkcard"><h4>Snapshot</h4><div class="grid2">
         ${kv('1 week',P(e.w1))}${kv('1 month',P(e.m1))}
@@ -828,6 +860,13 @@ async function openTicker(T,anchor){
         ${!upc&&!plans.length&&!calls.length&&!briefLine?'<div class="none">no open calls, plans, or earnings on file</div>':''}
         <div class="tksub" style="margin-top:11px">insider activity (edgar feed)</div>
         <div id="tkins" class="none">checking the live feed…</div></div>
+      <div class="tkcard"><h4>The lab — every test on record</h4>
+        <div class="tksub">strategy families (15y, deflation + PBO gate)</div>
+        ${(H.strategies?.results||[]).map(s=>`<div class="labrow"><span>${s.family}</span><span class="badge v-${(s.verdict||'').split(':')[0].replace(' ','')}">${(s.verdict||'?').split(':')[0]}</span></div>`).join('')}
+        <div class="tksub">intraday strategies (realistic entries, net)</div>
+        ${(H.intraday_discover?.strategies||[]).map(s=>`<div class="labrow"><span>${s.strategy}</span><b class="${s.avg_pct>=0?'pos':'neg'}">${s.avg_pct>=0?'+':''}${s.avg_pct}%/trade · ${s.read}</b></div>`).join('')}
+        <div class="none" style="margin-top:9px;line-height:1.6">Survivors are long-only beta-timing flattered by a bull tape + survivorship bias — not market-neutral edge. New ideas require a REGISTRY.md sign-off; the Saturday sentinel re-validates every frozen verdict weekly.</div>
+      </div>
     </div>
     <div class="read" id="tkread">assembling the house read…</div>
     <div class="hon">A read, not a signal — every strategy family this account has tested failed the deflation + PBO gate (Strategies tab). This panel aggregates honest data; it does not recommend trades.</div>
@@ -846,6 +885,8 @@ async function openTicker(T,anchor){
 }
 document.addEventListener('click',ev=>{
   if(ev.target.closest('tr.tkexp'))return;
+  const sc=ev.target.closest('.scard[data-t]');
+  if(sc){openTicker(sc.dataset.t);return;}
   const tr=ev.target.closest('tr[data-t]');
   if(tr&&!ev.target.closest('a'))openTicker(tr.dataset.t,tr);
 });
