@@ -70,52 +70,60 @@
   tbody tr[data-t]{cursor:pointer;}
   tbody tr[data-t]:hover .tick{color:var(--accent);}
   tbody tr[data-t].tkon td{background:var(--panel2);}
-  tr.tkexp>td{padding:0 !important;background:#10141b;text-align:left;white-space:normal;}
-  .tkwrap{position:relative;padding:14px 18px 0;border-left:3px solid var(--accent);
-    animation:tkslide .16s ease;}
-  @keyframes tkslide{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:none}}
-  .tkwrap .tkhead{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;}
-  .tkwrap .tkhead .sym{font-size:20px;font-weight:800;}
-  .tkwrap .tkhead .who{font-size:12px;color:var(--ink2);}
-  .tkwrap .tkhead .px{font-size:17px;font-weight:700;font-variant-numeric:tabular-nums;margin-left:auto;}
-  .tkwrap .tkhead .px span{font-size:12px;margin-left:6px;}
-  .tkwrap .tkx{background:none;border:1px solid var(--border);color:var(--ink2);width:26px;height:26px;
-    border-radius:7px;font-size:13px;cursor:pointer;transition:border-color .15s,color .15s;}
-  .tkwrap .tkx:hover{border-color:var(--accent);color:var(--accent);}
-  .tkwrap svg.bigspark{width:100%;height:44px;margin:8px 0 2px;}
-  .tkwrap svg.bigspark path{fill:none;stroke:var(--accent);stroke-width:1.5;}
-  .tkwrap .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:0 30px;}
-  .tkwrap h4{font-size:10px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;
-    margin:14px 0 7px;border-bottom:1px solid var(--border);padding-bottom:4px;}
-  .tkwrap .grid2{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
-  .tkwrap .kv{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:7px 10px;}
-  .tkwrap .kv .k{font-size:9.5px;color:var(--muted);letter-spacing:.6px;text-transform:uppercase;}
-  .tkwrap .kv .v{font-size:13.5px;font-weight:600;font-variant-numeric:tabular-nums;margin-top:1px;}
-  .tkwrap .rowline{display:flex;justify-content:space-between;padding:4px 0;font-size:12.5px;
-    border-bottom:1px solid #1c222b;color:var(--ink2);}
-  .tkwrap .rowline b{color:var(--ink);font-variant-numeric:tabular-nums;}
-  .tkwrap .rowline:last-child{border-bottom:none;}
-  .tkwrap .gate{display:flex;justify-content:space-between;padding:3px 0;font-size:12.5px;color:var(--ink2);}
-  .tkwrap .gate .ok{color:var(--up);} .tkwrap .gate .no{color:var(--muted);}
-  .tkwrap .read{background:var(--panel);border:1px solid var(--border);border-left:3px solid var(--accent);
-    border-radius:0 8px 8px 0;padding:9px 13px;font-size:12.5px;color:var(--ink2);line-height:1.6;margin-top:14px;}
-  .tkwrap .none{color:var(--muted);font-size:12.5px;}
-  .tkchart{position:relative;margin:10px 0 0;}
-  .tkchart svg{display:block;width:100%;height:230px;}
-  .tkbar{display:flex;align-items:center;justify-content:space-between;margin:4px 0 2px;}
-  .tkranges{display:flex;gap:4px;}
-  .tkranges button{background:none;border:1px solid var(--border);color:var(--ink2);font-size:11px;
-    padding:3px 11px;border-radius:6px;cursor:pointer;transition:color .12s,border-color .12s;}
+  tr.tkexp>td{padding:0 !important;background:#0e1116;text-align:left;white-space:normal;
+    border-top:none !important;border-bottom:2px solid var(--border);}
+  .tkwrap{padding:18px 20px 0;animation:tkslide .18s ease;}
+  @keyframes tkslide{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+  .tkhead{display:flex;align-items:center;gap:14px;margin-bottom:14px;}
+  .tkhead .sym{font-size:23px;font-weight:800;letter-spacing:.3px;}
+  .tkhead .who{font-size:12px;color:var(--ink2);margin-top:4px;}
+  .tkhead .pxbox{margin-left:auto;display:flex;align-items:center;gap:10px;}
+  .tkhead .px{font-size:22px;font-weight:700;font-variant-numeric:tabular-nums;}
+  .tkhead .chip{font-size:12px;font-weight:700;padding:3px 10px;border-radius:14px;}
+  .tkhead .chip.u{background:rgba(63,185,80,.14);color:var(--up);}
+  .tkhead .chip.d{background:rgba(248,81,73,.14);color:var(--down);}
+  .tkx{background:none;border:1px solid var(--border);color:var(--ink2);width:28px;height:28px;
+    border-radius:8px;font-size:13px;cursor:pointer;transition:border-color .15s,color .15s;}
+  .tkx:hover{border-color:var(--accent);color:var(--accent);}
+  .tkcard{background:var(--panel);border:1px solid #262c36;border-radius:10px;padding:13px 15px;}
+  .tkchartcard{padding:10px 14px 8px;margin-bottom:14px;}
+  .tkreadout{display:flex;gap:16px;font-size:12px;color:var(--ink2);padding:2px 2px 8px;
+    font-variant-numeric:tabular-nums;flex-wrap:wrap;min-height:22px;}
+  .tkreadout b{color:var(--ink);}
+  .tkchart{position:relative;}
+  .tkchart svg{display:block;width:100%;height:260px;}
+  .tkbar{display:flex;align-items:center;justify-content:space-between;padding:8px 2px 2px;}
+  .tkranges{display:flex;gap:3px;background:#0d1117;border:1px solid #262c36;border-radius:8px;padding:2px;}
+  .tkranges button{background:none;border:none;color:var(--ink2);font-size:11px;font-weight:600;
+    padding:4px 13px;border-radius:6px;cursor:pointer;transition:color .12s,background .12s;}
   .tkranges button:hover{color:var(--ink);}
-  .tkranges button.on{color:var(--accent);border-color:var(--accent);background:rgba(88,166,255,.08);}
+  .tkranges button.on{color:#0d1117;background:var(--accent);}
   .tklegend{display:flex;gap:14px;font-size:10.5px;color:var(--muted);}
   .tklegend i{display:inline-block;width:14px;height:2px;vertical-align:middle;margin-right:5px;border-radius:1px;}
-  .tktip{position:absolute;pointer-events:none;background:#0d1117;border:1px solid var(--border);
-    border-radius:7px;padding:6px 10px;font-size:11.5px;display:none;z-index:5;
-    box-shadow:0 4px 14px rgba(0,0,0,.5);white-space:nowrap;line-height:1.5;}
-  .tkwrap .hon{margin:12px -18px 0 -21px;padding:8px 18px 9px 21px;font-size:11px;
-    color:var(--muted);border-top:1px solid var(--border);}
-</style>
+  .tkgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(252px,1fr));gap:13px;}
+  .tkcard h4{font-size:10px;letter-spacing:1.6px;color:var(--muted);text-transform:uppercase;
+    margin:0 0 9px;display:flex;align-items:center;gap:7px;}
+  .tkcard h4::before{content:"";width:3px;height:11px;border-radius:2px;background:var(--accent);}
+  .tksub{font-size:9px;letter-spacing:1.3px;color:#59616c;text-transform:uppercase;margin:10px 0 3px;}
+  .tksub:first-of-type{margin-top:0;}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+  .kv{background:#0d1117;border:1px solid #21262d;border-radius:8px;padding:7px 10px;}
+  .kv .k{font-size:9.5px;color:var(--muted);letter-spacing:.5px;text-transform:uppercase;}
+  .kv .v{font-size:13.5px;font-weight:600;font-variant-numeric:tabular-nums;margin-top:2px;}
+  .rowline{display:flex;justify-content:space-between;gap:10px;padding:4.5px 0;font-size:12.5px;
+    border-bottom:1px solid #1b212a;color:var(--ink2);}
+  .rowline b{color:var(--ink);font-variant-numeric:tabular-nums;text-align:right;}
+  .rowline:last-child{border-bottom:none;}
+  .gate{display:flex;justify-content:space-between;padding:4px 0;font-size:12.5px;color:var(--ink2);}
+  .gate .ok{color:var(--up);font-weight:600;} .gate .no{color:var(--muted);}
+  .read{background:var(--panel);border:1px solid #262c36;border-left:3px solid var(--accent);
+    border-radius:0 10px 10px 0;padding:11px 15px;font-size:12.5px;color:var(--ink2);
+    line-height:1.7;margin-top:13px;}
+  .read b{color:var(--ink);}
+  .none{color:var(--muted);font-size:12.5px;}
+  .hon{margin:14px -20px 0;padding:9px 20px 10px;font-size:11px;color:var(--muted);
+    border-top:1px solid #1b212a;}
+  </style>
 </head>
 <body>
 <header>
@@ -595,9 +603,7 @@ document.getElementById('foot').innerHTML=
   '<b>Click any ticker row for its full dossier.</b>';
 
 // ================= TICKER DOSSIER (inline drop-down) =================
-// Click any row in Monitor / Returns / Day-Type -> the full dossier expands
-// directly beneath it. Click again (or Esc, or the X) to collapse.
-let INSIDERS=null, TKOPEN=null;
+let INSIDERS=null, TKOPEN=null, TKRANGE='6M';
 async function insiders(){
   if(INSIDERS)return INSIDERS;
   try{const r=await fetch('https://jarvisss007.github.io/insider-radar/data/insiders.json?'+Date.now());
@@ -606,13 +612,6 @@ async function insiders(){
 }
 const money=v=>'$'+Number(v).toLocaleString('en-US',{maximumFractionDigits:0});
 
-function bigspark(vals){
-  if(!vals||vals.length<2)return '';
-  const mn=Math.min(...vals),mx=Math.max(...vals),r=(mx-mn)||1;
-  const pts=vals.map((v,i)=>[(i/(vals.length-1))*800,42-((v-mn)/r)*36+2]);
-  return `<svg class="bigspark" viewBox="0 0 800 46" preserveAspectRatio="none"><path d="M${pts.map(p=>p[0].toFixed(1)+' '+p[1].toFixed(1)).join('L')}"/></svg>`;
-}
-
 function houseRead(T,e,d,g,upc,plans,calls,ins){
   const out=[];
   if(e){
@@ -620,7 +619,6 @@ function houseRead(T,e,d,g,upc,plans,calls,ins){
       !e.above_ma50&&!e.above_ma200?'broken (below both MAs)':'mixed (between its MAs)';
     out.push(`Structure is <b>${trend}</b>, ${e.off_hi.toFixed(0)}% off the 52-week high and ${e.above_lo.toFixed(0)}% above the low; 1-month momentum ${e.m1>0?'+':''}${e.m1.toFixed(1)}%.`);
   }
-  if(d)out.push(`Intraday character: <b>${d.character}</b> — path ${d.avg_path_pct.toFixed(1)}%/day, trend days ${d.pct_trend.toFixed(0)}%, tradeable window ${d.tradeable_pct.toFixed(0)}% (day-type radar, ~${d.n_days} sessions).`);
   if(g&&g.fundamentals&&Object.keys(g.fundamentals).length){const f=g.fundamentals;const bits=[];
     if(f.profitMargins!=null)bits.push(`net margin ${(f.profitMargins*100).toFixed(0)}%`);
     if(f.revenueGrowth!=null)bits.push(`revenue ${f.revenueGrowth>=0?'+':''}${(f.revenueGrowth*100).toFixed(0)}% yoy`);
@@ -628,6 +626,7 @@ function houseRead(T,e,d,g,upc,plans,calls,ins){
     if(bits.length)out.push(`The business: ${bits.join(', ')}`+
       (f.targetMeanPrice&&e?` — street target $${f.targetMeanPrice.toFixed(0)} (${Math.abs((f.targetMeanPrice/e.last-1)*100).toFixed(0)}% ${f.targetMeanPrice>=e.last?'above':'below'} price${f.recommendationKey?', consensus '+f.recommendationKey.replace('_',' '):''}).`:'.'));
   }
+  if(d)out.push(`Intraday character: <b>${d.character}</b> — path ${d.avg_path_pct.toFixed(1)}%/day, trend days ${d.pct_trend.toFixed(0)}%, tradeable window ${d.tradeable_pct.toFixed(0)}% (day-type radar, ~${d.n_days} sessions).`);
   if(g)out.push(`Graham gate: <b>${g.score}/4</b>${g.score>=3?' — rare on this growth-heavy list, worth a closer valuation look':' — priced as growth, not value'}.`);
   if(upc)out.push(`<b>Earnings ${upc.date}${upc.when?' ('+upc.when+')':''}</b> — the earnings agent covers base rates in its Sunday note.`);
   if(plans.length)out.push(`Open conditional plan${plans.length>1?'s':''} on file: ${plans.map(p=>`<b>${p.action||p.plan_id}</b> (${p.status})`).join(' · ')}.`);
@@ -635,125 +634,132 @@ function houseRead(T,e,d,g,upc,plans,calls,ins){
     out.push(`Latest agent call: <b>${c.call}</b> (${c.date}) — “${(c.thesis||'').slice(0,80)}”, outcome: <b>${c.outcome||'pending'}</b>.`);}
   if(ins&&ins.length)out.push(`<b>${ins.length} insider purchase${ins.length>1?'s':''}</b> on the EDGAR feed, latest ${money(ins[ins.length-1].value)} — clusters are the studied signal, singles are noise.`);
   if(!out.length)out.push('Nothing beyond the price data on record for this name.');
-  return out.map(s=>`<div style="margin:3px 0">· ${s}</div>`).join('');
+  return out.map(s=>`<div style="margin:4px 0">· ${s}</div>`).join('');
 }
 
-// ---- interactive dossier chart (SVG, no libs): ranges, MA50/200, crosshair ----
-let TKRANGE='6M';
-function renderChart(e){
-  const host=document.getElementById('tkchart');if(!host)return;
-  const cs=e.series_c, ts=e.series_t;
-  const ma=(n)=>cs.map((_,i)=>i+1>=n?cs.slice(i+1-n,i+1).reduce((a,b)=>a+b,0)/n:null);
-  const m50=ma(50), m200=ma(200);
-  const SPAN={'1M':22,'3M':66,'6M':126,'1Y':cs.length};
-  const n0=Math.max(0,cs.length-Math.min(SPAN[TKRANGE],cs.length));
-  const V=cs.slice(n0), VT=ts.slice(n0), V50=m50.slice(n0), V200=m200.slice(n0), n=V.length;
-  const W=860,Ht=230,pl=8,pr=66,pt=12,pb=24,pw=W-pl-pr,ph=Ht-pt-pb;
-  const vis=[...V,...V50.filter(x=>x!=null),...V200.filter(x=>x!=null)];
-  let lo=Math.min(...vis),hi=Math.max(...vis);const pad=(hi-lo)*0.05||1;lo-=pad;hi+=pad;
-  const X=i=>pl+(n<2?0:i/(n-1)*pw), Y=v=>pt+ph-(v-lo)/(hi-lo)*ph;
-  const path=a=>{let d='',pen=false;
-    for(let i=0;i<a.length;i++){if(a[i]==null){pen=false;continue;}
-      d+=(pen?'L':'M')+X(i).toFixed(1)+' '+Y(a[i]).toFixed(1);pen=true;}return d;};
-  const fmt$=v=>v>=1000?v.toLocaleString('en-US',{maximumFractionDigits:0}):v.toFixed(2);
-  const date=d=>new Date(d*86400000).toLocaleDateString('en-US',{month:'short',day:'numeric'});
-  // y gridlines
-  let grid='',labels='';
-  for(let k=0;k<=3;k++){const v=lo+(hi-lo)*k/3,y=Y(v);
-    grid+=`<line x1="${pl}" y1="${y.toFixed(1)}" x2="${pl+pw}" y2="${y.toFixed(1)}" stroke="#1c222b"/>`;
-    labels+=`<text x="${pl+pw+8}" y="${(y+3.5).toFixed(1)}" fill="#6e7681" font-size="10">$${fmt$(v)}</text>`;}
-  // month labels
-  let months='';let lastM=-1;
-  VT.forEach((d,i)=>{const m=new Date(d*86400000).getMonth();
-    if(m!==lastM&&i>2&&i<n-3){lastM=m;months+=`<text x="${X(i).toFixed(1)}" y="${Ht-7}" fill="#6e7681" font-size="10" text-anchor="middle">${new Date(d*86400000).toLocaleDateString('en-US',{month:'short'})}</text>`;}
-    if(lastM===-1)lastM=m;});
-  const up=V[n-1]>=V[0];const col=up?'#3fb950':'#f85149';
-  const last=V[n-1],ly=Y(last);
-  host.innerHTML=`<div class="tktip" id="tktip"></div>
-  <svg viewBox="0 0 ${W} ${Ht}" preserveAspectRatio="none" id="tksvg">
-    <defs><linearGradient id="tkgrad" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="${col}" stop-opacity=".16"/>
-      <stop offset="100%" stop-color="${col}" stop-opacity="0"/></linearGradient></defs>
-    ${grid}${labels}${months}
-    <path d="${path(V)}L${X(n-1).toFixed(1)} ${pt+ph}L${pl} ${pt+ph}Z" fill="url(#tkgrad)" stroke="none"/>
-    <path d="${path(V200)}" fill="none" stroke="#bc8cff" stroke-width="1.1" opacity=".85"/>
-    <path d="${path(V50)}" fill="none" stroke="#d29922" stroke-width="1.1" opacity=".9"/>
-    <path d="${path(V)}" fill="none" stroke="${col}" stroke-width="1.7"/>
-    <rect x="${pl+pw+2}" y="${(ly-9).toFixed(1)}" width="${pr-6}" height="18" rx="4" fill="${col}"/>
-    <text x="${pl+pw+2+(pr-6)/2}" y="${(ly+3.5).toFixed(1)}" fill="#0d1117" font-size="10.5" font-weight="700" text-anchor="middle">$${fmt$(last)}</text>
-    <line id="tkxh" x1="0" y1="${pt}" x2="0" y2="${pt+ph}" stroke="#58a6ff" stroke-width="1" stroke-dasharray="3 3" opacity="0"/>
-    <circle id="tkdot" r="3.5" fill="${col}" stroke="#0d1117" stroke-width="1.5" opacity="0"/>
-    <rect x="${pl}" y="${pt}" width="${pw}" height="${ph}" fill="transparent" id="tkzone"/>
-  </svg>`;
-  const lp=document.getElementById('tklegpx');if(lp)lp.style.background=col;
-  // range buttons
-  const rb=document.getElementById('tkranges');
-  rb.innerHTML=Object.keys(SPAN).map(r=>`<button class="${r===TKRANGE?'on':''}" data-r="${r}">${r}</button>`).join('');
-  rb.querySelectorAll('button').forEach(b=>b.addEventListener('click',ev=>{
-    ev.stopPropagation();TKRANGE=b.dataset.r;renderChart(e);}));
-  // crosshair
-  const svg=document.getElementById('tksvg'),zone=document.getElementById('tkzone'),
-    xh=document.getElementById('tkxh'),dot=document.getElementById('tkdot'),tip=document.getElementById('tktip');
-  zone.addEventListener('mousemove',ev=>{
-    const r=svg.getBoundingClientRect();
-    const mx=(ev.clientX-r.left)*(W/r.width);
-    const i=Math.max(0,Math.min(n-1,Math.round((mx-pl)/pw*(n-1))));
-    const x=X(i),y=Y(V[i]);
-    xh.setAttribute('x1',x);xh.setAttribute('x2',x);xh.setAttribute('opacity','1');
-    dot.setAttribute('cx',x);dot.setAttribute('cy',y);dot.setAttribute('opacity','1');
-    const d1=i>0?((V[i]/V[i-1]-1)*100):null;
-    tip.style.display='block';
-    tip.innerHTML=`<b>${date(VT[i])}</b> · $${fmt$(V[i])}${d1!=null?` <span class="${d1>=0?'pos':'neg'}">${d1>=0?'+':''}${d1.toFixed(2)}%</span>`:''}`+
-      (V50[i]!=null?`<br><span style="color:#d29922">MA50 $${fmt$(V50[i])}</span>`:'')+
-      (V200[i]!=null?` <span style="color:#bc8cff">MA200 $${fmt$(V200[i])}</span>`:'');
-    const hostR=host.getBoundingClientRect();
-    let tx=(x/W)*hostR.width+12;if(tx>hostR.width-170)tx-=190;
-    tip.style.left=tx+'px';tip.style.top='14px';});
-  zone.addEventListener('mouseleave',()=>{xh.setAttribute('opacity','0');
-    dot.setAttribute('opacity','0');tip.style.display='none';});
-}
-
-function closeTicker(){
-  document.querySelectorAll('tr.tkexp').forEach(x=>x.remove());
-  document.querySelectorAll('tr.tkon').forEach(x=>x.classList.remove('tkon'));
-  TKOPEN=null;
-}
-
-// fundamentals formatting: raw yfinance values -> readable rows
 function fundRows(g){
   const f=g&&g.fundamentals;
   if(!f||!Object.keys(f).length)return '<div class="none">not scored yet — graham_gate.py runs Mondays 8 AM</div>';
   const row=(k,v)=>v==null?'':`<div class="rowline"><span>${k}</span><b>${v}</b></div>`;
   const big=v=>v==null?null:v>=1e12?(v/1e12).toFixed(2)+'T':v>=1e9?(v/1e9).toFixed(1)+'B':v>=1e6?(v/1e6).toFixed(0)+'M':v.toLocaleString();
   const pc=(v,s=1)=>v==null?null:`<span class="${v>=0?'pos':'neg'}">${(v*100).toFixed(s)}%</span>`;
-  const x=v=>v==null?null:v.toFixed(1)+'×';
-  const sub=t=>`<div style="font-size:9.5px;letter-spacing:1.2px;color:var(--muted);text-transform:uppercase;margin:9px 0 2px">${t}</div>`;
   let h='';
-  h+=sub('valuation')
+  h+='<div class="tksub">valuation</div>'
     +row('Market cap',big(f.marketCap)&&'$'+big(f.marketCap))
     +row('P/E (ttm / fwd)',f.trailingPE||f.forwardPE?`${f.trailingPE?f.trailingPE.toFixed(1):'—'} / ${f.forwardPE?f.forwardPE.toFixed(1):'—'}`:null)
     +row('P/B',f.priceToBook!=null?f.priceToBook.toFixed(1):null)
-    +row('EV / EBITDA',x(f.enterpriseToEbitda));
-  h+=sub('profitability')
+    +row('EV / EBITDA',f.enterpriseToEbitda!=null?f.enterpriseToEbitda.toFixed(1)+'×':null);
+  h+='<div class="tksub">profitability</div>'
     +row('Gross margin',pc(f.grossMargins))
     +row('Operating margin',pc(f.operatingMargins))
     +row('Net margin',pc(f.profitMargins))
     +row('Return on equity',pc(f.returnOnEquity));
-  h+=sub('growth (yoy)')
+  h+='<div class="tksub">growth (yoy)</div>'
     +row('Revenue growth',pc(f.revenueGrowth))
     +row('Earnings growth',pc(f.earningsGrowth));
-  h+=sub('balance sheet')
+  h+='<div class="tksub">balance sheet</div>'
     +row('Current ratio',f.currentRatio!=null?f.currentRatio.toFixed(2):null)
     +row('Debt / equity',f.debtToEquity!=null?(f.debtToEquity/100).toFixed(2)+'×':null)
     +row('Cash / debt',f.totalCash!=null||f.totalDebt!=null?`$${big(f.totalCash)||'—'} / $${big(f.totalDebt)||'—'}`:null)
     +row('Free cash flow',f.freeCashflow!=null?'$'+big(f.freeCashflow):null);
-  h+=sub('the street')
+  h+='<div class="tksub">the street</div>'
     +row('Analyst target',f.targetMeanPrice!=null?'$'+f.targetMeanPrice.toFixed(0)+(f.numberOfAnalystOpinions?` <span style="color:var(--muted)">(${f.numberOfAnalystOpinions})</span>`:''):null)
     +row('Consensus',f.recommendationKey?f.recommendationKey.replace('_',' '):null)
     +row('Beta',f.beta!=null?f.beta.toFixed(2):null)
     +row('Short % of float',f.shortPercentOfFloat!=null?(f.shortPercentOfFloat*100).toFixed(1)+'%':null)
     +row('Dividend yield',f.dividendYield!=null?f.dividendYield+'%':null);
   return h;
+}
+
+// ---- chart v2: nice-number grid, month gridlines, axis tags, hover readout ----
+function renderChart(e){
+  const host=document.getElementById('tkchart');if(!host)return;
+  const cs=e.series_c, ts=e.series_t;
+  const maCalc=n=>cs.map((_,i)=>i+1>=n?cs.slice(i+1-n,i+1).reduce((a,b)=>a+b,0)/n:null);
+  const m50=maCalc(50), m200=maCalc(200);
+  const SPAN={'1M':22,'3M':66,'6M':126,'1Y':cs.length};
+  const n0=Math.max(0,cs.length-Math.min(SPAN[TKRANGE],cs.length));
+  const V=cs.slice(n0), VT=ts.slice(n0), V50=m50.slice(n0), V200=m200.slice(n0), n=V.length;
+  const W=900,Ht=260,pl=10,pr=74,pt=12,pb=26,pw=W-pl-pr,ph=Ht-pt-pb;
+  const vis=[...V,...V50.filter(x=>x!=null),...V200.filter(x=>x!=null)];
+  let lo=Math.min(...vis),hi=Math.max(...vis);const padv=(hi-lo)*0.07||1;lo-=padv;hi+=padv;
+  const X=i=>pl+(n<2?0:i/(n-1)*pw), Y=v=>pt+ph-(v-lo)/(hi-lo)*ph;
+  const path=a=>{let d='',pen=false;
+    for(let i=0;i<a.length;i++){if(a[i]==null){pen=false;continue;}
+      d+=(pen?'L':'M')+X(i).toFixed(1)+' '+Y(a[i]).toFixed(1);pen=true;}return d;};
+  const fmt$=v=>v>=1000?v.toLocaleString('en-US',{maximumFractionDigits:0}):v>=100?v.toFixed(1):v.toFixed(2);
+  const dstr=(d,y)=>new Date(d*86400000).toLocaleDateString('en-US',y?{month:'short',day:'numeric',year:'2-digit'}:{month:'short',day:'numeric'});
+  // nice y ticks (1-2-5 ladder)
+  const nice=x=>{const p=Math.pow(10,Math.floor(Math.log10(x)));const m=x/p;
+    return (m<=1?1:m<=2?2:m<=5?5:10)*p;};
+  const step=nice((hi-lo)/4);let grid='',ylab='';
+  for(let v=Math.ceil(lo/step)*step;v<hi;v+=step){const y=Y(v);
+    grid+=`<line x1="${pl}" y1="${y.toFixed(1)}" x2="${pl+pw}" y2="${y.toFixed(1)}" stroke="#1a2029" stroke-width="1"/>`;
+    ylab+=`<text x="${pl+pw+9}" y="${(y+3.5).toFixed(1)}" fill="#59616c" font-size="10">${fmt$(v)}</text>`;}
+  // month gridlines + labels
+  let months='';let lastM=new Date(VT[0]*86400000).getMonth();
+  VT.forEach((d,i)=>{const m=new Date(d*86400000).getMonth();
+    if(m!==lastM){lastM=m;const x=X(i);
+      months+=`<line x1="${x.toFixed(1)}" y1="${pt}" x2="${x.toFixed(1)}" y2="${pt+ph}" stroke="#161b23" stroke-width="1"/>`;
+      if(i>3&&i<n-4)months+=`<text x="${x.toFixed(1)}" y="${Ht-8}" fill="#59616c" font-size="10" text-anchor="middle">${new Date(d*86400000).toLocaleDateString('en-US',{month:'short'})}</text>`;}});
+  const up=V[n-1]>=V[0];
+  const last=V[n-1],ly=Math.max(pt+9,Math.min(pt+ph-9,Y(last)));
+  host.innerHTML=`<svg viewBox="0 0 ${W} ${Ht}" preserveAspectRatio="none" id="tksvg">
+    <defs><linearGradient id="tkgrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#58a6ff" stop-opacity=".20"/>
+      <stop offset="100%" stop-color="#58a6ff" stop-opacity="0"/></linearGradient></defs>
+    ${grid}${months}${ylab}
+    <path d="${path(V)}L${X(n-1).toFixed(1)} ${pt+ph}L${pl} ${pt+ph}Z" fill="url(#tkgrad)" stroke="none"/>
+    <path d="${path(V200)}" fill="none" stroke="#a371f7" stroke-width="1.2" opacity=".9" stroke-linejoin="round"/>
+    <path d="${path(V50)}" fill="none" stroke="#f0b429" stroke-width="1.2" opacity=".9" stroke-linejoin="round"/>
+    <path d="${path(V)}" fill="none" stroke="#58a6ff" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+    <g><rect x="${pl+pw+3}" y="${(ly-9.5).toFixed(1)}" width="${pr-8}" height="19" rx="4" fill="${up?'#238636':'#b62324'}"/>
+    <text x="${pl+pw+3+(pr-8)/2}" y="${(ly+3.5).toFixed(1)}" fill="#fff" font-size="10.5" font-weight="700" text-anchor="middle">${fmt$(last)}</text></g>
+    <line id="tkxh" y1="${pt}" y2="${pt+ph}" stroke="#3c444d" stroke-width="1" stroke-dasharray="3 3" opacity="0"/>
+    <line id="tkyh" x1="${pl}" x2="${pl+pw}" stroke="#3c444d" stroke-width="1" stroke-dasharray="3 3" opacity="0"/>
+    <circle id="tkdot" r="3.5" fill="#58a6ff" stroke="#0d1117" stroke-width="1.5" opacity="0"/>
+    <g id="tkytag" opacity="0"><rect width="${pr-8}" height="18" rx="4" fill="#30363d"/>
+      <text id="tkytxt" fill="#e6edf3" font-size="10" font-weight="600" text-anchor="middle"></text></g>
+    <rect x="${pl}" y="${pt}" width="${pw}" height="${ph}" fill="transparent" id="tkzone"/>
+  </svg>`;
+  const ro=document.getElementById('tkro');
+  const roHTML=i=>{const d1=i>0?(V[i]/V[i-1]-1)*100:null;
+    return `<span><b>${dstr(VT[i],true)}</b></span><span>close <b>${'$'+fmt$(V[i])}</b></span>`+
+      (d1!=null?`<span>day <b class="${d1>=0?'pos':'neg'}">${d1>=0?'+':''}${d1.toFixed(2)}%</b></span>`:'')+
+      (V50[i]!=null?`<span style="color:#f0b429">MA50 ${'$'+fmt$(V50[i])}</span>`:'')+
+      (V200[i]!=null?`<span style="color:#a371f7">MA200 ${'$'+fmt$(V200[i])}</span>`:'')+
+      `<span>range <b>${'$'+fmt$(Math.min(...V))} – ${'$'+fmt$(Math.max(...V))}</b></span>`;};
+  if(ro)ro.innerHTML=roHTML(n-1);
+  // ranges
+  const rb=document.getElementById('tkranges');
+  rb.innerHTML=Object.keys(SPAN).map(r=>`<button class="${r===TKRANGE?'on':''}" data-r="${r}">${r}</button>`).join('');
+  rb.querySelectorAll('button').forEach(b=>b.addEventListener('click',ev=>{
+    ev.stopPropagation();TKRANGE=b.dataset.r;renderChart(e);}));
+  const lp=document.getElementById('tklegpx');if(lp)lp.style.background='#58a6ff';
+  // crosshair
+  const svg=document.getElementById('tksvg'),zone=document.getElementById('tkzone'),
+    xh=document.getElementById('tkxh'),yh=document.getElementById('tkyh'),
+    dot=document.getElementById('tkdot'),ytag=document.getElementById('tkytag'),ytxt=document.getElementById('tkytxt');
+  zone.addEventListener('mousemove',ev=>{
+    const rct=svg.getBoundingClientRect();
+    const mx=(ev.clientX-rct.left)*(W/rct.width);
+    const i=Math.max(0,Math.min(n-1,Math.round((mx-pl)/pw*(n-1))));
+    const x=X(i),y=Y(V[i]);
+    xh.setAttribute('x1',x);xh.setAttribute('x2',x);xh.setAttribute('opacity','1');
+    yh.setAttribute('y1',y);yh.setAttribute('y2',y);yh.setAttribute('opacity','1');
+    dot.setAttribute('cx',x);dot.setAttribute('cy',y);dot.setAttribute('opacity','1');
+    ytag.setAttribute('opacity','1');
+    ytag.setAttribute('transform',`translate(${pl+pw+3},${(y-9).toFixed(1)})`);
+    ytxt.setAttribute('x',(pr-8)/2);ytxt.setAttribute('y',12.5);ytxt.textContent=fmt$(V[i]);
+    if(ro)ro.innerHTML=roHTML(i);});
+  zone.addEventListener('mouseleave',()=>{['tkxh','tkyh','tkdot','tkytag'].forEach(id=>document.getElementById(id).setAttribute('opacity','0'));
+    if(ro)ro.innerHTML=roHTML(n-1);});
+}
+
+function closeTicker(){
+  document.querySelectorAll('tr.tkexp').forEach(x=>x.remove());
+  document.querySelectorAll('tr.tkon').forEach(x=>x.classList.remove('tkon'));
+  TKOPEN=null;
 }
 
 async function openTicker(T,anchor){
@@ -776,66 +782,59 @@ async function openTicker(T,anchor){
   const kv=(k,v)=>`<div class="kv"><div class="k">${k}</div><div class="v">${v}</div></div>`;
   const P=(v,dp=1)=>v==null?'—':`<span class="${v>0?'pos':v<0?'neg':''}">${v>0?'+':''}${v.toFixed(dp)}%</span>`;
   const gate=(ok,label,val)=>`<div class="gate"><span>${label}${val!=null?` — ${val}`:''}</span><span class="${ok?'ok':'no'}">${ok?'✓ pass':'✗'}</span></div>`;
+  const hasChart=e&&e.series_c&&e.series_c.length>30;
 
   const exp=document.createElement('tr');
   exp.className='tkexp';
   exp.innerHTML=`<td colspan="${tr.children.length}"><div class="tkwrap">
     <div class="tkhead">
-      <span class="sym">$${T}</span>
-      <span class="who">${e?e.sector:''}${e&&e.notes?' · '+e.notes:''}</span>
-      ${e?`<span class="px">${f2(e.last)}<span>${P(e.d1)} today</span></span>`:''}
+      <div><div class="sym">$${T}</div><div class="who">${e?e.sector:''}${e&&e.notes?' · '+e.notes:''}</div></div>
+      ${e?`<div class="pxbox"><span class="px">${f2(e.last)}</span><span class="chip ${e.d1>=0?'u':'d'}">${e.d1>=0?'+':''}${(e.d1??0).toFixed(1)}% today</span></div>`:''}
       <button class="tkx" onclick="closeTicker()" aria-label="collapse">✕</button>
     </div>
-    ${e&&e.series_c&&e.series_c.length>30?`
-      <div class="tkchart" id="tkchart"><div class="tktip" id="tktip"></div></div>
+    ${hasChart?`<div class="tkcard tkchartcard">
+      <div class="tkreadout" id="tkro"></div>
+      <div class="tkchart" id="tkchart"></div>
       <div class="tkbar">
         <div class="tkranges" id="tkranges"></div>
         <div class="tklegend"><span><i id="tklegpx" style="background:#58a6ff"></i>price</span>
-          <span><i style="background:#d29922"></i>MA50</span>
-          <span><i style="background:#bc8cff"></i>MA200</span></div>
-      </div>`:(e?bigspark(e.spark):'')}
-    <div class="cols">
-      <div>
-        ${e?`<h4>Snapshot</h4><div class="grid2">
-          ${kv('1 week',P(e.w1))}${kv('1 month',P(e.m1))}
-          ${kv('% off 52w high',P(e.off_hi))}${kv('% above 52w low',P(e.above_lo))}
-          ${kv('50-day MA',e.above_ma50?'<span class="pos">above</span>':'<span class="neg">below</span>')}
-          ${kv('200-day MA',e.above_ma200?'<span class="pos">above</span>':'<span class="neg">below</span>')}
-        </div>`:''}
-        ${r?`<h4>Returns across horizons</h4>
-          ${['r1d','r2d','r5d','r10d','r21d','r63d'].map((k,i)=>`<div class="rowline"><span>${[1,2,5,10,21,63][i]} day${i?'s':''}</span><b>${P(r[k])}</b></div>`).join('')}`:''}
-      </div>
-      <div>
-        <h4>Fundamentals — the business</h4>
-        ${fundRows(g)}
-      </div>
-      <div>
-        ${d?`<h4>Day-type read (intraday)</h4>
-          <div class="rowline"><span>Character</span><b>${d.character}</b></div>
-          <div class="rowline"><span>Avg path travelled / day</span><b>${d.avg_path_pct.toFixed(1)}%</b></div>
-          <div class="rowline"><span>Trend / chop / mixed days</span><b>${d.pct_trend.toFixed(0)} / ${d.pct_chop.toFixed(0)} / ${d.pct_mixed.toFixed(0)}%</b></div>
-          <div class="rowline"><span>Tradeable window</span><b>${d.tradeable_pct.toFixed(0)}% of sessions</b></div>`:''}
-        <h4>Graham quality gate</h4>
+          <span><i style="background:#f0b429"></i>MA50</span>
+          <span><i style="background:#a371f7"></i>MA200</span></div>
+      </div></div>`:''}
+    <div class="tkgrid">
+      ${e?`<div class="tkcard"><h4>Snapshot</h4><div class="grid2">
+        ${kv('1 week',P(e.w1))}${kv('1 month',P(e.m1))}
+        ${kv('% off 52w high',P(e.off_hi))}${kv('% above 52w low',P(e.above_lo))}
+        ${kv('50-day MA',e.above_ma50?'<span class="pos">above</span>':'<span class="neg">below</span>')}
+        ${kv('200-day MA',e.above_ma200?'<span class="pos">above</span>':'<span class="neg">below</span>')}
+      </div>${r?`<div class="tksub" style="margin-top:11px">returns across horizons</div>
+        ${['r1d','r2d','r5d','r10d','r21d','r63d'].map((k,i)=>`<div class="rowline"><span>${[1,2,5,10,21,63][i]} day${i?'s':''}</span><b>${P(r[k])}</b></div>`).join('')}`:''}</div>`:''}
+      <div class="tkcard"><h4>Fundamentals — the business</h4>${fundRows(g)}</div>
+      <div class="tkcard"><h4>Character &amp; value</h4>
+        ${d?`<div class="tksub">day-type read (intraday)</div>
+        <div class="rowline"><span>Character</span><b>${d.character}</b></div>
+        <div class="rowline"><span>Avg path travelled / day</span><b>${d.avg_path_pct.toFixed(1)}%</b></div>
+        <div class="rowline"><span>Trend / chop / mixed</span><b>${d.pct_trend.toFixed(0)} / ${d.pct_chop.toFixed(0)} / ${d.pct_mixed.toFixed(0)}%</b></div>
+        <div class="rowline"><span>Tradeable window</span><b>${d.tradeable_pct.toFixed(0)}% of sessions</b></div>`:''}
+        <div class="tksub">graham quality gate</div>
         ${g?gate(g.pe_ok,'P/E ≤ 15',g.pe!=null?g.pe.toFixed(1):'—')+gate(g.pe_pb_ok,'P/E × P/B ≤ 22.5',g.pe_pb!=null?g.pe_pb:'—')
            +gate(g.current_ratio_ok,'Current ratio ≥ 2',g.current_ratio!=null?g.current_ratio:'—')+gate(g.dividend_ok,'Pays a dividend',g.dividend_yield!=null?g.dividend_yield+'%':'—')
-           :'<div class="none">not scored yet — graham_gate.py runs Mondays 8 AM</div>'}
-      </div>
-      <div>
-        <h4>The agent desk</h4>
+           :'<div class="none">not scored yet</div>'}</div>
+      <div class="tkcard"><h4>The agent desk</h4>
         ${upc?`<div class="rowline"><span>Earnings</span><b>${upc.date}${upc.when?' · '+upc.when:''}</b></div>`:''}
         ${plans.map(p=>`<div class="rowline"><span>Plan · ${p.status}</span><b>${p.action||p.plan_id}</b></div>`).join('')}
         ${calls.map(c=>`<div class="rowline"><span>${c.date} call: <b>${c.call}</b> @ ${c.price_at_call}</span><b>${c.outcome||'pending'}</b></div>`).join('')}
         ${briefLine?`<div class="none" style="padding:4px 0">brief: ${briefLine.replace(/[#*]/g,'').trim()}</div>`:''}
         ${!upc&&!plans.length&&!calls.length&&!briefLine?'<div class="none">no open calls, plans, or earnings on file</div>':''}
-        <h4>Insider activity (EDGAR feed)</h4><div id="tkins" class="none">checking the live feed…</div>
-      </div>
+        <div class="tksub" style="margin-top:11px">insider activity (edgar feed)</div>
+        <div id="tkins" class="none">checking the live feed…</div></div>
     </div>
     <div class="read" id="tkread">assembling the house read…</div>
     <div class="hon">A read, not a signal — every strategy family this account has tested failed the deflation + PBO gate (Strategies tab). This panel aggregates honest data; it does not recommend trades.</div>
   </div></td>`;
   tr.after(exp);
   tr.classList.add('tkon');
-  if(e&&e.series_c&&e.series_c.length>30)renderChart(e);
+  if(hasChart)renderChart(e);
 
   const ins=(await insiders()).filter(p=>p.ticker===T);
   const insEl=document.getElementById('tkins');
@@ -846,7 +845,7 @@ async function openTicker(T,anchor){
   if(rd)rd.innerHTML=houseRead(T,e,d,g,upc,plans,calls,ins);
 }
 document.addEventListener('click',ev=>{
-  if(ev.target.closest('tr.tkexp'))return;          // clicks inside the dossier don't retoggle
+  if(ev.target.closest('tr.tkexp'))return;
   const tr=ev.target.closest('tr[data-t]');
   if(tr&&!ev.target.closest('a'))openTicker(tr.dataset.t,tr);
 });
