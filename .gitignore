@@ -9,3 +9,5 @@ data/intraday_15m.json
 data/intraday_60m.json
 refresh.log
 .refresh_done_*
+hub_data.js
+archive/
