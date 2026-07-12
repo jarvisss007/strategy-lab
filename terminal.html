@@ -116,7 +116,9 @@
   .rowline:last-child{border-bottom:none;}
   .gate{display:flex;justify-content:space-between;padding:4px 0;font-size:12.5px;color:var(--ink2);}
   .gate .ok{color:var(--up);font-weight:600;} .gate .no{color:var(--muted);}
-  .tkwide{grid-column:1/-1;}
+  .ctxrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:8px;margin-bottom:13px;}
+  .ctxlbl{font-size:9.5px;letter-spacing:1.4px;color:#59616c;text-transform:uppercase;margin:-6px 0 7px;}
+    .tkwide{grid-column:1/-1;}
   .tkmeta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:9px;}
   .tkmeta span,.tkmeta a{font-size:11px;color:var(--ink2);background:#0d1117;border:1px solid #21262d;
     border-radius:12px;padding:3px 11px;text-decoration:none;}
@@ -804,6 +806,29 @@ async function openTicker(T,anchor){
   const gate=(ok,label,val)=>`<div class="gate"><span>${label}${val!=null?` — ${val}`:''}</span><span class="${ok?'ok':'no'}">${ok?'✓ pass':'✗'}</span></div>`;
   const hasChart=e&&e.series_c&&e.series_c.length>30;
 
+  // context strip: the dossier mirrors THE ROW YOU CLICKED — day-type rows expand
+  // day-type numbers first, returns rows expand the horizons, monitor rows the price stats.
+  const paneId=(anchor&&typeof anchor.closest==='function')?(anchor.closest('.pane')||{}).id:'';
+  let ctxLbl='',ctx='';
+  const CK=(k,v)=>v==null?'':`<div class="kv"><div class="k">${k}</div><div class="v">${v}</div></div>`;
+  if(paneId==='p-daytype'&&d){
+    ctxLbl='from the day-type table — this row, expanded';
+    ctx=CK('Character',`<span class="c c-${d.character}" style="margin-left:0">${d.character}</span>`)
+      +CK('Efficiency',d.avg_eff.toFixed(2))
+      +CK('Opportunity (path/day)',d.avg_path_pct.toFixed(1)+'%')
+      +CK('Trend days',d.pct_trend.toFixed(0)+'%')
+      +CK('Chop days',d.pct_chop.toFixed(0)+'%')
+      +CK('Tradeable window',d.tradeable_pct.toFixed(0)+'%');
+  }else if(paneId==='p-returns'&&r){
+    ctxLbl='from the returns matrix — this row, expanded';
+    ctx=['r1d','r2d','r5d','r10d','r21d','r63d'].map((k,i)=>CK([1,2,5,10,21,63][i]+' day'+(i?'s':''),P(r[k]))).join('');
+  }else if(e&&(paneId==='p-monitor'||!paneId)){
+    ctxLbl=paneId==='p-monitor'?'from the monitor — this row, expanded':'market-strip instrument';
+    ctx=CK('1 day',P(e.d1))+CK('1 week',P(e.w1))+CK('1 month',P(e.m1))
+      +CK('% off 52w high',P(e.off_hi))+CK('% above 52w low',P(e.above_lo))
+      +CK('50 / 200 MA',`${e.above_ma50?'<span class="pos">▲</span>':'<span class="neg">▼</span>'} / ${e.above_ma200?'<span class="pos">▲</span>':'<span class="neg">▼</span>'}`);
+  }
+
   const exp=document.createElement('tr');
   exp.className='tkexp';
   exp.innerHTML=`<td colspan="${tr.children.length}"><div class="tkwrap">
@@ -812,6 +837,7 @@ async function openTicker(T,anchor){
       ${e?`<div class="pxbox"><span class="px">${f2(e.last)}</span><span class="chip ${e.d1>=0?'u':'d'}">${e.d1>=0?'+':''}${(e.d1??0).toFixed(1)}% today</span></div>`:''}
       <button class="tkx" onclick="closeTicker()" aria-label="collapse">✕</button>
     </div>
+    ${ctx?`<div class="ctxlbl">${ctxLbl}</div><div class="ctxrow">${ctx}</div>`:''}
     ${hasChart?`<div class="tkcard tkchartcard">
       <div class="tkreadout" id="tkro"></div>
       <div class="tkchart" id="tkchart"></div>
