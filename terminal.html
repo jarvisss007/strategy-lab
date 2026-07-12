@@ -66,42 +66,42 @@
   footer{margin-top:26px;color:var(--muted);font-size:11.5px;border-top:1px solid var(--border);padding-top:10px;}
   h3{font-size:12px;letter-spacing:.6px;color:var(--ink2);text-transform:uppercase;margin:16px 0 2px;}
 
-  /* ---- ticker dossier drawer ---- */
+  /* ---- ticker dossier (inline drop-down) ---- */
   tbody tr[data-t]{cursor:pointer;}
   tbody tr[data-t]:hover .tick{color:var(--accent);}
-  #tkov{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:200;display:none;
-    backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);}
-  #tkov.open{display:block;}
-  #tkd{position:fixed;top:0;right:-500px;width:480px;max-width:94vw;height:100vh;z-index:201;
-    background:var(--panel);border-left:1px solid var(--border);overflow-y:auto;
-    transition:right .22s ease;box-shadow:-12px 0 40px rgba(0,0,0,.5);padding:20px 22px 90px;}
-  #tkd.open{right:0;}
-  #tkd .tkx{position:absolute;top:14px;right:16px;background:none;border:1px solid var(--border);
-    color:var(--ink2);width:30px;height:30px;border-radius:8px;font-size:15px;cursor:pointer;
-    transition:border-color .15s,color .15s;}
-  #tkd .tkx:hover{border-color:var(--accent);color:var(--accent);}
-  #tkd h2{font-size:26px;margin:2px 0 0;}
-  #tkd h2 small{font-size:13px;color:var(--ink2);font-weight:400;margin-left:10px;}
-  #tkd .px{font-size:20px;font-weight:700;font-variant-numeric:tabular-nums;margin:4px 0 0;}
-  #tkd .px span{font-size:13px;margin-left:8px;}
-  #tkd h4{font-size:10.5px;letter-spacing:1.6px;color:var(--muted);text-transform:uppercase;
-    margin:20px 0 8px;border-bottom:1px solid var(--border);padding-bottom:5px;}
-  #tkd .grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-  #tkd .kv{background:var(--panel2);border:1px solid var(--border);border-radius:8px;padding:8px 11px;}
-  #tkd .kv .k{font-size:10px;color:var(--muted);letter-spacing:.6px;text-transform:uppercase;}
-  #tkd .kv .v{font-size:14.5px;font-weight:600;font-variant-numeric:tabular-nums;margin-top:1px;}
-  #tkd .rowline{display:flex;justify-content:space-between;padding:5px 0;font-size:12.5px;
-    border-bottom:1px solid #21262d;color:var(--ink2);}
-  #tkd .rowline b{color:var(--ink);font-variant-numeric:tabular-nums;}
-  #tkd .rowline:last-child{border-bottom:none;}
-  #tkd .gate{display:flex;justify-content:space-between;padding:4px 0;font-size:12.5px;color:var(--ink2);}
-  #tkd .gate .ok{color:var(--up);} #tkd .gate .no{color:var(--muted);}
-  #tkd .read{background:var(--panel2);border:1px solid var(--border);border-left:3px solid var(--accent);
-    border-radius:0 8px 8px 0;padding:10px 13px;font-size:12.5px;color:var(--ink2);line-height:1.65;}
-  #tkd .hon{position:sticky;bottom:-90px;margin:26px -22px -90px;padding:11px 22px;font-size:11px;
-    color:var(--muted);background:var(--panel);border-top:1px solid var(--border);}
-  #tkd .none{color:var(--muted);font-size:12.5px;}
-  #tkd svg.bigspark{width:100%;height:52px;} #tkd svg.bigspark path{fill:none;stroke:var(--accent);stroke-width:1.6;}
+  tbody tr[data-t].tkon td{background:var(--panel2);}
+  tr.tkexp>td{padding:0 !important;background:#10141b;text-align:left;white-space:normal;}
+  .tkwrap{position:relative;padding:14px 18px 0;border-left:3px solid var(--accent);
+    animation:tkslide .16s ease;}
+  @keyframes tkslide{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:none}}
+  .tkwrap .tkhead{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;}
+  .tkwrap .tkhead .sym{font-size:20px;font-weight:800;}
+  .tkwrap .tkhead .who{font-size:12px;color:var(--ink2);}
+  .tkwrap .tkhead .px{font-size:17px;font-weight:700;font-variant-numeric:tabular-nums;margin-left:auto;}
+  .tkwrap .tkhead .px span{font-size:12px;margin-left:6px;}
+  .tkwrap .tkx{background:none;border:1px solid var(--border);color:var(--ink2);width:26px;height:26px;
+    border-radius:7px;font-size:13px;cursor:pointer;transition:border-color .15s,color .15s;}
+  .tkwrap .tkx:hover{border-color:var(--accent);color:var(--accent);}
+  .tkwrap svg.bigspark{width:100%;height:44px;margin:8px 0 2px;}
+  .tkwrap svg.bigspark path{fill:none;stroke:var(--accent);stroke-width:1.5;}
+  .tkwrap .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:0 30px;}
+  .tkwrap h4{font-size:10px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;
+    margin:14px 0 7px;border-bottom:1px solid var(--border);padding-bottom:4px;}
+  .tkwrap .grid2{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+  .tkwrap .kv{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:7px 10px;}
+  .tkwrap .kv .k{font-size:9.5px;color:var(--muted);letter-spacing:.6px;text-transform:uppercase;}
+  .tkwrap .kv .v{font-size:13.5px;font-weight:600;font-variant-numeric:tabular-nums;margin-top:1px;}
+  .tkwrap .rowline{display:flex;justify-content:space-between;padding:4px 0;font-size:12.5px;
+    border-bottom:1px solid #1c222b;color:var(--ink2);}
+  .tkwrap .rowline b{color:var(--ink);font-variant-numeric:tabular-nums;}
+  .tkwrap .rowline:last-child{border-bottom:none;}
+  .tkwrap .gate{display:flex;justify-content:space-between;padding:3px 0;font-size:12.5px;color:var(--ink2);}
+  .tkwrap .gate .ok{color:var(--up);} .tkwrap .gate .no{color:var(--muted);}
+  .tkwrap .read{background:var(--panel);border:1px solid var(--border);border-left:3px solid var(--accent);
+    border-radius:0 8px 8px 0;padding:9px 13px;font-size:12.5px;color:var(--ink2);line-height:1.6;margin-top:14px;}
+  .tkwrap .none{color:var(--muted);font-size:12.5px;}
+  .tkwrap .hon{margin:12px -18px 0 -21px;padding:8px 18px 9px 21px;font-size:11px;
+    color:var(--muted);border-top:1px solid var(--border);}
 </style>
 </head>
 <body>
@@ -581,11 +581,10 @@ document.getElementById('foot').innerHTML=
   '<code>lab.py</code> · then <code>build_hub.py</code>. A research tool — not investment advice or a validated edge. '+
   '<b>Click any ticker row for its full dossier.</b>';
 
-// ================= TICKER DOSSIER DRAWER =================
-// Click any row in Monitor / Returns / Day-Type → everything the ecosystem knows
-// about that name in one panel. Descriptive synthesis only — the honest footer is
-// part of the design, not decoration.
-let INSIDERS=null;   // fetched once from the public insider-radar Pages feed
+// ================= TICKER DOSSIER (inline drop-down) =================
+// Click any row in Monitor / Returns / Day-Type -> the full dossier expands
+// directly beneath it. Click again (or Esc, or the X) to collapse.
+let INSIDERS=null, TKOPEN=null;
 async function insiders(){
   if(INSIDERS)return INSIDERS;
   try{const r=await fetch('https://jarvisss007.github.io/insider-radar/data/insiders.json?'+Date.now());
@@ -597,8 +596,8 @@ const money=v=>'$'+Number(v).toLocaleString('en-US',{maximumFractionDigits:0});
 function bigspark(vals){
   if(!vals||vals.length<2)return '';
   const mn=Math.min(...vals),mx=Math.max(...vals),r=(mx-mn)||1;
-  const pts=vals.map((v,i)=>[(i/(vals.length-1))*436,48-((v-mn)/r)*42+2]);
-  return `<svg class="bigspark" viewBox="0 0 436 52"><path d="M${pts.map(p=>p[0].toFixed(1)+' '+p[1].toFixed(1)).join('L')}"/></svg>`;
+  const pts=vals.map((v,i)=>[(i/(vals.length-1))*800,42-((v-mn)/r)*36+2]);
+  return `<svg class="bigspark" viewBox="0 0 800 46" preserveAspectRatio="none"><path d="M${pts.map(p=>p[0].toFixed(1)+' '+p[1].toFixed(1)).join('L')}"/></svg>`;
 }
 
 function houseRead(T,e,d,g,upc,plans,calls,ins){
@@ -616,10 +615,23 @@ function houseRead(T,e,d,g,upc,plans,calls,ins){
     out.push(`Latest agent call: <b>${c.call}</b> (${c.date}) — “${(c.thesis||'').slice(0,80)}”, outcome: <b>${c.outcome||'pending'}</b>.`);}
   if(ins&&ins.length)out.push(`<b>${ins.length} insider purchase${ins.length>1?'s':''}</b> on the EDGAR feed, latest ${money(ins[ins.length-1].value)} — clusters are the studied signal, singles are noise.`);
   if(!out.length)out.push('Nothing beyond the price data on record for this name.');
-  return out.map(s=>`<div style="margin:4px 0">· ${s}</div>`).join('');
+  return out.map(s=>`<div style="margin:3px 0">· ${s}</div>`).join('');
 }
 
-async function openTicker(T){
+function closeTicker(){
+  document.querySelectorAll('tr.tkexp').forEach(x=>x.remove());
+  document.querySelectorAll('tr.tkon').forEach(x=>x.classList.remove('tkon'));
+  TKOPEN=null;
+}
+
+async function openTicker(T,anchor){
+  const again=TKOPEN===T;
+  closeTicker();
+  if(again)return;
+  const tr=anchor||document.querySelector(`tr[data-t="${T}"]`);
+  if(!tr)return;
+  TKOPEN=T;
+
   const e=(H.monitor?.equities||[]).find(x=>x.ticker===T);
   const r=(H.returns?.snapshot||[]).find(x=>x.ticker===T);
   const d=(H.daytype?.rows||[]).find(x=>x.ticker===T);
@@ -629,64 +641,73 @@ async function openTicker(T){
   const calls=(H.ledger||[]).filter(c=>c.ticker===T);
   const briefLine=((H.brief&&H.brief.text)||'').split('\n').find(l=>l.includes(T));
 
-  const kv=(k,v,cls='')=>`<div class="kv"><div class="k">${k}</div><div class="v ${cls}">${v}</div></div>`;
-  const P=(v,d=1)=>v==null?'—':`<span class="${v>0?'pos':v<0?'neg':''}">${v>0?'+':''}${v.toFixed(d)}%</span>`;
+  const kv=(k,v)=>`<div class="kv"><div class="k">${k}</div><div class="v">${v}</div></div>`;
+  const P=(v,dp=1)=>v==null?'—':`<span class="${v>0?'pos':v<0?'neg':''}">${v>0?'+':''}${v.toFixed(dp)}%</span>`;
   const gate=(ok,label,val)=>`<div class="gate"><span>${label}${val!=null?` — ${val}`:''}</span><span class="${ok?'ok':'no'}">${ok?'✓ pass':'✗'}</span></div>`;
 
-  document.getElementById('tkbody').innerHTML=`
-    <h2>$${T}<small>${e?e.sector:''}${e&&e.notes?' · '+e.notes:''}</small></h2>
-    ${e?`<div class="px">${f2(e.last)}<span>${P(e.d1)} today</span></div>${bigspark(e.spark)}`:''}
-    ${e?`<h4>Snapshot</h4><div class="grid2">
-      ${kv('1 week',P(e.w1))}${kv('1 month',P(e.m1))}
-      ${kv('% off 52w high',P(e.off_hi))}${kv('% above 52w low',P(e.above_lo))}
-      ${kv('50-day MA',e.above_ma50?'<span class="pos">above</span>':'<span class="neg">below</span>')}
-      ${kv('200-day MA',e.above_ma200?'<span class="pos">above</span>':'<span class="neg">below</span>')}
-    </div>`:''}
-    ${r?`<h4>Returns across horizons</h4>
-      ${['r1d','r2d','r5d','r10d','r21d','r63d'].map((k,i)=>`<div class="rowline"><span>${[1,2,5,10,21,63][i]} day${i?'s':''}</span><b>${P(r[k])}</b></div>`).join('')}`:''}
-    ${d?`<h4>Day-type read (intraday)</h4>
-      <div class="rowline"><span>Character</span><b>${d.character}</b></div>
-      <div class="rowline"><span>Avg path travelled / day</span><b>${d.avg_path_pct.toFixed(1)}%</b></div>
-      <div class="rowline"><span>Trend / chop / mixed days</span><b>${d.pct_trend.toFixed(0)} / ${d.pct_chop.toFixed(0)} / ${d.pct_mixed.toFixed(0)}%</b></div>
-      <div class="rowline"><span>Tradeable window</span><b>${d.tradeable_pct.toFixed(0)}% of sessions</b></div>`:''}
-    <h4>Graham quality gate</h4>
-    ${g?gate(g.pe_ok,'P/E ≤ 15',g.pe!=null?g.pe.toFixed(1):'—')+gate(g.pe_pb_ok,'P/E × P/B ≤ 22.5',g.pe_pb!=null?g.pe_pb:'—')
-       +gate(g.current_ratio_ok,'Current ratio ≥ 2',g.current_ratio!=null?g.current_ratio:'—')+gate(g.dividend_ok,'Pays a dividend',g.dividend_yield!=null?g.dividend_yield+'%':'—')
-       :'<div class="none">not scored yet — graham_gate.py runs Mondays 8 AM</div>'}
-    <h4>The agent desk</h4>
-    ${upc?`<div class="rowline"><span>Earnings</span><b>${upc.date}${upc.when?' · '+upc.when:''}</b></div>`:''}
-    ${plans.map(p=>`<div class="rowline"><span>Plan · ${p.status}</span><b>${p.action||p.plan_id}</b></div>`).join('')}
-    ${calls.map(c=>`<div class="rowline"><span>${c.date} call: <b>${c.call}</b> @ ${c.price_at_call}</span><b>${c.outcome||'pending'}</b></div>`).join('')}
-    ${briefLine?`<div class="rowline"><span>This morning's brief</span></div><div class="none" style="padding:4px 0">${briefLine.replace(/[#*]/g,'').trim()}</div>`:''}
-    ${!upc&&!plans.length&&!calls.length&&!briefLine?'<div class="none">no open calls, plans, or earnings on file</div>':''}
-    <h4>Insider activity (EDGAR feed)</h4><div id="tkins" class="none">checking the live feed…</div>
-    <h4>The house read</h4><div class="read" id="tkread">assembling…</div>
-    <div class="hon">A read, not a signal — every strategy family this account has tested failed the deflation + PBO gate (Strategies tab). This panel aggregates honest data; it does not recommend trades.</div>`;
-
-  document.getElementById('tkov').classList.add('open');
-  document.getElementById('tkd').classList.add('open');
-  document.getElementById('tkd').scrollTop=0;
+  const exp=document.createElement('tr');
+  exp.className='tkexp';
+  exp.innerHTML=`<td colspan="${tr.children.length}"><div class="tkwrap">
+    <div class="tkhead">
+      <span class="sym">$${T}</span>
+      <span class="who">${e?e.sector:''}${e&&e.notes?' · '+e.notes:''}</span>
+      ${e?`<span class="px">${f2(e.last)}<span>${P(e.d1)} today</span></span>`:''}
+      <button class="tkx" onclick="closeTicker()" aria-label="collapse">✕</button>
+    </div>
+    ${e?bigspark(e.spark):''}
+    <div class="cols">
+      <div>
+        ${e?`<h4>Snapshot</h4><div class="grid2">
+          ${kv('1 week',P(e.w1))}${kv('1 month',P(e.m1))}
+          ${kv('% off 52w high',P(e.off_hi))}${kv('% above 52w low',P(e.above_lo))}
+          ${kv('50-day MA',e.above_ma50?'<span class="pos">above</span>':'<span class="neg">below</span>')}
+          ${kv('200-day MA',e.above_ma200?'<span class="pos">above</span>':'<span class="neg">below</span>')}
+        </div>`:''}
+        ${r?`<h4>Returns across horizons</h4>
+          ${['r1d','r2d','r5d','r10d','r21d','r63d'].map((k,i)=>`<div class="rowline"><span>${[1,2,5,10,21,63][i]} day${i?'s':''}</span><b>${P(r[k])}</b></div>`).join('')}`:''}
+      </div>
+      <div>
+        ${d?`<h4>Day-type read (intraday)</h4>
+          <div class="rowline"><span>Character</span><b>${d.character}</b></div>
+          <div class="rowline"><span>Avg path travelled / day</span><b>${d.avg_path_pct.toFixed(1)}%</b></div>
+          <div class="rowline"><span>Trend / chop / mixed days</span><b>${d.pct_trend.toFixed(0)} / ${d.pct_chop.toFixed(0)} / ${d.pct_mixed.toFixed(0)}%</b></div>
+          <div class="rowline"><span>Tradeable window</span><b>${d.tradeable_pct.toFixed(0)}% of sessions</b></div>`:''}
+        <h4>Graham quality gate</h4>
+        ${g?gate(g.pe_ok,'P/E ≤ 15',g.pe!=null?g.pe.toFixed(1):'—')+gate(g.pe_pb_ok,'P/E × P/B ≤ 22.5',g.pe_pb!=null?g.pe_pb:'—')
+           +gate(g.current_ratio_ok,'Current ratio ≥ 2',g.current_ratio!=null?g.current_ratio:'—')+gate(g.dividend_ok,'Pays a dividend',g.dividend_yield!=null?g.dividend_yield+'%':'—')
+           :'<div class="none">not scored yet — graham_gate.py runs Mondays 8 AM</div>'}
+      </div>
+      <div>
+        <h4>The agent desk</h4>
+        ${upc?`<div class="rowline"><span>Earnings</span><b>${upc.date}${upc.when?' · '+upc.when:''}</b></div>`:''}
+        ${plans.map(p=>`<div class="rowline"><span>Plan · ${p.status}</span><b>${p.action||p.plan_id}</b></div>`).join('')}
+        ${calls.map(c=>`<div class="rowline"><span>${c.date} call: <b>${c.call}</b> @ ${c.price_at_call}</span><b>${c.outcome||'pending'}</b></div>`).join('')}
+        ${briefLine?`<div class="none" style="padding:4px 0">brief: ${briefLine.replace(/[#*]/g,'').trim()}</div>`:''}
+        ${!upc&&!plans.length&&!calls.length&&!briefLine?'<div class="none">no open calls, plans, or earnings on file</div>':''}
+        <h4>Insider activity (EDGAR feed)</h4><div id="tkins" class="none">checking the live feed…</div>
+      </div>
+    </div>
+    <div class="read" id="tkread">assembling the house read…</div>
+    <div class="hon">A read, not a signal — every strategy family this account has tested failed the deflation + PBO gate (Strategies tab). This panel aggregates honest data; it does not recommend trades.</div>
+  </div></td>`;
+  tr.after(exp);
+  tr.classList.add('tkon');
 
   const ins=(await insiders()).filter(p=>p.ticker===T);
-  document.getElementById('tkins').innerHTML=ins.length
+  const insEl=document.getElementById('tkins');
+  if(insEl)insEl.innerHTML=ins.length
     ?ins.slice(-5).reverse().map(p=>`<div class="rowline"><span>${p.insider||'insider'}</span><b class="pos">bought ${money(p.value)}</b></div>`).join('')
     :'no open-market purchases on the current feed';
   const rd=document.getElementById('tkread');
   if(rd)rd.innerHTML=houseRead(T,e,d,g,upc,plans,calls,ins);
 }
-function closeTicker(){document.getElementById('tkov').classList.remove('open');
-  document.getElementById('tkd').classList.remove('open');}
 document.addEventListener('click',ev=>{
+  if(ev.target.closest('tr.tkexp'))return;          // clicks inside the dossier don't retoggle
   const tr=ev.target.closest('tr[data-t]');
-  if(tr&&!ev.target.closest('a'))openTicker(tr.dataset.t);
+  if(tr&&!ev.target.closest('a'))openTicker(tr.dataset.t,tr);
 });
 document.addEventListener('keydown',ev=>{if(ev.key==='Escape')closeTicker();});
 </script>
-<div id="tkov" onclick="closeTicker()"></div>
-<aside id="tkd" aria-label="ticker dossier">
-  <button class="tkx" onclick="closeTicker()" aria-label="close">✕</button>
-  <div id="tkbody"></div>
-</aside>
 <!-- home pill: back to the ANUPAM MARKETS command center. history.back() when arrived
      from the dashboard; else ../index.html, which resolves via the command-center symlink
      under both file:// and the localhost preview. Harmless if this page is opened standalone. -->
