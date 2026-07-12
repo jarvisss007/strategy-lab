@@ -85,6 +85,9 @@ def main():
         "coach_log": _csv(os.path.join(RADAR, "agent", "coach_log.csv")),
         "progress": _csv(os.path.join(LAB, "progress.csv")),
         "recorder_live": _recorder_live(os.path.join(LAB, "daytype_log.csv")),
+        # Graham Quality Gate (stock-radar/graham_gate.py, weekly task) — per-ticker
+        # value screen for the terminal's ticker drawer
+        "graham": load(os.path.join(RADAR, "data", "graham.json"), {}),
     }
     out = os.path.join(LAB, "hub_data.js")
     with open(out, "w") as f:

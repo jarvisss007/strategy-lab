@@ -65,6 +65,43 @@
   .legend b{color:var(--ink);}
   footer{margin-top:26px;color:var(--muted);font-size:11.5px;border-top:1px solid var(--border);padding-top:10px;}
   h3{font-size:12px;letter-spacing:.6px;color:var(--ink2);text-transform:uppercase;margin:16px 0 2px;}
+
+  /* ---- ticker dossier drawer ---- */
+  tbody tr[data-t]{cursor:pointer;}
+  tbody tr[data-t]:hover .tick{color:var(--accent);}
+  #tkov{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:200;display:none;
+    backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);}
+  #tkov.open{display:block;}
+  #tkd{position:fixed;top:0;right:-500px;width:480px;max-width:94vw;height:100vh;z-index:201;
+    background:var(--panel);border-left:1px solid var(--border);overflow-y:auto;
+    transition:right .22s ease;box-shadow:-12px 0 40px rgba(0,0,0,.5);padding:20px 22px 90px;}
+  #tkd.open{right:0;}
+  #tkd .tkx{position:absolute;top:14px;right:16px;background:none;border:1px solid var(--border);
+    color:var(--ink2);width:30px;height:30px;border-radius:8px;font-size:15px;cursor:pointer;
+    transition:border-color .15s,color .15s;}
+  #tkd .tkx:hover{border-color:var(--accent);color:var(--accent);}
+  #tkd h2{font-size:26px;margin:2px 0 0;}
+  #tkd h2 small{font-size:13px;color:var(--ink2);font-weight:400;margin-left:10px;}
+  #tkd .px{font-size:20px;font-weight:700;font-variant-numeric:tabular-nums;margin:4px 0 0;}
+  #tkd .px span{font-size:13px;margin-left:8px;}
+  #tkd h4{font-size:10.5px;letter-spacing:1.6px;color:var(--muted);text-transform:uppercase;
+    margin:20px 0 8px;border-bottom:1px solid var(--border);padding-bottom:5px;}
+  #tkd .grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  #tkd .kv{background:var(--panel2);border:1px solid var(--border);border-radius:8px;padding:8px 11px;}
+  #tkd .kv .k{font-size:10px;color:var(--muted);letter-spacing:.6px;text-transform:uppercase;}
+  #tkd .kv .v{font-size:14.5px;font-weight:600;font-variant-numeric:tabular-nums;margin-top:1px;}
+  #tkd .rowline{display:flex;justify-content:space-between;padding:5px 0;font-size:12.5px;
+    border-bottom:1px solid #21262d;color:var(--ink2);}
+  #tkd .rowline b{color:var(--ink);font-variant-numeric:tabular-nums;}
+  #tkd .rowline:last-child{border-bottom:none;}
+  #tkd .gate{display:flex;justify-content:space-between;padding:4px 0;font-size:12.5px;color:var(--ink2);}
+  #tkd .gate .ok{color:var(--up);} #tkd .gate .no{color:var(--muted);}
+  #tkd .read{background:var(--panel2);border:1px solid var(--border);border-left:3px solid var(--accent);
+    border-radius:0 8px 8px 0;padding:10px 13px;font-size:12.5px;color:var(--ink2);line-height:1.65;}
+  #tkd .hon{position:sticky;bottom:-90px;margin:26px -22px -90px;padding:11px 22px;font-size:11px;
+    color:var(--muted);background:var(--panel);border-top:1px solid var(--border);}
+  #tkd .none{color:var(--muted);font-size:12.5px;}
+  #tkd svg.bigspark{width:100%;height:52px;} #tkd svg.bigspark path{fill:none;stroke:var(--accent);stroke-width:1.6;}
 </style>
 </head>
 <body>
@@ -235,7 +272,7 @@ function mspark(vals){
 }
 function mrow(e){
   const b=(e.new_hi?'<span class="badge b-hi">HI</span>':'')+(e.new_lo?'<span class="badge b-lo">LO</span>':'')+(e.flag==='short'?'<span class="badge b-short">SHORT</span>':'');
-  return `<tr><td><span class="tick">${e.ticker}</span>${b}${e.notes?`<span class="note">${e.notes}</span>`:''}</td>
+  return `<tr data-t="${e.ticker}" title="click for the full ${e.ticker} dossier"><td><span class="tick">${e.ticker}</span>${b}${e.notes?`<span class="note">${e.notes}</span>`:''}</td>
     <td>${mspark(e.spark)}</td><td>${f2(e.last)}</td><td>${pct(e.d1,1)}</td><td>${pct(e.w1,1)}</td><td>${pct(e.m1,1)}</td>
     <td>${pct(e.off_hi)}</td><td>${pct(e.above_lo)}</td>
     <td title="above 50-day / 200-day MA"><span class="ma ${e.above_ma50?'on':'off'}"></span><span class="ma ${e.above_ma200?'on':'off'}"></span></td></tr>`;
@@ -270,7 +307,7 @@ function returns(){
   rows.sort((a,b)=>{const x=a[rS],y=b[rS];const c=typeof x==='string'?x.localeCompare(y):x-y;return rA?c:-c;});
   const cell=v=>`<td>${pct(v,1)}</td>`;
   document.getElementById('rrows').innerHTML=rows.map(r=>
-    `<tr><td class="tick">${r.ticker}</td>${cell(r.r1d)}${cell(r.r2d)}${cell(r.r5d)}${cell(r.r10d)}${cell(r.r21d)}${cell(r.r63d)}</tr>`).join('');
+    `<tr data-t="${r.ticker}" title="click for the full ${r.ticker} dossier"><td class="tick">${r.ticker}</td>${cell(r.r1d)}${cell(r.r2d)}${cell(r.r5d)}${cell(r.r10d)}${cell(r.r21d)}${cell(r.r63d)}</tr>`).join('');
   const pat=(H.returns?.pattern||[]).map(p=>`${p.horizon}d: ${p.corr>0?'+':''}${p.corr.toFixed(3)} (${p.sign_hit}% ${p.pvalue<0.01?p.kind:'—'})`).join(' · ');
   const b=H.returns?.big_move;
   document.getElementById('rpat').innerHTML=
@@ -288,7 +325,7 @@ function daytype(){
   rows.sort((a,b)=>{const x=a[dS],y=b[dS];const c=typeof x==='string'?x.localeCompare(y):x-y;return dA?c:-c;});
   const maxP=Math.max(1,...(H.daytype?.rows||[]).map(r=>r.avg_path_pct));
   document.getElementById('drows').innerHTML=rows.map(r=>
-    `<tr><td class="tick">${r.ticker}</td><td><span class="c c-${r.character}">${r.character}</span></td>
+    `<tr data-t="${r.ticker}" title="click for the full ${r.ticker} dossier"><td class="tick">${r.ticker}</td><td><span class="c c-${r.character}">${r.character}</span></td>
      <td>${r.avg_eff.toFixed(2)}</td>
      <td>${r.avg_path_pct.toFixed(1)}<span class="bar" style="width:${Math.round(r.avg_path_pct/maxP*70)}px"></span></td>
      <td>${r.pct_trend.toFixed(0)}%</td><td>${r.pct_chop.toFixed(0)}%</td><td>${r.tradeable_pct.toFixed(0)}%</td></tr>`).join('');
@@ -541,8 +578,115 @@ monitor();returns();daytype();strategies();intraday();earnings();brief();progres
 document.getElementById('foot').innerHTML=
   'One console over Stock Radar + Strategy Lab. Data: Yahoo (free). Refresh: '+
   '<code>collector.py</code> (monitor) · <code>returns_matrix.py</code> · <code>universe_daytype.py</code> · '+
-  '<code>lab.py</code> · then <code>build_hub.py</code>. A research tool — not investment advice or a validated edge.';
+  '<code>lab.py</code> · then <code>build_hub.py</code>. A research tool — not investment advice or a validated edge. '+
+  '<b>Click any ticker row for its full dossier.</b>';
+
+// ================= TICKER DOSSIER DRAWER =================
+// Click any row in Monitor / Returns / Day-Type → everything the ecosystem knows
+// about that name in one panel. Descriptive synthesis only — the honest footer is
+// part of the design, not decoration.
+let INSIDERS=null;   // fetched once from the public insider-radar Pages feed
+async function insiders(){
+  if(INSIDERS)return INSIDERS;
+  try{const r=await fetch('https://jarvisss007.github.io/insider-radar/data/insiders.json?'+Date.now());
+    INSIDERS=(await r.json()).purchases||[];}catch(e){INSIDERS=[];}
+  return INSIDERS;
+}
+const money=v=>'$'+Number(v).toLocaleString('en-US',{maximumFractionDigits:0});
+
+function bigspark(vals){
+  if(!vals||vals.length<2)return '';
+  const mn=Math.min(...vals),mx=Math.max(...vals),r=(mx-mn)||1;
+  const pts=vals.map((v,i)=>[(i/(vals.length-1))*436,48-((v-mn)/r)*42+2]);
+  return `<svg class="bigspark" viewBox="0 0 436 52"><path d="M${pts.map(p=>p[0].toFixed(1)+' '+p[1].toFixed(1)).join('L')}"/></svg>`;
+}
+
+function houseRead(T,e,d,g,upc,plans,calls,ins){
+  const out=[];
+  if(e){
+    const trend=e.above_ma50&&e.above_ma200?'constructive (above both MAs)':
+      !e.above_ma50&&!e.above_ma200?'broken (below both MAs)':'mixed (between its MAs)';
+    out.push(`Structure is <b>${trend}</b>, ${e.off_hi.toFixed(0)}% off the 52-week high and ${e.above_lo.toFixed(0)}% above the low; 1-month momentum ${e.m1>0?'+':''}${e.m1.toFixed(1)}%.`);
+  }
+  if(d)out.push(`Intraday character: <b>${d.character}</b> — path ${d.avg_path_pct.toFixed(1)}%/day, trend days ${d.pct_trend.toFixed(0)}%, tradeable window ${d.tradeable_pct.toFixed(0)}% (day-type radar, ~${d.n_days} sessions).`);
+  if(g)out.push(`Graham gate: <b>${g.score}/4</b>${g.score>=3?' — rare on this growth-heavy list, worth a closer valuation look':' — priced as growth, not value'}.`);
+  if(upc)out.push(`<b>Earnings ${upc.date}${upc.when?' ('+upc.when+')':''}</b> — the earnings agent covers base rates in its Sunday note.`);
+  if(plans.length)out.push(`Open conditional plan${plans.length>1?'s':''} on file: ${plans.map(p=>`<b>${p.action||p.plan_id}</b> (${p.status})`).join(' · ')}.`);
+  if(calls.length){const c=calls[calls.length-1];
+    out.push(`Latest agent call: <b>${c.call}</b> (${c.date}) — “${(c.thesis||'').slice(0,80)}”, outcome: <b>${c.outcome||'pending'}</b>.`);}
+  if(ins&&ins.length)out.push(`<b>${ins.length} insider purchase${ins.length>1?'s':''}</b> on the EDGAR feed, latest ${money(ins[ins.length-1].value)} — clusters are the studied signal, singles are noise.`);
+  if(!out.length)out.push('Nothing beyond the price data on record for this name.');
+  return out.map(s=>`<div style="margin:4px 0">· ${s}</div>`).join('');
+}
+
+async function openTicker(T){
+  const e=(H.monitor?.equities||[]).find(x=>x.ticker===T);
+  const r=(H.returns?.snapshot||[]).find(x=>x.ticker===T);
+  const d=(H.daytype?.rows||[]).find(x=>x.ticker===T);
+  const g=H.graham&&H.graham.stocks?H.graham.stocks[T]:null;
+  const upc=(H.earnings?.upcoming_universe||[]).find(x=>x.ticker===T);
+  const plans=(H.plans||[]).filter(p=>p.ticker===T);
+  const calls=(H.ledger||[]).filter(c=>c.ticker===T);
+  const briefLine=((H.brief&&H.brief.text)||'').split('\n').find(l=>l.includes(T));
+
+  const kv=(k,v,cls='')=>`<div class="kv"><div class="k">${k}</div><div class="v ${cls}">${v}</div></div>`;
+  const P=(v,d=1)=>v==null?'—':`<span class="${v>0?'pos':v<0?'neg':''}">${v>0?'+':''}${v.toFixed(d)}%</span>`;
+  const gate=(ok,label,val)=>`<div class="gate"><span>${label}${val!=null?` — ${val}`:''}</span><span class="${ok?'ok':'no'}">${ok?'✓ pass':'✗'}</span></div>`;
+
+  document.getElementById('tkbody').innerHTML=`
+    <h2>$${T}<small>${e?e.sector:''}${e&&e.notes?' · '+e.notes:''}</small></h2>
+    ${e?`<div class="px">${f2(e.last)}<span>${P(e.d1)} today</span></div>${bigspark(e.spark)}`:''}
+    ${e?`<h4>Snapshot</h4><div class="grid2">
+      ${kv('1 week',P(e.w1))}${kv('1 month',P(e.m1))}
+      ${kv('% off 52w high',P(e.off_hi))}${kv('% above 52w low',P(e.above_lo))}
+      ${kv('50-day MA',e.above_ma50?'<span class="pos">above</span>':'<span class="neg">below</span>')}
+      ${kv('200-day MA',e.above_ma200?'<span class="pos">above</span>':'<span class="neg">below</span>')}
+    </div>`:''}
+    ${r?`<h4>Returns across horizons</h4>
+      ${['r1d','r2d','r5d','r10d','r21d','r63d'].map((k,i)=>`<div class="rowline"><span>${[1,2,5,10,21,63][i]} day${i?'s':''}</span><b>${P(r[k])}</b></div>`).join('')}`:''}
+    ${d?`<h4>Day-type read (intraday)</h4>
+      <div class="rowline"><span>Character</span><b>${d.character}</b></div>
+      <div class="rowline"><span>Avg path travelled / day</span><b>${d.avg_path_pct.toFixed(1)}%</b></div>
+      <div class="rowline"><span>Trend / chop / mixed days</span><b>${d.pct_trend.toFixed(0)} / ${d.pct_chop.toFixed(0)} / ${d.pct_mixed.toFixed(0)}%</b></div>
+      <div class="rowline"><span>Tradeable window</span><b>${d.tradeable_pct.toFixed(0)}% of sessions</b></div>`:''}
+    <h4>Graham quality gate</h4>
+    ${g?gate(g.pe_ok,'P/E ≤ 15',g.pe!=null?g.pe.toFixed(1):'—')+gate(g.pe_pb_ok,'P/E × P/B ≤ 22.5',g.pe_pb!=null?g.pe_pb:'—')
+       +gate(g.current_ratio_ok,'Current ratio ≥ 2',g.current_ratio!=null?g.current_ratio:'—')+gate(g.dividend_ok,'Pays a dividend',g.dividend_yield!=null?g.dividend_yield+'%':'—')
+       :'<div class="none">not scored yet — graham_gate.py runs Mondays 8 AM</div>'}
+    <h4>The agent desk</h4>
+    ${upc?`<div class="rowline"><span>Earnings</span><b>${upc.date}${upc.when?' · '+upc.when:''}</b></div>`:''}
+    ${plans.map(p=>`<div class="rowline"><span>Plan · ${p.status}</span><b>${p.action||p.plan_id}</b></div>`).join('')}
+    ${calls.map(c=>`<div class="rowline"><span>${c.date} call: <b>${c.call}</b> @ ${c.price_at_call}</span><b>${c.outcome||'pending'}</b></div>`).join('')}
+    ${briefLine?`<div class="rowline"><span>This morning's brief</span></div><div class="none" style="padding:4px 0">${briefLine.replace(/[#*]/g,'').trim()}</div>`:''}
+    ${!upc&&!plans.length&&!calls.length&&!briefLine?'<div class="none">no open calls, plans, or earnings on file</div>':''}
+    <h4>Insider activity (EDGAR feed)</h4><div id="tkins" class="none">checking the live feed…</div>
+    <h4>The house read</h4><div class="read" id="tkread">assembling…</div>
+    <div class="hon">A read, not a signal — every strategy family this account has tested failed the deflation + PBO gate (Strategies tab). This panel aggregates honest data; it does not recommend trades.</div>`;
+
+  document.getElementById('tkov').classList.add('open');
+  document.getElementById('tkd').classList.add('open');
+  document.getElementById('tkd').scrollTop=0;
+
+  const ins=(await insiders()).filter(p=>p.ticker===T);
+  document.getElementById('tkins').innerHTML=ins.length
+    ?ins.slice(-5).reverse().map(p=>`<div class="rowline"><span>${p.insider||'insider'}</span><b class="pos">bought ${money(p.value)}</b></div>`).join('')
+    :'no open-market purchases on the current feed';
+  const rd=document.getElementById('tkread');
+  if(rd)rd.innerHTML=houseRead(T,e,d,g,upc,plans,calls,ins);
+}
+function closeTicker(){document.getElementById('tkov').classList.remove('open');
+  document.getElementById('tkd').classList.remove('open');}
+document.addEventListener('click',ev=>{
+  const tr=ev.target.closest('tr[data-t]');
+  if(tr&&!ev.target.closest('a'))openTicker(tr.dataset.t);
+});
+document.addEventListener('keydown',ev=>{if(ev.key==='Escape')closeTicker();});
 </script>
+<div id="tkov" onclick="closeTicker()"></div>
+<aside id="tkd" aria-label="ticker dossier">
+  <button class="tkx" onclick="closeTicker()" aria-label="close">✕</button>
+  <div id="tkbody"></div>
+</aside>
 <!-- home pill: back to the ANUPAM MARKETS command center. history.back() when arrived
      from the dashboard; else ../index.html, which resolves via the command-center symlink
      under both file:// and the localhost preview. Harmless if this page is opened standalone. -->
