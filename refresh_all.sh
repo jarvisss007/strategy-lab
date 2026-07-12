@@ -1,6 +1,19 @@
 #!/bin/bash
 # Daily refresh of the trading hub — run by launchd (com.anupam.tradinghub-refresh)
 # so the Trading Terminal / Stock Radar never go stale even if the app is closed.
+#
+# Triggered TWO ways: StartCalendarInterval (weekdays 7:05 AM, for promptness)
+# AND StartInterval (every 30 min, as a catch-up net). macOS launchd silently
+# SKIPS a StartCalendarInterval firing if the Mac is asleep at that exact
+# minute — it does not retroactively run it on wake. Discovered 2026-07-11:
+# the job had only fired once via its calendar trigger when 2-3 were expected.
+# The idempotency check below makes the frequent trigger a cheap no-op once
+# today's refresh has already succeeded, so it costs nothing except on the day
+# it's actually needed.
+DONE_MARK=/Users/anupampatil/strategy-lab/.refresh_done_$(date '+%Y-%m-%d')
+if [ -f "$DONE_MARK" ] && [ "$(date +%u)" -le 5 ]; then
+  exit 0
+fi
 PY=/opt/anaconda3/bin/python
 LOG=/Users/anupampatil/strategy-lab/refresh.log
 echo "=== refresh $(date '+%Y-%m-%d %H:%M:%S') ===" >> "$LOG"
@@ -18,3 +31,5 @@ fi
 "$PY" /Users/anupampatil/strategy-lab/build_hub.py >> "$LOG" 2>&1
 echo "window.LAST_REFRESH=\"$(date '+%Y-%m-%dT%H:%M:%S')\";" > /Users/anupampatil/command-center/freshness.js
 echo "done $(date '+%H:%M:%S')" >> "$LOG"
+touch "$DONE_MARK"
+find /Users/anupampatil/strategy-lab -maxdepth 1 -name ".refresh_done_*" -mtime +2 -delete
