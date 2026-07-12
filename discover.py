@@ -186,12 +186,35 @@ def price_action_value_area(o, c, v):
     return out
 
 
+def price_action_confluence(o, c, v):
+    """Books 7+8's central claim, tested directly: 'trade confluence, not a single
+    pattern' — a level/value-area signal means little alone; it needs trend agreement.
+    Same value-area fade as price_action_value_area, but gated: only counted where a
+    short-term trend (10d return) confirms the reversion is already underway, not
+    fighting it. If confluence is a real edge over the plain fade, this should show
+    a HIGHER Sharpe than the ungated version with fewer, more selective trades."""
+    rets = c.pct_change()
+    value_area = c.rolling(20).mean()
+    distance = (c - value_area) / value_area
+    trend = c.pct_change(10)
+    # long candidates: below value AND trend already turning up; short: above value AND trend turning down
+    fade = -distance
+    agrees = np.sign(fade) == np.sign(trend)
+    gated_score = fade.where(agrees, 0.0)
+    out = {}
+    for q in (0.1, 0.2):
+        for H in (5, 10, 21):
+            out[f"confluence-fade q{q} H{H}"] = _xs(gated_score, rets, q, H)
+    return out
+
+
 FAMILIES = {
     "Overnight vs intraday": overnight_intraday,
     "Options-expiry flow": opex,
     "Turn-of-month flow": turn_of_month,
     "Volume/liquidity microstructure": microstructure,
     "Price-action value-area fade": price_action_value_area,
+    "Price-action confluence (fade + trend agreement)": price_action_confluence,
 }
 
 
