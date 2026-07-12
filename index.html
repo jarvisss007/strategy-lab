@@ -101,5 +101,13 @@ fetch('reports/data.json').then(r=>r.json()).then(D=>{
     'A research survey, not investment advice. Survivors are forward-test candidates, nothing more.';
 });
 </script>
+<!-- home pill: back to the ANUPAM MARKETS command center. history.back() when arrived
+     from the dashboard; else ../index.html, which resolves via the command-center symlink
+     under both file:// and the localhost preview. Harmless if this page is opened standalone. -->
+<a href="../index.html" aria-label="back to command center" title="back to command center"
+   onclick="if(history.length>1&&document.referrer){history.back();return false}"
+   onmouseover="this.style.borderColor='#58a6ff';this.style.color='#58a6ff'"
+   onmouseout="this.style.borderColor='rgba(139,148,158,.35)';this.style.color='#e6edf3'"
+   style="position:fixed;left:16px;bottom:16px;z-index:9999;display:inline-flex;align-items:center;gap:7px;padding:7px 14px;border-radius:20px;background:rgba(22,27,34,.92);border:1px solid rgba(139,148,158,.35);color:#e6edf3;text-decoration:none;font:600 12px/1 system-ui,-apple-system,sans-serif;letter-spacing:.6px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);box-shadow:0 4px 14px rgba(0,0,0,.4);transition:border-color .15s,color .15s">&larr; Exchange</a>
 </body>
 </html>
