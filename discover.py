@@ -166,11 +166,32 @@ def _trade(pos, daily):
     return gross, gross - turnover * COST
 
 
+def price_action_value_area(o, c, v):
+    """From the Fluency Project's Price Action double issue (Books 7+8): price is an
+    auction seeking fair value, and levels far from that value area get defended or
+    rejected. Proxy 'value area' = rolling 20d mean close (no high/low data in this
+    pipeline, so no true wick-ratio; this is the distance-from-value-area variant the
+    book's own live-it note names as the alternative). Cross-sectional fade: go long
+    names farthest BELOW their value area, short names farthest ABOVE it, expecting
+    reversion toward value — the auction-theory framing of mean-reversion, tested
+    through the same honest gate as everything else here."""
+    rets = c.pct_change()
+    value_area = c.rolling(20).mean()
+    distance = (c - value_area) / value_area          # >0 = trading above value, <0 = below
+    fade_score = -distance                              # most-below-value ranks highest
+    out = {}
+    for q in (0.1, 0.2):
+        for H in (5, 10, 21):
+            out[f"value-area-fade q{q} H{H}"] = _xs(fade_score, rets, q, H)
+    return out
+
+
 FAMILIES = {
     "Overnight vs intraday": overnight_intraday,
     "Options-expiry flow": opex,
     "Turn-of-month flow": turn_of_month,
     "Volume/liquidity microstructure": microstructure,
+    "Price-action value-area fade": price_action_value_area,
 }
 
 
