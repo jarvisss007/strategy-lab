@@ -621,6 +621,13 @@ function houseRead(T,e,d,g,upc,plans,calls,ins){
     out.push(`Structure is <b>${trend}</b>, ${e.off_hi.toFixed(0)}% off the 52-week high and ${e.above_lo.toFixed(0)}% above the low; 1-month momentum ${e.m1>0?'+':''}${e.m1.toFixed(1)}%.`);
   }
   if(d)out.push(`Intraday character: <b>${d.character}</b> — path ${d.avg_path_pct.toFixed(1)}%/day, trend days ${d.pct_trend.toFixed(0)}%, tradeable window ${d.tradeable_pct.toFixed(0)}% (day-type radar, ~${d.n_days} sessions).`);
+  if(g&&g.fundamentals&&Object.keys(g.fundamentals).length){const f=g.fundamentals;const bits=[];
+    if(f.profitMargins!=null)bits.push(`net margin ${(f.profitMargins*100).toFixed(0)}%`);
+    if(f.revenueGrowth!=null)bits.push(`revenue ${f.revenueGrowth>=0?'+':''}${(f.revenueGrowth*100).toFixed(0)}% yoy`);
+    if(f.trailingPE!=null)bits.push(`${f.trailingPE.toFixed(0)}× trailing earnings`);
+    if(bits.length)out.push(`The business: ${bits.join(', ')}`+
+      (f.targetMeanPrice&&e?` — street target $${f.targetMeanPrice.toFixed(0)} (${Math.abs((f.targetMeanPrice/e.last-1)*100).toFixed(0)}% ${f.targetMeanPrice>=e.last?'above':'below'} price${f.recommendationKey?', consensus '+f.recommendationKey.replace('_',' '):''}).`:'.'));
+  }
   if(g)out.push(`Graham gate: <b>${g.score}/4</b>${g.score>=3?' — rare on this growth-heavy list, worth a closer valuation look':' — priced as growth, not value'}.`);
   if(upc)out.push(`<b>Earnings ${upc.date}${upc.when?' ('+upc.when+')':''}</b> — the earnings agent covers base rates in its Sunday note.`);
   if(plans.length)out.push(`Open conditional plan${plans.length>1?'s':''} on file: ${plans.map(p=>`<b>${p.action||p.plan_id}</b> (${p.status})`).join(' · ')}.`);
@@ -712,6 +719,43 @@ function closeTicker(){
   TKOPEN=null;
 }
 
+// fundamentals formatting: raw yfinance values -> readable rows
+function fundRows(g){
+  const f=g&&g.fundamentals;
+  if(!f||!Object.keys(f).length)return '<div class="none">not scored yet — graham_gate.py runs Mondays 8 AM</div>';
+  const row=(k,v)=>v==null?'':`<div class="rowline"><span>${k}</span><b>${v}</b></div>`;
+  const big=v=>v==null?null:v>=1e12?(v/1e12).toFixed(2)+'T':v>=1e9?(v/1e9).toFixed(1)+'B':v>=1e6?(v/1e6).toFixed(0)+'M':v.toLocaleString();
+  const pc=(v,s=1)=>v==null?null:`<span class="${v>=0?'pos':'neg'}">${(v*100).toFixed(s)}%</span>`;
+  const x=v=>v==null?null:v.toFixed(1)+'×';
+  const sub=t=>`<div style="font-size:9.5px;letter-spacing:1.2px;color:var(--muted);text-transform:uppercase;margin:9px 0 2px">${t}</div>`;
+  let h='';
+  h+=sub('valuation')
+    +row('Market cap',big(f.marketCap)&&'$'+big(f.marketCap))
+    +row('P/E (ttm / fwd)',f.trailingPE||f.forwardPE?`${f.trailingPE?f.trailingPE.toFixed(1):'—'} / ${f.forwardPE?f.forwardPE.toFixed(1):'—'}`:null)
+    +row('P/B',f.priceToBook!=null?f.priceToBook.toFixed(1):null)
+    +row('EV / EBITDA',x(f.enterpriseToEbitda));
+  h+=sub('profitability')
+    +row('Gross margin',pc(f.grossMargins))
+    +row('Operating margin',pc(f.operatingMargins))
+    +row('Net margin',pc(f.profitMargins))
+    +row('Return on equity',pc(f.returnOnEquity));
+  h+=sub('growth (yoy)')
+    +row('Revenue growth',pc(f.revenueGrowth))
+    +row('Earnings growth',pc(f.earningsGrowth));
+  h+=sub('balance sheet')
+    +row('Current ratio',f.currentRatio!=null?f.currentRatio.toFixed(2):null)
+    +row('Debt / equity',f.debtToEquity!=null?(f.debtToEquity/100).toFixed(2)+'×':null)
+    +row('Cash / debt',f.totalCash!=null||f.totalDebt!=null?`$${big(f.totalCash)||'—'} / $${big(f.totalDebt)||'—'}`:null)
+    +row('Free cash flow',f.freeCashflow!=null?'$'+big(f.freeCashflow):null);
+  h+=sub('the street')
+    +row('Analyst target',f.targetMeanPrice!=null?'$'+f.targetMeanPrice.toFixed(0)+(f.numberOfAnalystOpinions?` <span style="color:var(--muted)">(${f.numberOfAnalystOpinions})</span>`:''):null)
+    +row('Consensus',f.recommendationKey?f.recommendationKey.replace('_',' '):null)
+    +row('Beta',f.beta!=null?f.beta.toFixed(2):null)
+    +row('Short % of float',f.shortPercentOfFloat!=null?(f.shortPercentOfFloat*100).toFixed(1)+'%':null)
+    +row('Dividend yield',f.dividendYield!=null?f.dividendYield+'%':null);
+  return h;
+}
+
 async function openTicker(T,anchor){
   const again=TKOPEN===T;
   closeTicker();
@@ -760,6 +804,10 @@ async function openTicker(T,anchor){
         </div>`:''}
         ${r?`<h4>Returns across horizons</h4>
           ${['r1d','r2d','r5d','r10d','r21d','r63d'].map((k,i)=>`<div class="rowline"><span>${[1,2,5,10,21,63][i]} day${i?'s':''}</span><b>${P(r[k])}</b></div>`).join('')}`:''}
+      </div>
+      <div>
+        <h4>Fundamentals — the business</h4>
+        ${fundRows(g)}
       </div>
       <div>
         ${d?`<h4>Day-type read (intraday)</h4>
