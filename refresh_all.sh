@@ -10,8 +10,15 @@
 # The idempotency check below makes the frequent trigger a cheap no-op once
 # today's refresh has already succeeded, so it costs nothing except on the day
 # it's actually needed.
+#
+# BUG (found 2026-07-14): a middle-of-the-night wake (Power Nap / iCloud sync)
+# let the 30-min catch-up net fire at ~2 AM, stamp DONE_MARK, and then silently
+# no-op every legitimate trigger for the rest of the day — including the
+# intended 7:05 AM run — leaving the terminal ~17 hours stale by evening. Fix:
+# a pre-market stamp doesn't count as "done" — only a mark from 6 AM or later
+# (after the intended run window) satisfies the guard.
 DONE_MARK=/Users/anupampatil/strategy-lab/.refresh_done_$(date '+%Y-%m-%d')
-if [ -f "$DONE_MARK" ] && [ "$(date +%u)" -le 5 ]; then
+if [ -f "$DONE_MARK" ] && [ "$(date +%u)" -le 5 ] && [ "$(date -r "$DONE_MARK" '+%H')" -ge 6 ]; then
   exit 0
 fi
 PY=/opt/anaconda3/bin/python
