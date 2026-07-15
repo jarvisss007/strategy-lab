@@ -88,6 +88,9 @@ def main():
         # Graham Quality Gate (stock-radar/graham_gate.py, weekly task) — per-ticker
         # value screen for the terminal's ticker drawer
         "graham": load(os.path.join(RADAR, "data", "graham.json"), {}),
+        # Position Agent's paper book (stock-radar/agent/positions.csv, weekly task)
+        "positions": _csv(os.path.join(RADAR, "agent", "positions.csv")),
+        "position_report": load(os.path.join(RADAR, "agent", "position_report.json"), {}),
     }
     out = os.path.join(LAB, "hub_data.js")
     with open(out, "w") as f:

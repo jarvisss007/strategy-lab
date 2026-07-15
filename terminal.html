@@ -166,6 +166,7 @@
   <div class="tab" data-p="earnings">Earnings</div>
   <div class="tab" data-p="strategies">Strategies</div>
   <div class="tab" data-p="progress">Progress</div>
+  <div class="tab" data-p="positions">Positions</div>
 </div>
 
 <!-- BRIEF -->
@@ -276,6 +277,31 @@
   <div class="md" id="ploops"></div>
 </div>
 
+<!-- POSITIONS -->
+<div class="pane" id="p-positions">
+  <div class="legend">
+    <b>The Position Agent</b> — weekly, paper-only, equity. Takes discretionary
+    positions synthesized from this account's own signals (fundamentals, Graham
+    gate, day-type, insider activity), with a stop/target/horizon predefined
+    BEFORE entry (RULES.md Rule 1, enforced in code). Grading is real: the daily
+    price path is walked for stop/target breaches, benchmarked against SPY over
+    the identical window. Options are explicitly out of scope until a real
+    pricing feed exists — see <code>agent/POSITION_AGENT.md</code>.
+  </div>
+  <div id="posSummary" style="margin:10px 0;"></div>
+  <h3>Open positions</h3>
+  <table><thead><tr><th>Ticker</th><th>Dir</th><th>Tags</th><th>Entry</th><th>Stop</th>
+    <th>Target</th><th>Horizon</th><th>Size</th><th>Thesis</th></tr></thead>
+    <tbody id="posOpen"></tbody></table>
+  <h3 style="margin-top:22px">Closed positions</h3>
+  <table><thead><tr><th>Ticker</th><th>Dir</th><th>Tags</th><th>Exit</th>
+    <th>P&amp;L</th><th>vs SPY</th><th>Outcome</th></tr></thead>
+    <tbody id="posClosed"></tbody></table>
+  <h3 style="margin-top:22px">By signal — which tag is actually working</h3>
+  <table><thead><tr><th>Tag</th><th>N</th><th>Win rate</th><th>Avg P&amp;L</th></tr></thead>
+    <tbody id="posTags"></tbody></table>
+</div>
+
 <!-- STRATEGIES -->
 <div class="pane" id="p-strategies">
   <div class="legend" id="sbench"></div>
@@ -308,6 +334,46 @@ document.getElementById('built').textContent = 'updated ' + (H.built||'—');
 document.getElementById('strip').innerHTML = (H.monitor?.strip||[]).map(s=>
   `<div class="scard" data-t="${s.ticker}" title="click for the ${s.ticker} chart"><div class="t">${s.ticker}</div><div class="p">${(+s.last).toLocaleString()}</div>
    <div class="c ${s.d1>0?'pos':s.d1<0?'neg':'flat'}">${f2(s.d1,true)}%</div></div>`).join('');
+
+// ---- POSITIONS ----
+function positions(){
+  const rows=H.positions||[];
+  const open=rows.filter(p=>p.status==='open');
+  const closed=rows.filter(p=>p.status==='closed');
+  const rep=H.position_report||{};
+  const badge=o=>`<span class="badge v-${o?'survives':'suspect'}">${o?'win':'loss'}</span>`;
+
+  const sumEl=document.getElementById('posSummary');
+  if(sumEl){
+    if(rep.overall){
+      sumEl.innerHTML=`<div class="grid2" style="grid-template-columns:repeat(4,1fr);max-width:640px">
+        <div class="kv"><div class="k">Closed</div><div class="v">${rep.overall.n}</div></div>
+        <div class="kv"><div class="k">Win rate</div><div class="v">${rep.overall.win_rate}%</div></div>
+        <div class="kv"><div class="k">Avg P&amp;L</div><div class="v ${rep.overall.avg_pnl_pct>=0?'pos':'neg'}">${rep.overall.avg_pnl_pct>=0?'+':''}${rep.overall.avg_pnl_pct}%</div></div>
+        <div class="kv"><div class="k">Beat SPY</div><div class="v">${rep.overall.beat_spy_rate!=null?rep.overall.beat_spy_rate+'%':'—'}</div></div>
+      </div><div class="none" style="margin-top:6px">${rep.overall.confidence==='trust'?'Enough sample to trust this.':'Directional only — under n=15, treat as a hypothesis, not a verdict.'}</div>`;
+    }else{
+      sumEl.innerHTML=`<div class="none">${rep.n_closed||0} closed position${rep.n_closed===1?'':'s'} — below the trust threshold (8), no verdict yet. This is expected and correct at this sample size.</div>`;
+    }
+  }
+  const oEl=document.getElementById('posOpen');
+  if(oEl)oEl.innerHTML=open.length?open.map(p=>`<tr data-t="${p.ticker}" title="click for the ${p.ticker} dossier">
+    <td class="tick">${p.ticker}</td><td>${p.direction}</td><td>${(p.thesis_tags||'').split(',').map(t=>`<span class="badge b-short" style="background:rgba(88,166,255,.12);color:var(--accent);border-color:rgba(88,166,255,.4)">${t.trim()}</span>`).join(' ')}</td>
+    <td>${f2(+p.entry_price)}</td><td class="neg">${f2(+p.stop_price)}</td><td class="pos">${f2(+p.target_price)}</td>
+    <td>${p.horizon_days}d</td><td>$${(+p.size_usd).toLocaleString()}</td><td style="text-align:left;white-space:normal;max-width:260px">${p.thesis}</td></tr>`).join('')
+    :'<tr><td colspan="9" class="none" style="text-align:left">No open positions — zero is a fine, common answer here.</td></tr>';
+  const cEl=document.getElementById('posClosed');
+  if(cEl)cEl.innerHTML=closed.length?closed.map(p=>`<tr data-t="${p.ticker}" title="click for the ${p.ticker} dossier">
+    <td class="tick">${p.ticker}</td><td>${p.direction}</td><td>${(p.thesis_tags||'').split(',').map(t=>t.trim()).join(', ')}</td>
+    <td>${p.exit_date} (${p.exit_reason})</td><td class="${(+p.pnl_pct)>=0?'pos':'neg'}">${(+p.pnl_pct)>=0?'+':''}${p.pnl_pct}%</td>
+    <td>${p.spy_return_pct?((+p.spy_return_pct)>=0?'+':'')+p.spy_return_pct+'%':'—'}</td><td>${badge(p.outcome==='win')}</td></tr>`).join('')
+    :'<tr><td colspan="7" class="none" style="text-align:left">Nothing closed yet.</td></tr>';
+  const tEl=document.getElementById('posTags');
+  const tags=Object.entries(rep.by_tag||{});
+  if(tEl)tEl.innerHTML=tags.length?tags.map(([tag,s])=>`<tr><td class="tick">${tag}</td><td>${s.n}</td>
+    <td>${s.win_rate!=null?s.win_rate+'%':'—'}</td><td class="${s.avg_pnl_pct>=0?'pos':'neg'}">${s.avg_pnl_pct!=null?(s.avg_pnl_pct>=0?'+':'')+s.avg_pnl_pct+'%':'too few'}</td></tr>`).join('')
+    :'<tr><td colspan="4" class="none" style="text-align:left">No tags scored yet.</td></tr>';
+}
 
 // tabs
 function goTab(p){closeTicker();document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x.dataset.p===p));
@@ -631,7 +697,7 @@ document.querySelectorAll('th[data-k]').forEach(th=>th.addEventListener('click',
   else if(pane==='p-daytype'){dS===k?dA=!dA:(dS=k,dA=false);daytype();}
 }));
 
-monitor();returns();daytype();strategies();intraday();earnings();brief();progress();charts();
+monitor();returns();daytype();strategies();intraday();earnings();brief();progress();positions();charts();
 document.getElementById('foot').innerHTML=
   'One console over Stock Radar + Strategy Lab. Data: Yahoo (free). Refresh: '+
   '<code>collector.py</code> (monitor) · <code>returns_matrix.py</code> · <code>universe_daytype.py</code> · '+
@@ -818,6 +884,7 @@ async function openTicker(T,anchor){
   const upc=(H.earnings?.upcoming_universe||[]).find(x=>x.ticker===T);
   const plans=(H.plans||[]).filter(p=>p.ticker===T);
   const calls=(H.ledger||[]).filter(c=>c.ticker===T);
+  const tpos=(H.positions||[]).filter(p=>p.ticker===T);
   const briefLine=((H.brief&&H.brief.text)||'').split('\n').find(l=>l.includes(T));
 
   const kv=(k,v)=>`<div class="kv"><div class="k">${k}</div><div class="v">${v}</div></div>`;
@@ -899,6 +966,7 @@ async function openTicker(T,anchor){
            :'<div class="none">not scored yet</div>'}</div>
       <div class="tkcard"><h4>The agent desk</h4>
         ${upc?`<div class="rowline" style="cursor:pointer" title="click for the Earnings tab — base rates + conditional plans" onclick="goTab('earnings');event.stopPropagation()"><span>Earnings ↗</span><b>${upc.date}${upc.when?' · '+upc.when:''}</b></div>`:''}
+        ${tpos.map(p=>`<div class="rowline" style="cursor:pointer" title="click for the Positions tab" onclick="goTab('positions');event.stopPropagation()"><span>Position (${p.status}) · ${(p.thesis_tags||'').split(',')[0].trim()}</span><b class="${p.status==='open'?'':(+p.pnl_pct)>=0?'pos':'neg'}">${p.status==='open'?p.direction+' · stop '+f2(+p.stop_price):(p.pnl_pct>=0?'+':'')+p.pnl_pct+'%'}</b></div>`).join('')}
         ${plans.map(p=>`<div class="rowline"><span>Plan · ${p.status}</span><b>${p.action||p.plan_id}</b></div>`).join('')}
         ${calls.map(c=>`<div class="rowline"><span>${c.date} call: <b>${c.call}</b> @ ${c.price_at_call}</span><b>${c.outcome||'pending'}</b></div>`).join('')}
         ${briefLine?`<div class="none" style="padding:4px 0">brief: ${briefLine.replace(/[#*]/g,'').trim()}</div>`:''}
