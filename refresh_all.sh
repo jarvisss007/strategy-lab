@@ -27,6 +27,10 @@ echo "=== refresh $(date '+%Y-%m-%d %H:%M:%S') ===" >> "$LOG"
 "$PY" /Users/anupampatil/stock-radar/collector.py >> "$LOG" 2>&1
 "$PY" /Users/anupampatil/stock-radar/check_plans.py >> "$LOG" 2>&1
 "$PY" /Users/anupampatil/stock-radar/collector.py >> "$LOG" 2>&1   # re-embed ledger if a plan fired
+# Asia Radar: cross-market web (US·India·China·HK·Korea·Japan·Taiwan)
+"$PY" /Users/anupampatil/asia-radar/collector.py >> "$LOG" 2>&1
+"$PY" /Users/anupampatil/asia-radar/analyze.py >> "$LOG" 2>&1
+"$PY" /Users/anupampatil/asia-radar/briefing.py >> "$LOG" 2>&1
 # Mondays: re-learn the studies on the grown dataset (research stays current)
 if [ "$(date +%u)" = "1" ]; then
   "$PY" /Users/anupampatil/strategy-lab/fetch_data.py >> "$LOG" 2>&1
