@@ -90,6 +90,9 @@ def main():
         "graham": load(os.path.join(RADAR, "data", "graham.json"), {}),
         # Position Agent's paper book (stock-radar/agent/positions.csv, weekly task)
         "positions": _csv(os.path.join(RADAR, "agent", "positions.csv")),
+        # Paper Arena (arena.py, daily): rule strategies that actually take
+        # paper trades — 1y backtest + live forward book, benchmarked vs SPY
+        "arena": load(os.path.join(LAB, "reports", "arena.json"), {}),
         "position_report": load(os.path.join(RADAR, "agent", "position_report.json"), {}),
     }
     out = os.path.join(LAB, "hub_data.js")

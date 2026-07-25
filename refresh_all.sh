@@ -38,6 +38,7 @@ if [ "$(date +%u)" = "1" ]; then
   "$PY" /Users/anupampatil/strategy-lab/universe_daytype.py >> "$LOG" 2>&1
   "$PY" /Users/anupampatil/strategy-lab/earnings_radar.py >> "$LOG" 2>&1
 fi
+"$PY" /Users/anupampatil/strategy-lab/arena.py >> "$LOG" 2>&1        # paper arena: takes/closes rule trades
 "$PY" /Users/anupampatil/strategy-lab/learning_meter.py >> "$LOG" 2>&1
 "$PY" /Users/anupampatil/strategy-lab/build_hub.py >> "$LOG" 2>&1
 echo "window.LAST_REFRESH=\"$(date '+%Y-%m-%dT%H:%M:%S')\";" > /Users/anupampatil/command-center/freshness.js

@@ -165,6 +165,7 @@
   <div class="tab" data-p="intraday">Intraday</div>
   <div class="tab" data-p="earnings">Earnings</div>
   <div class="tab" data-p="strategies">Strategies</div>
+  <div class="tab" data-p="arena">Arena</div>
   <div class="tab" data-p="progress">Progress</div>
   <div class="tab" data-p="positions">Positions</div>
 </div>
@@ -302,6 +303,39 @@
     <tbody id="posTags"></tbody></table>
 </div>
 
+<!-- ARENA -->
+<div class="pane" id="p-arena">
+  <div class="legend"><b>The Paper Arena — the agent actually trades here.</b>
+  Six fixed rules (parameters set a priori, never tuned) take paper positions
+  automatically every refresh: entry/exit at the signal close, 10 bps per side,
+  one position per name per rule, max 10 concurrent per rule, every trade
+  benchmarked against SPY over the identical window. Left: the 1-year replay
+  (instant analysis). Right of it: the live forward book — the record that
+  actually counts.</div>
+
+  <h3>Backtest — 1-year replay over the full universe</h3>
+  <table><thead><tr><th>Strategy</th><th>Rule</th><th>Side</th><th>Trades</th>
+    <th>Avg/trade</th><th>Hit %</th><th>vs SPY/trade</th><th>t-stat</th><th>Verdict</th></tr></thead>
+    <tbody id="arBt"></tbody></table>
+  <div class="hon" id="arHon"></div>
+
+  <h3 style="margin-top:22px">Forward paper book — live, out-of-sample</h3>
+  <div class="legend" id="arFwdSum"></div>
+  <table><thead><tr><th>Strategy</th><th>Trades closed</th><th>Avg/trade</th>
+    <th>Hit %</th><th>vs SPY/trade</th><th>t-stat</th></tr></thead>
+    <tbody id="arFwdStats"></tbody></table>
+
+  <h3 style="margin-top:22px">Open paper positions</h3>
+  <table><thead><tr><th>Strategy</th><th>Ticker</th><th>Side</th><th>Entered</th>
+    <th>Entry</th><th>MTM</th><th>Sessions left</th></tr></thead>
+    <tbody id="arOpen"></tbody></table>
+
+  <h3 style="margin-top:22px">Recently closed forward trades</h3>
+  <table><thead><tr><th>Strategy</th><th>Ticker</th><th>Side</th><th>Entered</th>
+    <th>Exited</th><th>Net</th><th>vs SPY</th></tr></thead>
+    <tbody id="arClosed"></tbody></table>
+</div>
+
 <!-- STRATEGIES -->
 <div class="pane" id="p-strategies">
   <div class="legend" id="sbench"></div>
@@ -374,6 +408,44 @@ function positions(){
     <td>${s.win_rate!=null?s.win_rate+'%':'—'}</td><td class="${s.avg_pnl_pct>=0?'pos':'neg'}">${s.avg_pnl_pct!=null?(s.avg_pnl_pct>=0?'+':'')+s.avg_pnl_pct+'%':'too few'}</td></tr>`).join('')
     :'<tr><td colspan="4" class="none" style="text-align:left">No tags scored yet.</td></tr>';
 }
+
+// ---- ARENA ----
+(function(){
+  const A=H.arena||{}; if(!A.backtest) return;
+  const bps=v=>v==null?'—':`<span class="${v>=0?'pos':'neg'}">${v>=0?'+':''}${v} bps</span>`;
+  const vcls=v=>/CANDIDATE/.test(v)?'pos':/DEAD/.test(v)?'neg':'';
+  const btEl=document.getElementById('arBt');
+  if(btEl)btEl.innerHTML=Object.entries(A.backtest).map(([k,s])=>`<tr>
+    <td class="tick">${k}</td><td style="text-align:left">${s.desc||''}</td><td>${s.side||''}</td>
+    <td>${s.n||0}</td><td>${bps(s.avg_bps)}</td><td>${s.hit_pct!=null?s.hit_pct+'%':'—'}</td>
+    <td>${bps(s.avg_excess_bps)}</td><td>${s.t_stat!=null?s.t_stat:'—'}</td>
+    <td style="text-align:left"><b class="${vcls(s.verdict||'')}">${s.verdict||''}</b></td></tr>`).join('');
+  const hon=document.getElementById('arHon');
+  if(hon)hon.textContent=A.honesty+' Conventions: '+A.conventions+'.';
+  const F=A.forward||{};
+  const fs=document.getElementById('arFwdStats');
+  if(fs)fs.innerHTML=Object.entries(F.stats||{}).map(([k,s])=>s.n?`<tr>
+    <td class="tick">${k}</td><td>${s.n}</td><td>${bps(s.avg_bps)}</td>
+    <td>${s.hit_pct}%</td><td>${bps(s.avg_excess_bps)}</td><td>${s.t_stat}</td></tr>`
+    :`<tr><td class="tick">${k}</td><td>0</td><td colspan="4" class="none" style="text-align:left">no closed trades yet</td></tr>`).join('');
+  const sum=document.getElementById('arFwdSum');
+  if(sum)sum.innerHTML=`<b>${(F.open||[]).length}</b> open paper positions · <b>${F.closed_total||0}</b> closed so far.
+    The forward book is the real exam: the backtest above picked these six rules on the same year it graded,
+    so only out-of-sample results promote a rule.`;
+  const oe=document.getElementById('arOpen');
+  if(oe)oe.innerHTML=(F.open||[]).length?(F.open||[]).map(p=>`<tr data-t="${p.ticker}" title="click for the ${p.ticker} dossier">
+    <td class="tick">${p.strategy}</td><td class="tick">${p.ticker}</td><td>${p.side<0?'SHORT':'LONG'}</td>
+    <td>${p.entry_date}</td><td>${f2(+p.entry_px)}</td>
+    <td class="${p.mtm>=0?'pos':'neg'}">${(p.mtm*100).toFixed(2)}%</td><td>${p.days_left}d</td></tr>`).join('')
+    :'<tr><td colspan="7" class="none" style="text-align:left">No open positions.</td></tr>';
+  const ce=document.getElementById('arClosed');
+  if(ce)ce.innerHTML=(F.closed_recent||[]).length?(F.closed_recent||[]).map(r=>`<tr data-t="${r.ticker}">
+    <td class="tick">${r.strategy}</td><td class="tick">${r.ticker}</td><td>${+r.side<0?'SHORT':'LONG'}</td>
+    <td>${r.entry_date}</td><td>${r.exit_date}</td>
+    <td class="${+r.net>=0?'pos':'neg'}">${(+r.net*100).toFixed(2)}%</td>
+    <td>${r.excess!==''&&r.excess!=null?((+r.excess*100).toFixed(2)+'%'):'—'}</td></tr>`).join('')
+    :'<tr><td colspan="7" class="none" style="text-align:left">Nothing closed yet — first exits land as holds mature (2–15 sessions).</td></tr>';
+})();
 
 // tabs
 function goTab(p){closeTicker();document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x.dataset.p===p));
