@@ -8,7 +8,7 @@
    "entry_date": "2026-07-25",
    "entry_t": 20658,
    "entry_px": 114.99,
-   "mtm": 0.0,
+   "mtm": -0.002,
    "days_left": 3
   },
   {
@@ -19,7 +19,7 @@
    "entry_date": "2026-07-25",
    "entry_t": 20658,
    "entry_px": 313.03,
-   "mtm": 0.0,
+   "mtm": -0.002,
    "days_left": 3
   },
   {
@@ -30,7 +30,7 @@
    "entry_date": "2026-07-25",
    "entry_t": 20658,
    "entry_px": 141.1,
-   "mtm": 0.0,
+   "mtm": -0.02702,
    "days_left": 15
   },
   {
@@ -41,7 +41,7 @@
    "entry_date": "2026-07-25",
    "entry_t": 20658,
    "entry_px": 112.14,
-   "mtm": 0.0,
+   "mtm": -0.002,
    "days_left": 10
   },
   {
@@ -52,7 +52,7 @@
    "entry_date": "2026-07-25",
    "entry_t": 20658,
    "entry_px": 187.77,
-   "mtm": 0.0,
+   "mtm": 0.17481,
    "days_left": 2
   },
   {
@@ -63,7 +63,7 @@
    "entry_date": "2026-07-25",
    "entry_t": 20658,
    "entry_px": 55.89,
-   "mtm": 0.0,
+   "mtm": -0.002,
    "days_left": 2
   },
   {
@@ -74,7 +74,7 @@
    "entry_date": "2026-07-25",
    "entry_t": 20658,
    "entry_px": 55.89,
-   "mtm": 0.0,
+   "mtm": -0.002,
    "days_left": 3
   },
   {
@@ -85,7 +85,7 @@
    "entry_date": "2026-07-25",
    "entry_t": 20658,
    "entry_px": 260.01,
-   "mtm": 0.0,
+   "mtm": -0.002,
    "days_left": 10
   },
   {
@@ -96,7 +96,7 @@
    "entry_date": "2026-07-25",
    "entry_t": 20658,
    "entry_px": 260.01,
-   "mtm": 0.0,
+   "mtm": -0.002,
    "days_left": 2
   },
   {
@@ -107,7 +107,7 @@
    "entry_date": "2026-07-25",
    "entry_t": 20658,
    "entry_px": 260.01,
-   "mtm": 0.0,
+   "mtm": -0.002,
    "days_left": 3
   },
   {
@@ -118,7 +118,7 @@
    "entry_date": "2026-07-25",
    "entry_t": 20658,
    "entry_px": 92.32,
-   "mtm": 0.0,
+   "mtm": -0.002,
    "days_left": 2
   },
   {
@@ -129,7 +129,7 @@
    "entry_date": "2026-07-25",
    "entry_t": 20658,
    "entry_px": 92.32,
-   "mtm": 0.0,
+   "mtm": -0.002,
    "days_left": 3
   },
   {
@@ -140,7 +140,7 @@
    "entry_date": "2026-07-25",
    "entry_t": 20658,
    "entry_px": 349.92,
-   "mtm": 0.0,
+   "mtm": -0.002,
    "days_left": 2
   },
   {
@@ -151,7 +151,7 @@
    "entry_date": "2026-07-25",
    "entry_t": 20658,
    "entry_px": 53.53,
-   "mtm": 0.0,
+   "mtm": -0.002,
    "days_left": 10
   },
   {
@@ -162,7 +162,7 @@
    "entry_date": "2026-07-25",
    "entry_t": 20658,
    "entry_px": 53.53,
-   "mtm": 0.0,
+   "mtm": -0.002,
    "days_left": 2
   },
   {
@@ -173,7 +173,7 @@
    "entry_date": "2026-07-25",
    "entry_t": 20658,
    "entry_px": 53.53,
-   "mtm": 0.0,
+   "mtm": -0.002,
    "days_left": 3
   },
   {
@@ -184,7 +184,7 @@
    "entry_date": "2026-07-25",
    "entry_t": 20658,
    "entry_px": 233.37,
-   "mtm": 0.0,
+   "mtm": -0.002,
    "days_left": 2
   },
   {
@@ -195,8 +195,8 @@
    "entry_date": "2026-07-25",
    "entry_t": 20657,
    "entry_px": 558.3,
-   "mtm": 0.0,
-   "days_left": 15
+   "mtm": -0.07096,
+   "days_left": 14
   },
   {
    "strategy": "PANIC_BOUNCE",
@@ -206,7 +206,7 @@
    "entry_date": "2026-07-25",
    "entry_t": 20658,
    "entry_px": 1436.56,
-   "mtm": 0.0,
+   "mtm": -0.002,
    "days_left": 2
   },
   {
@@ -217,7 +217,7 @@
    "entry_date": "2026-07-25",
    "entry_t": 20658,
    "entry_px": 146.65,
-   "mtm": 0.0,
+   "mtm": -0.002,
    "days_left": 10
   },
   {
@@ -228,7 +228,7 @@
    "entry_date": "2026-07-25",
    "entry_t": 20658,
    "entry_px": 146.65,
-   "mtm": 0.0,
+   "mtm": -0.002,
    "days_left": 2
   },
   {
@@ -239,8 +239,8 @@
    "entry_date": "2026-07-25",
    "entry_t": 20657,
    "entry_px": 349.9,
-   "mtm": 0.0,
-   "days_left": 10
+   "mtm": 0.00746,
+   "days_left": 9
   },
   {
    "strategy": "PANIC_BOUNCE",
@@ -250,7 +250,7 @@
    "entry_date": "2026-07-25",
    "entry_t": 20658,
    "entry_px": 94.91,
-   "mtm": 0.0,
+   "mtm": -0.002,
    "days_left": 2
   },
   {
@@ -261,7 +261,7 @@
    "entry_date": "2026-07-25",
    "entry_t": 20658,
    "entry_px": 94.91,
-   "mtm": 0.0,
+   "mtm": -0.002,
    "days_left": 3
   },
   {
@@ -272,7 +272,7 @@
    "entry_date": "2026-07-25",
    "entry_t": 20658,
    "entry_px": 197.55,
-   "mtm": 0.0,
+   "mtm": -0.002,
    "days_left": 3
   },
   {
@@ -283,7 +283,7 @@
    "entry_date": "2026-07-25",
    "entry_t": 20658,
    "entry_px": 212.79,
-   "mtm": 0.0,
+   "mtm": -0.01906,
    "days_left": 10
   },
   {
@@ -294,7 +294,7 @@
    "entry_date": "2026-07-25",
    "entry_t": 20658,
    "entry_px": 386.75,
-   "mtm": 0.0,
+   "mtm": -0.002,
    "days_left": 10
   },
   {
@@ -305,7 +305,7 @@
    "entry_date": "2026-07-25",
    "entry_t": 20658,
    "entry_px": 289.26,
-   "mtm": 0.0,
+   "mtm": -0.002,
    "days_left": 10
   },
   {
@@ -316,7 +316,7 @@
    "entry_date": "2026-07-25",
    "entry_t": 20658,
    "entry_px": 79.1,
-   "mtm": 0.0,
+   "mtm": -0.002,
    "days_left": 10
   },
   {
@@ -327,7 +327,7 @@
    "entry_date": "2026-07-25",
    "entry_t": 20657,
    "entry_px": 13.56,
-   "mtm": 0.0,
+   "mtm": -0.002,
    "days_left": 3
   },
   {
@@ -338,7 +338,7 @@
    "entry_date": "2026-07-25",
    "entry_t": 20658,
    "entry_px": 184.89,
-   "mtm": 0.0,
+   "mtm": -0.002,
    "days_left": 10
   },
   {
@@ -349,7 +349,7 @@
    "entry_date": "2026-07-25",
    "entry_t": 20658,
    "entry_px": 184.89,
-   "mtm": 0.0,
+   "mtm": -0.002,
    "days_left": 3
   },
   {
@@ -360,7 +360,7 @@
    "entry_date": "2026-07-25",
    "entry_t": 20658,
    "entry_px": 10.83,
-   "mtm": 0.0,
+   "mtm": 0.1402,
    "days_left": 10
   },
   {
@@ -371,8 +371,19 @@
    "entry_date": "2026-07-25",
    "entry_t": 20658,
    "entry_px": 82.25,
-   "mtm": 0.0,
+   "mtm": -0.002,
    "days_left": 15
+  },
+  {
+   "strategy": "TREND_RIDER",
+   "ticker": "LMT",
+   "side": 1,
+   "hold": 15,
+   "entry_date": "2026-07-25",
+   "entry_t": 20657,
+   "entry_px": 568.59,
+   "mtm": 0.02264,
+   "days_left": 14
   }
  ]
 }
