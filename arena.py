@@ -31,7 +31,9 @@ REPORTS = os.path.join(LAB, "reports")
 STATE_F = os.path.join(REPORTS, "arena_state.json")
 TRADES_F = os.path.join(REPORTS, "arena_trades.csv")
 COST = 0.001
-MAX_OPEN = 25
+MAX_OPEN = 40      # raised 25→40 on 2026-07-25 (tempo sign-off in REGISTRY.md)
+ROUND_F = os.path.join(REPORTS, "roundtable.json")
+ROUND_MD = os.path.join(REPORTS, "roundtable.md")
 
 STRATS = {
     "DEEP_DIP":     {"hold": 10, "side": 1,  "desc": "fresh −40% off 52w high → buy 10d",
@@ -288,7 +290,97 @@ def main():
                               count.get(k, 0), fwd_stats[k], recent)
 
     cur_reg, _ = regime(spy["series_t"][-1])
+
+    # ---------------- 3 · the Roundtable: one desk, shared lessons ------------
+    # Every agent's experience pooled into a single report the others (and the
+    # human) read: who owns which regime, who overlaps whom, what the marginal
+    # band is worth. All computed, nothing invented.
+    entries = {k: {(t["ticker"], t["entry_date"]) for t in bt[k]} for k in STRATS}
+    overlaps = []
+    keys = list(STRATS)
+    for i, a in enumerate(keys):
+        for b in keys[i + 1:]:
+            if not entries[a] or not entries[b]:
+                continue
+            inter = len(entries[a] & entries[b])
+            share = inter / min(len(entries[a]), len(entries[b]))
+            if share >= 0.25 and inter >= 20:
+                overlaps.append({"a": a, "b": b, "n": inter,
+                                 "share_pct": round(100 * share)})
+    overlaps.sort(key=lambda o: -o["share_pct"])
+
+    band = entries["PANIC_LITE"] - entries["PANIC_BOUNCE"]
+    band_trades = [t for t in bt["PANIC_LITE"] if (t["ticker"], t["entry_date"]) in band]
+    marginal = {**stats(band_trades),
+                "desc": "the −3%…−5% band alone (PANIC_LITE entries too shallow "
+                        "for PANIC_BOUNCE)"} if band_trades else None
+
+    playbook = {}
+    for r in ("calm-up", "calm-down", "storm-up", "storm-down"):
+        rank = [(k, backtest[k]["by_regime"][r]) for k in STRATS
+                if backtest[k]["by_regime"][r].get("n", 0) >= 20]
+        rank.sort(key=lambda kv: -kv[1]["avg_bps"])
+        playbook[r] = [{"agent": k, "avg_bps": v["avg_bps"], "n": v["n"],
+                        "hit_pct": v["hit_pct"]} for k, v in rank]
+
+    notes = []
+    for k in STRATS:
+        regs = {r: v for r, v in backtest[k]["by_regime"].items() if v.get("n", 0) >= 8}
+        if not regs:
+            continue
+        best = max(regs, key=lambda r: regs[r]["avg_bps"])
+        worst = min(regs, key=lambda r: regs[r]["avg_bps"])
+        notes.append(f"{k} to the desk: my weather is {best} "
+                     f"({regs[best]['avg_bps']:+.0f} bps, n={regs[best]['n']}); keep me "
+                     f"on a short leash in {worst} ({regs[worst]['avg_bps']:+.0f}). "
+                     f"Status: {backtest[k]['verdict']}.")
+
+    lines = []
+    pb_now = playbook.get(cur_reg, [])
+    if pb_now:
+        top = ", ".join(f"{p['agent']} ({p['avg_bps']:+.0f})" for p in pb_now[:3])
+        rest = pb_now[3:]
+        cold = ", ".join(f"{p['agent']} ({p['avg_bps']:+.0f})" for p in rest[-2:])
+        lines.append(f"Tape today: {cur_reg.upper()}. Our pooled record in this weather — "
+                     f"hot hands: {top}"
+                     + (f"; cold hands: {cold}" if cold else
+                        "; the rest of us have too little history in this weather to speak")
+                     + ". (History, not prophecy.)")
+    fh_se = next((o for o in overlaps if {o['a'], o['b']} == {"FRESH_HIGH", "SHORT_EXT"}), None)
+    if fh_se:
+        lines.append(f"FRESH_HIGH and SHORT_EXT enter on the same bar {fh_se['share_pct']}% "
+                     "of the time — one trade, two directions. The pooled ledger says the "
+                     "long side wins that argument; the skeptic keeps paying for the lesson.")
+    pl_pb = next((o for o in overlaps if {o['a'], o['b']} == {"PANIC_LITE", "PANIC_BOUNCE"}), None)
+    if pl_pb and marginal and marginal.get("n"):
+        lines.append(f"PANIC_LITE contains {pl_pb['share_pct']}% of PANIC_BOUNCE's entries; "
+                     f"stripped to {marginal['desc']}, it still earned "
+                     f"{marginal['avg_bps']:+.0f} bps over {marginal['n']} trades "
+                     f"(t={marginal['t_stat']}) — the bounce is not only in the extreme tail.")
+    lines.append("Desk rule we all share: reading each other's regime stats and gating "
+                 "ourselves in hindsight is selection bias — STORM_DIP is the only "
+                 "pre-registered regime gate; any new gate goes to REGISTRY.md with a "
+                 "thesis BEFORE it trades.")
+    roundtable = {"regime": cur_reg, "playbook": playbook, "overlaps": overlaps,
+                  "marginal": marginal, "notes": notes, "lines": lines}
+
+    # single-place report for every agent (and human) to read
+    with open(os.path.join(REPORTS, "arena_roundtable.md"), "w") as f:
+        f.write(f"# Arena Roundtable — {today}\n\nTape: **{cur_reg}**\n\n")
+        for ln in lines:
+            f.write(f"- {ln}\n")
+        f.write("\n## Playbook by regime (avg bps/trade, n>=20)\n\n")
+        for r, ps in playbook.items():
+            f.write(f"- **{r}**: " + " · ".join(
+                f"{p['agent']} {p['avg_bps']:+.0f} (n={p['n']})" for p in ps) + "\n")
+        f.write("\n## Notes to the desk\n\n")
+        for n_ in notes:
+            f.write(f"- {n_}\n")
+        f.write("\nCalibration experiment, not advice. Forward book + deflation gate "
+                "decide; the replay only suggests.\n")
+
     out = {
+        "roundtable": roundtable,
         "updated": radar.get("updated", ""),
         "universe": len(eq),
         "current_regime": cur_reg,

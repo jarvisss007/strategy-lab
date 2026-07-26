@@ -73,3 +73,23 @@ Trials-budget note: these 8 count against the cumulative budget like everything
 else, and the two dip CANDIDATEs are same-family cousins of the mean-reversion
 configs already convicted on 15y data — forward record + deflation gate decide,
 not the 1y replay.
+
+### Tempo raise (registered 2026-07-25 PM, sign-off: Anupam in session — "raise the trading tempo so the agents gather experience fast")
+
+Four higher-frequency rules added, theses pre-stated below BEFORE any backtest
+saw them. Same conventions, parameters frozen at registration. Cap raised
+25 → 40 open per rule (capacity, not signal logic). These 4 also count against
+the cumulative trials budget forever.
+
+| Rule | Registered | Thesis (pre-stated) | Status |
+|---|---|---|---|
+| RSI2_DIP (RSI(2) < 10, close > 200MA → long 3d) | 2026-07-25 | Connors-style: extreme short-term oversold inside a long-term uptrend mean-reverts; fires often by construction | NEW — no results yet |
+| REVERSAL_3 (3 consecutive down closes, close > 200MA → long 2d) | 2026-07-25 | short losing streaks in uptrends are noise, not information; the simplest possible reversal claim | NEW — no results yet |
+| BOLL_SNAP (close < 20d MA − 2×20d σ → long 3d) | 2026-07-25 | 2-sigma stretches below the 20d band snap back (rubber-band); vol-scaled cousin of the fixed-% dip rules | NEW — no results yet |
+| PULLBACK_50 (close > 200MA and crosses below 20d MA → long 5d) | 2026-07-25 | the first dip through the 20d in an uptrend gets bought; trend-plus-pullback, the long-side mirror of what TREND_RIDER tests | NEW — no results yet |
+
+Roundtable note (same sign-off): every refresh now writes reports/roundtable.md
+— one shared report with each agent's journal, per-regime rhythm, and crowding.
+Agents READ the prior roundtable and cite peers in their journals. Reading is
+awareness only: no rule's entry/exit logic changes based on it — adaptive
+variants would be new registered rules, not silent edits.
