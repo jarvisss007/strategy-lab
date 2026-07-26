@@ -306,13 +306,13 @@
 <!-- ARENA -->
 <div class="pane" id="p-arena">
   <div class="legend"><b>The Paper Arena — the agents actually trade here.</b>
-  Eight fixed rules (registered in REGISTRY.md with theses, never tuned after
-  registration) take paper positions automatically every refresh: entry/exit at
-  the signal close, 10 bps per side, one position per name per rule, max 25
-  concurrent per rule, every trade benchmarked against SPY and tagged with the
-  regime at entry (calm/storm = VIX &lt;/≥ 20 · up/down = SPY vs 50d MA). The
-  1-year replay is instant analysis; the live forward book is the record that
-  actually counts.</div>
+  Twelve fixed rules (registered in REGISTRY.md with theses, never tuned after
+  registration; the 4-rule tempo tier joined 2026-07-25) take paper positions
+  automatically every refresh: entry/exit at the signal close, 10 bps per side,
+  one position per name per rule, max 40 concurrent per rule, every trade
+  benchmarked against SPY and tagged with the regime at entry (calm/storm =
+  VIX &lt;/≥ 20 · up/down = SPY vs 50d MA). The 1-year replay is instant
+  analysis; the live forward book is the record that actually counts.</div>
 
   <h3>The Roundtable — one desk report every agent reads <span id="arRegime" style="font-weight:400;color:var(--ink2)"></span></h3>
   <div id="arRound" class="legend" style="line-height:1.6"></div>
@@ -328,6 +328,11 @@
 
   <h3 style="margin-top:22px">Rhythm by regime — avg bps/trade (calm/storm = VIX &lt;/≥ 20 · up/down = SPY vs 50d MA)</h3>
   <table><thead><tr id="arRegHead"></tr></thead><tbody id="arRegGrid"></tbody></table>
+
+  <div id="arFwdRhythmWrap" style="display:none">
+  <h3 style="margin-top:22px">Forward rhythm — same grid, real closes only (accrues as the book scores)</h3>
+  <table><thead><tr id="arFwdRegHead"></tr></thead><tbody id="arFwdRegGrid"></tbody></table>
+  </div>
 
   <h3 style="margin-top:22px">Full blotter — every trade the agents have taken</h3>
   <div id="arFilters" style="margin:6px 0"></div>
@@ -480,10 +485,18 @@ function positions(){
       const v=s.avg_bps,a=Math.min(1,Math.abs(v)/250);
       return `<td style="background:${v>=0?`rgba(63,185,80,${.08+.5*a})`:`rgba(248,81,73,${.08+.5*a})`}" title="n=${s.n}, hit ${s.hit_pct}%">${v>=0?'+':''}${v.toFixed(0)} <span style="color:var(--ink2);font-size:10px">n${s.n}</span></td>`;};
     gEl.innerHTML=Object.entries(A.backtest).map(([k,b])=>`<tr><td class="tick">${k}</td>`+
-      REGS.map(r=>cell((b.by_regime||{})[r])).join('')+'</tr>').join('');}
+      REGS.map(r=>cell((b.by_regime||{})[r])).join('')+'</tr>').join('');
+    const FR=(A.forward||{}).by_regime||{};
+    if(Object.values(FR).some(m=>REGS.some(r=>(m[r]||{}).n))){
+      document.getElementById('arFwdRhythmWrap').style.display='';
+      document.getElementById('arFwdRegHead').innerHTML='<th>Strategy</th>'+REGS.map(r=>`<th>${r}</th>`).join('');
+      document.getElementById('arFwdRegGrid').innerHTML=Object.keys(A.backtest).map(k=>`<tr><td class="tick">${k}</td>`+
+        REGS.map(r=>cell((FR[k]||{})[r])).join('')+'</tr>').join('');}}
 
   // full blotter with filters
   const FW=A.forward||{};
+  const openRows=(FW.open||[]).map(p=>({strategy:p.strategy,ticker:p.ticker,side:p.side,
+    regime:p.regime,entry_date:p.entry_date,exit_date:'',net:p.mtm||0,excess:null,src:'OPEN'}));
   const fwdRows=(FW.closed_all||[]).map(r=>({...r,src:'FWD'}));
   const btRows=(A.blotter_backtest||[]).map(r=>({...r,src:'BT'}));
   const fEl=document.getElementById('arFilters'),blEl=document.getElementById('arBlotter'),nEl=document.getElementById('arBlotNote');
@@ -493,10 +506,10 @@ function positions(){
     const chip=(txt,on)=>`<span style="display:inline-block;cursor:pointer;padding:3px 10px;margin:0 4px 4px 0;border-radius:14px;font-size:11.5px;font-weight:600;border:1px solid ${on?'var(--accent)':'#30363d'};color:${on?'var(--accent)':'var(--ink2)'}">${txt}</span>`;
     function draw(){
       fEl.innerHTML='<span style="color:var(--ink2);font-size:11px;margin-right:6px">source:</span>'+
-        ['ALL','FWD','BT'].map(s=>`<span data-src="${s}">${chip(s==='FWD'?'forward':s==='BT'?'backtest':'all',fSrc===s)}</span>`).join('')+
+        ['ALL','OPEN','FWD','BT'].map(s=>`<span data-src="${s}">${chip(s==='FWD'?'closed fwd':s==='BT'?'backtest':s==='OPEN'?'open now':'all',fSrc===s)}</span>`).join('')+
         '<span style="color:var(--ink2);font-size:11px;margin:0 6px 0 14px">agent:</span>'+
         ['ALL',...Object.keys(A.backtest)].map(s=>`<span data-st="${s}">${chip(s,fStrat===s)}</span>`).join('');
-      let rows=[...fwdRows,...btRows];
+      let rows=[...openRows,...fwdRows,...btRows];
       if(fSrc!=='ALL')rows=rows.filter(r=>r.src===fSrc);
       if(fStrat!=='ALL')rows=rows.filter(r=>r.strategy===fStrat);
       const total=rows.length;rows=rows.slice(0,CAP);
@@ -508,7 +521,7 @@ function positions(){
         <td>${ex==null?'—':`<span class="${ex>=0?'pos':'neg'}">${(ex*100).toFixed(2)}%</span>`}</td></tr>`;}).join('')
         ||'<tr><td colspan="8" class="none" style="text-align:left">no trades match</td></tr>';
       nEl.textContent=total>CAP?`showing first ${CAP} of ${total} trades (filter by agent to narrow)`
-        :`${total} trades · forward closes are the record that counts; backtest rows are the replay`;
+        :`${total} rows · OPEN = live positions at current MTM · forward closes are the record that counts; backtest rows are the replay`;
     }
     fEl.addEventListener('click',ev=>{const s=ev.target.closest('[data-src]'),t=ev.target.closest('[data-st]');
       if(s){fSrc=s.dataset.src;draw();} if(t){fStrat=t.dataset.st;draw();}});
@@ -530,7 +543,7 @@ function positions(){
     :`<tr><td class="tick">${k}</td><td>0</td><td colspan="4" class="none" style="text-align:left">no closed trades yet</td></tr>`).join('');
   const sum=document.getElementById('arFwdSum');
   if(sum)sum.innerHTML=`<b>${(F.open||[]).length}</b> open paper positions · <b>${F.closed_total||0}</b> closed so far.
-    The forward book is the real exam: the backtest above picked these six rules on the same year it graded,
+    The forward book is the real exam: the backtest above graded these rules on the same year it saw,
     so only out-of-sample results promote a rule.`;
   const oe=document.getElementById('arOpen');
   if(oe)oe.innerHTML=(F.open||[]).length?(F.open||[]).map(p=>`<tr data-t="${p.ticker}" title="click for the ${p.ticker} dossier">
@@ -539,7 +552,8 @@ function positions(){
     <td class="${p.mtm>=0?'pos':'neg'}">${(p.mtm*100).toFixed(2)}%</td><td>${p.days_left}d</td></tr>`).join('')
     :'<tr><td colspan="7" class="none" style="text-align:left">No open positions.</td></tr>';
   const ce=document.getElementById('arClosed');
-  if(ce)ce.innerHTML=(F.closed_recent||[]).length?(F.closed_recent||[]).map(r=>`<tr data-t="${r.ticker}">
+  const ceRows=(F.closed_recent||F.closed_all||[]).slice(0,15);
+  if(ce)ce.innerHTML=ceRows.length?ceRows.map(r=>`<tr data-t="${r.ticker}">
     <td class="tick">${r.strategy}</td><td class="tick">${r.ticker}</td><td>${+r.side<0?'SHORT':'LONG'}</td>
     <td>${r.entry_date}</td><td>${r.exit_date}</td>
     <td class="${+r.net>=0?'pos':'neg'}">${(+r.net*100).toFixed(2)}%</td>

@@ -2,8 +2,9 @@
 """Paper Arena — the agents actually take trades (paper) and learn their own
 rhythm by market condition.
 
-Eight fixed rules (registered in REGISTRY.md 2026-07-25 with theses — never
-tuned after registration) run two ways over the Stock Radar universe:
+Twelve fixed rules (registered in REGISTRY.md 2026-07-25 with theses — never
+tuned after registration; the 4-rule tempo tier added the same day, registered
+before first run) run two ways over the Stock Radar universe:
 
   1. BACKTEST: full 1y replay, every trade kept with dates + regime tag.
   2. FORWARD:  every daily refresh opens/closes live paper positions and logs
@@ -32,8 +33,6 @@ STATE_F = os.path.join(REPORTS, "arena_state.json")
 TRADES_F = os.path.join(REPORTS, "arena_trades.csv")
 COST = 0.001
 MAX_OPEN = 40      # raised 25→40 on 2026-07-25 (tempo sign-off in REGISTRY.md)
-ROUND_F = os.path.join(REPORTS, "roundtable.json")
-ROUND_MD = os.path.join(REPORTS, "roundtable.md")
 
 STRATS = {
     "DEEP_DIP":     {"hold": 10, "side": 1,  "desc": "fresh −40% off 52w high → buy 10d",
@@ -52,6 +51,15 @@ STRATS = {
                      "voice": "the skeptic"},
     "TREND_RIDER":  {"hold": 15, "side": 1,  "desc": "cross above 50MA, above 200MA → buy 15d",
                      "voice": "the trend follower"},
+    # tempo tier — registered 2026-07-25 PM (REGISTRY.md), higher signal frequency
+    "RSI2_DIP":     {"hold": 3,  "side": 1,  "desc": "RSI(2) < 10 above 200MA → buy 3d",
+                     "voice": "the twitchy scalper"},
+    "REVERSAL_3":   {"hold": 2,  "side": 1,  "desc": "3 straight down closes above 200MA → buy 2d",
+                     "voice": "the three-day contrarian"},
+    "BOLL_SNAP":    {"hold": 3,  "side": 1,  "desc": "close < 20d MA − 2σ → buy 3d",
+                     "voice": "the rubber-band trader"},
+    "PULLBACK_50":  {"hold": 5,  "side": 1,  "desc": "uptrend, first close below 20d MA → buy 5d",
+                     "voice": "the dip-in-trend buyer"},
 }
 DAY0 = date(1970, 1, 1)
 
@@ -84,12 +92,28 @@ def signals_at(c, i, storm):
         out.append("FRESH_HIGH")
         if c[i] / lo - 1 >= 1.0:
             out.append("SHORT_EXT")
+    ma20 = sum(c[i - 19:i + 1]) / 20
+    sd20 = math.sqrt(sum((x - ma20) ** 2 for x in c[i - 19:i + 1]) / 20)
+    if c[i] < ma20 - 2 * sd20:
+        out.append("BOLL_SNAP")
     if i >= 200:
         ma50 = sum(c[i - 49:i + 1]) / 50
         ma50p = sum(c[i - 50:i]) / 50
         ma200 = sum(c[i - 199:i + 1]) / 200
         if c[i] > ma50 and c[i - 1] <= ma50p and c[i] > ma200:
             out.append("TREND_RIDER")
+        if c[i] > ma200:
+            d1 = c[i] - c[i - 1]; d2 = c[i - 1] - c[i - 2]
+            g = (max(d1, 0) + max(d2, 0)) / 2
+            l = (max(-d1, 0) + max(-d2, 0)) / 2
+            rsi2 = 100.0 if l == 0 else 100 - 100 / (1 + g / l)
+            if rsi2 < 10:
+                out.append("RSI2_DIP")
+            if c[i] < c[i - 1] < c[i - 2] < c[i - 3]:
+                out.append("REVERSAL_3")
+            ma20p = sum(c[i - 20:i]) / 20
+            if c[i] < ma20 and c[i - 1] >= ma20p:
+                out.append("PULLBACK_50")
     return out
 
 
@@ -121,7 +145,7 @@ def verdict(s):
     return "WATCH — positive but not significant"
 
 
-def journal(name, cfg, st, by_regime, open_n, fwd, closed_recent):
+def journal(name, cfg, st, by_regime, open_n, fwd, closed_recent, live=None):
     """First-person agent note, strictly from the numbers."""
     L = [f"I'm {name} — {cfg['voice']}. My rule: {cfg['desc']}, "
          f"{'short' if cfg['side'] < 0 else 'long'} side, no discretion allowed."]
@@ -146,6 +170,43 @@ def journal(name, cfg, st, by_regime, open_n, fwd, closed_recent):
     else:
         L.append(f"Forward book: {open_n} positions open, nothing closed yet — "
                  "judge me only on what gets scored.")
+
+    live = live or {}
+    # what I actually did this refresh
+    od, cd = live.get("opened_today") or [], live.get("closed_today") or []
+    if od or cd:
+        parts = []
+        if od:
+            parts.append("opened " + ", ".join(od[:6]) + ("…" if len(od) > 6 else ""))
+        if cd:
+            parts.append("closed " + ", ".join(
+                f"{t['ticker']} {t['net'] * 100:+.1f}%" for t in cd[:4]))
+        L.append("Today I " + " and ".join(parts) + ".")
+    # where I'm struggling right now
+    w = live.get("worst_open")
+    if w and w.get("mtm", 0) <= -0.03:
+        L.append(f"My sore spot: {w['ticker']} is {w['mtm'] * 100:+.1f}% against me with "
+                 f"{w.get('days_left', '?')} sessions left — logged, not excused.")
+    if live.get("losing_streak", 0) >= 3:
+        L.append(f"I'm {live['losing_streak']} forward losses deep in a streak. "
+                 "The rule doesn't change; the record just gets uglier honestly.")
+    # early forward rhythm, once any regime has 5 scored closes
+    fr = {r: v for r, v in (live.get("fwd_by_regime") or {}).items()
+          if v.get("n", 0) >= 5 and r != "unknown"}
+    if fr:
+        b = max(fr, key=lambda r: fr[r]["avg_bps"])
+        L.append(f"Forward rhythm forming: my real closes cluster best in {b} "
+                 f"({fr[b]['avg_bps']:+.0f} bps, n={fr[b]['n']}) — small sample, hold me to it.")
+    # what I took from the last roundtable (awareness only; rules stay frozen)
+    pb = live.get("prior_playbook") or []
+    peers = [p for p in pb if p["agent"] != name]
+    if peers:
+        p0 = peers[0]
+        mine = next((p for p in pb if p["agent"] == name), None)
+        L.append(f"From the roundtable: {p0['agent']} owns this {live.get('cur_reg', '?')} tape "
+                 f"({p0['avg_bps']:+.0f} bps, n={p0['n']})"
+                 + (f"; my own mark here is {mine['avg_bps']:+.0f}" if mine else "")
+                 + ". My rule stays frozen — but now I know whose weather this is.")
     return " ".join(L)
 
 
@@ -278,18 +339,57 @@ def main():
         for r in old + closed_now:
             w.writerow({c: r.get(c, "") for c in cols})
 
+    cur_reg, _ = regime(spy["series_t"][-1])
+
+    # last run's roundtable — the shared report each agent reads before speaking
+    prior_rt = {}
+    arena_f = os.path.join(REPORTS, "arena.json")
+    if os.path.exists(arena_f):
+        try:
+            prior_rt = json.load(open(arena_f)).get("roundtable", {})
+        except Exception:
+            prior_rt = {}
+
+    opened_today_by, closed_today_by = {}, {}
+    for p in still_open:
+        if p["entry_date"] == today:
+            opened_today_by.setdefault(p["strategy"], []).append(p["ticker"])
+    for t in closed_now:
+        closed_today_by.setdefault(t["strategy"], []).append(
+            {"ticker": t["ticker"], "net": t["net"]})
+
     fwd_trades = list(csv.DictReader(open(TRADES_F)))
-    fwd_stats, journals = {}, {}
+    fwd_stats, fwd_rhythm, journals = {}, {}, {}
     for k, cfg in STRATS.items():
         rows = [{"net": float(r["net"]),
                  "excess": float(r["excess"]) if r["excess"] else None}
                 for r in fwd_trades if r["strategy"] == k]
         fwd_stats[k] = stats(rows)
+        by_reg_rows = {}
+        for r in fwd_trades:
+            if r["strategy"] == k:
+                by_reg_rows.setdefault(r.get("regime") or "unknown", []).append(
+                    {"net": float(r["net"]),
+                     "excess": float(r["excess"]) if r["excess"] else None})
+        fwd_rhythm[k] = {rr: stats(v) for rr, v in by_reg_rows.items()}
         recent = [r for r in fwd_trades if r["strategy"] == k][::-1]
-        journals[k] = journal(k, cfg, backtest.get(k, {}), backtest[k]["by_regime"],
-                              count.get(k, 0), fwd_stats[k], recent)
-
-    cur_reg, _ = regime(spy["series_t"][-1])
+        streak = 0
+        for r in recent:
+            if float(r["net"]) < 0:
+                streak += 1
+            else:
+                break
+        opens_k = [p for p in still_open if p["strategy"] == k and "mtm" in p]
+        journals[k] = journal(
+            k, cfg, backtest.get(k, {}), backtest[k]["by_regime"],
+            count.get(k, 0), fwd_stats[k], recent,
+            live={"opened_today": opened_today_by.get(k),
+                  "closed_today": closed_today_by.get(k),
+                  "worst_open": min(opens_k, key=lambda p: p["mtm"]) if opens_k else None,
+                  "losing_streak": streak,
+                  "fwd_by_regime": fwd_rhythm[k],
+                  "prior_playbook": (prior_rt.get("playbook") or {}).get(cur_reg),
+                  "cur_reg": cur_reg})
 
     # ---------------- 3 · the Roundtable: one desk, shared lessons ------------
     # Every agent's experience pooled into a single report the others (and the
@@ -361,12 +461,21 @@ def main():
                  "ourselves in hindsight is selection bias — STORM_DIP is the only "
                  "pre-registered regime gate; any new gate goes to REGISTRY.md with a "
                  "thesis BEFORE it trades.")
+    tempo = {"opened_today": sum(len(v) for v in opened_today_by.values()),
+             "closed_today": len(closed_now),
+             "open_total": len(still_open),
+             "closed_total": len(fwd_trades),
+             "agents": len(STRATS)}
     roundtable = {"regime": cur_reg, "playbook": playbook, "overlaps": overlaps,
-                  "marginal": marginal, "notes": notes, "lines": lines}
+                  "marginal": marginal, "notes": notes, "lines": lines,
+                  "tempo": tempo}
 
     # single-place report for every agent (and human) to read
     with open(os.path.join(REPORTS, "arena_roundtable.md"), "w") as f:
-        f.write(f"# Arena Roundtable — {today}\n\nTape: **{cur_reg}**\n\n")
+        f.write(f"# Arena Roundtable — {today}\n\nTape: **{cur_reg}** · "
+                f"{tempo['agents']} agents · opened {tempo['opened_today']} today, "
+                f"closed {tempo['closed_today']} · {tempo['open_total']} open · "
+                f"{tempo['closed_total']} forward closes all-time\n\n")
         for ln in lines:
             f.write(f"- {ln}\n")
         f.write("\n## Playbook by regime (avg bps/trade, n>=20)\n\n")
@@ -387,15 +496,17 @@ def main():
         "max_open": MAX_OPEN,
         "conventions": "entry/exit at signal close · 10 bps/side · vs-SPY benchmark · "
                        "regime tags: calm/storm = VIX </≥ 20, up/down = SPY vs 50d MA · "
-                       "8 rules registered in REGISTRY.md, parameters frozen",
-        "honesty": "Eight rules tested at once — the best backtest flatters itself. Only "
-                   "the forward record + the Strategy Lab deflation gate promote a rule.",
+                       f"{len(STRATS)} rules registered in REGISTRY.md, parameters frozen",
+        "honesty": f"{len(STRATS)} rules tested at once — the best backtest flatters "
+                   "itself. Only the forward record + the Strategy Lab deflation gate "
+                   "promote a rule.",
         "backtest": backtest,
         "journals": journals,
         "blotter_backtest": sorted((t for v in bt.values() for t in v),
                                    key=lambda t: t["exit_date"], reverse=True),
         "forward": {"open": sorted(still_open, key=lambda p: p["strategy"]),
                     "stats": fwd_stats,
+                    "by_regime": fwd_rhythm,
                     "closed_total": len(fwd_trades),
                     "closed_all": fwd_trades[::-1]},
     }
@@ -406,7 +517,9 @@ def main():
             t["excess"] = round(t["excess"], 5)
     json.dump(out, open(os.path.join(REPORTS, "arena.json"), "w"))
     print("OK arena: backtest " + ", ".join(f"{k}:{backtest[k]['n']}" for k in STRATS)
-          + f" · forward open {len(still_open)}, closed {len(fwd_trades)} · regime {cur_reg}")
+          + f" · forward open {len(still_open)}, closed {len(fwd_trades)}"
+          + f" · today +{tempo['opened_today']}/−{tempo['closed_today']}"
+          + f" · regime {cur_reg}")
 
 
 if __name__ == "__main__":
