@@ -83,10 +83,22 @@ the cumulative trials budget forever.
 
 | Rule | Registered | Thesis (pre-stated) | Status |
 |---|---|---|---|
-| RSI2_DIP (RSI(2) < 10, close > 200MA → long 3d) | 2026-07-25 | Connors-style: extreme short-term oversold inside a long-term uptrend mean-reverts; fires often by construction | NEW — no results yet |
-| REVERSAL_3 (3 consecutive down closes, close > 200MA → long 2d) | 2026-07-25 | short losing streaks in uptrends are noise, not information; the simplest possible reversal claim | NEW — no results yet |
-| BOLL_SNAP (close < 20d MA − 2×20d σ → long 3d) | 2026-07-25 | 2-sigma stretches below the 20d band snap back (rubber-band); vol-scaled cousin of the fixed-% dip rules | NEW — no results yet |
-| PULLBACK_50 (close > 200MA and crosses below 20d MA → long 5d) | 2026-07-25 | the first dip through the 20d in an uptrend gets bought; trend-plus-pullback, the long-side mirror of what TREND_RIDER tests | NEW — no results yet |
+| RSI2_DIP (RSI(2) < 10, close > 200MA → long 3d) | 2026-07-25 | Connors-style: extreme short-term oversold inside a long-term uptrend mean-reverts; fires often by construction | backtest DEAD (−38 bps, t −1.17) |
+| REVERSAL_3 (3 consecutive down closes, close > 200MA → long 2d) | 2026-07-25 | short losing streaks in uptrends are noise, not information; the simplest possible reversal claim | backtest WATCH (positive, not significant) |
+| BOLL_SNAP (close < 20d MA − 2×20d σ → long 3d) | 2026-07-25 | 2-sigma stretches below the 20d band snap back (rubber-band); vol-scaled cousin of the fixed-% dip rules | backtest CANDIDATE — forward decides |
+| PULLBACK_50 (close > 200MA and crosses below 20d MA → long 5d) | 2026-07-25 | the first dip through the 20d in an uptrend gets bought; trend-plus-pullback, the long-side mirror of what TREND_RIDER tests | backtest WATCH (positive, not significant) |
+
+Implementation notes: RSI(2) uses the simple 2-period average-gain/loss form
+(not Wilder smoothing) — fixed at registration.
+
+Fill-integrity fix (2026-07-25 audit): the morning refresh runs during RTH, so
+forward fills were booking at partial-bar intraday prices — e.g. BE filled at
+184.89 during a −15% flush that closed at 217.30, gifting four dip agents a
+fictitious +17% MTM no close ever printed. This violated the registered
+"entry/exit at signal close" convention. arena.py now gates fills: intraday
+runs (weekdays 6:30–13:05 PT) mark to market only; opens/closes happen on
+post-close data. The 2026-07-25 morning intraday fills remain in the book
+as-is (recorded is recorded); their flattering fills are documented here.
 
 Roundtable note (same sign-off): every refresh now writes reports/roundtable.md
 — one shared report with each agent's journal, per-regime rhythm, and crowding.

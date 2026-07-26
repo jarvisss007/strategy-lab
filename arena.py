@@ -262,7 +262,7 @@ def main():
                     continue
                 nr = net_ret(c[i], c[j], cfg["side"])
                 sp = spy_ret(tdays[i], tdays[j])
-                bt[s].append({"ticker": e["ticker"], "net": nr,
+                bt[s].append({"strategy": s, "ticker": e["ticker"], "net": nr,
                               "excess": nr - sp if sp is not None else None,
                               "entry_date": d2iso(tdays[i]), "exit_date": d2iso(tdays[j]),
                               "regime": reg})
@@ -287,8 +287,23 @@ def main():
     state = {"open": []}
     if os.path.exists(STATE_F):
         state = json.load(open(STATE_F))
+    for p in state["open"]:          # backfill regime for pre-tagging entries
+        if not p.get("regime") or p["regime"] == "unknown":
+            p["regime"] = regime(p["entry_t"])[0]
     px = {e["ticker"]: dict(zip(e["series_t"], e["series_c"])) for e in eq}
     today = date.today().isoformat()
+
+    # Fill-integrity gate: the registered convention is entry/exit AT THE CLOSE.
+    # A refresh during RTH sees a partial bar (e.g. BE 2026-07-25: −15% intraday
+    # print, fully recovered by the close), so intraday runs only mark to market
+    # — no opens, no closes. Post-close and weekend runs trade normally.
+    import datetime as _dt
+    try:
+        from zoneinfo import ZoneInfo
+        now_pt = _dt.datetime.now(ZoneInfo("America/Los_Angeles"))
+    except Exception:
+        now_pt = _dt.datetime.now()
+    intraday = now_pt.weekday() < 5 and (6, 30) <= (now_pt.hour, now_pt.minute) < (13, 5)
 
     closed_now, still_open = [], []
     for p in state["open"]:
@@ -298,7 +313,7 @@ def main():
             still_open.append(p); continue
         elapsed = sum(1 for d in days if d > p["entry_t"])
         cur = px[tk][days[-1]]
-        if elapsed >= p["hold"]:
+        if elapsed >= p["hold"] and not intraday:
             nr = net_ret(p["entry_px"], cur, p["side"])
             sp = spy_ret(p["entry_t"], days[-1])
             closed_now.append({**p, "exit_date": d2iso(days[-1]), "exit_px": cur,
@@ -312,7 +327,7 @@ def main():
 
     held = {(p["strategy"], p["ticker"]) for p in still_open}
     count = {k: sum(1 for p in still_open if p["strategy"] == k) for k in STRATS}
-    for e in eq:
+    for e in (eq if not intraday else []):
         c = e["series_c"]; i = len(c) - 1
         if i < 51:
             continue
@@ -494,7 +509,8 @@ def main():
         "universe": len(eq),
         "current_regime": cur_reg,
         "max_open": MAX_OPEN,
-        "conventions": "entry/exit at signal close · 10 bps/side · vs-SPY benchmark · "
+        "conventions": "entry/exit at signal close (intraday refreshes mark to market "
+                       "only — no fills on partial bars) · 10 bps/side · vs-SPY benchmark · "
                        "regime tags: calm/storm = VIX </≥ 20, up/down = SPY vs 50d MA · "
                        f"{len(STRATS)} rules registered in REGISTRY.md, parameters frozen",
         "honesty": f"{len(STRATS)} rules tested at once — the best backtest flatters "
