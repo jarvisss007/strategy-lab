@@ -305,19 +305,34 @@
 
 <!-- ARENA -->
 <div class="pane" id="p-arena">
-  <div class="legend"><b>The Paper Arena — the agent actually trades here.</b>
-  Six fixed rules (parameters set a priori, never tuned) take paper positions
-  automatically every refresh: entry/exit at the signal close, 10 bps per side,
-  one position per name per rule, max 10 concurrent per rule, every trade
-  benchmarked against SPY over the identical window. Left: the 1-year replay
-  (instant analysis). Right of it: the live forward book — the record that
+  <div class="legend"><b>The Paper Arena — the agents actually trade here.</b>
+  Eight fixed rules (registered in REGISTRY.md with theses, never tuned after
+  registration) take paper positions automatically every refresh: entry/exit at
+  the signal close, 10 bps per side, one position per name per rule, max 25
+  concurrent per rule, every trade benchmarked against SPY and tagged with the
+  regime at entry (calm/storm = VIX &lt;/≥ 20 · up/down = SPY vs 50d MA). The
+  1-year replay is instant analysis; the live forward book is the record that
   actually counts.</div>
 
-  <h3>Backtest — 1-year replay over the full universe</h3>
+  <h3>From the agents — each one reports in its own words <span id="arRegime" style="font-weight:400;color:var(--ink2)"></span></h3>
+  <div id="arJournals" style="display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));margin:8px 0 4px"></div>
+
+  <h3 style="margin-top:22px">Backtest — 1-year replay over the full universe</h3>
   <table><thead><tr><th>Strategy</th><th>Rule</th><th>Side</th><th>Trades</th>
     <th>Avg/trade</th><th>Hit %</th><th>vs SPY/trade</th><th>t-stat</th><th>Verdict</th></tr></thead>
     <tbody id="arBt"></tbody></table>
   <div class="hon" id="arHon"></div>
+
+  <h3 style="margin-top:22px">Rhythm by regime — avg bps/trade (calm/storm = VIX &lt;/≥ 20 · up/down = SPY vs 50d MA)</h3>
+  <table><thead><tr id="arRegHead"></tr></thead><tbody id="arRegGrid"></tbody></table>
+
+  <h3 style="margin-top:22px">Full blotter — every trade the agents have taken</h3>
+  <div id="arFilters" style="margin:6px 0"></div>
+  <div style="max-height:420px;overflow:auto;border:1px solid #262c36;border-radius:8px">
+  <table><thead><tr><th>Strategy</th><th>Ticker</th><th>Side</th><th>Regime</th>
+    <th>Entered</th><th>Exited</th><th>Net</th><th>vs SPY</th></tr></thead>
+    <tbody id="arBlotter"></tbody></table></div>
+  <div class="none" id="arBlotNote" style="margin-top:4px"></div>
 
   <h3 style="margin-top:22px">Forward paper book — live, out-of-sample</h3>
   <div class="legend" id="arFwdSum"></div>
@@ -414,6 +429,71 @@ function positions(){
   const A=H.arena||{}; if(!A.backtest) return;
   const bps=v=>v==null?'—':`<span class="${v>=0?'pos':'neg'}">${v>=0?'+':''}${v} bps</span>`;
   const vcls=v=>/CANDIDATE/.test(v)?'pos':/DEAD/.test(v)?'neg':'';
+
+  // agents speak
+  const regEl=document.getElementById('arRegime');
+  if(regEl)regEl.textContent=`— current tape: ${A.current_regime||'?'}`;
+  const jEl=document.getElementById('arJournals');
+  if(jEl&&A.journals){
+    jEl.innerHTML=Object.entries(A.journals).map(([k,txt],i)=>{
+      const bt=A.backtest[k]||{};
+      return `<div style="background:var(--panel);border:1px solid #262c36;border-left:3px solid ${/CANDIDATE/.test(bt.verdict||'')?'#3fb950':/DEAD/.test(bt.verdict||'')?'#f85149':'#8b949e'};border-radius:8px;padding:10px 12px">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+        <b style="font-size:13px">${k}</b><canvas id="arEq${i}" width="120" height="26" style="width:120px;height:26px"></canvas></div>
+      <div style="font-size:12px;color:var(--ink2);line-height:1.5;margin-top:5px">${txt}</div></div>`;}).join('');
+    Object.keys(A.journals).forEach((k,i)=>{
+      const eq=(A.backtest[k]||{}).equity||[];const c=document.getElementById('arEq'+i);
+      if(!c||eq.length<2)return;const g=c.getContext('2d');
+      const mn=Math.min(0,...eq),mx=Math.max(0,...eq);
+      const X=j=>120*j/(eq.length-1),Y=v=>24-(22*(v-mn)/(mx-mn||1));
+      g.strokeStyle='#30363d';g.beginPath();g.moveTo(0,Y(0));g.lineTo(120,Y(0));g.stroke();
+      g.strokeStyle=eq[eq.length-1]>=0?'#3fb950':'#f85149';g.lineWidth=1.2;g.beginPath();
+      eq.forEach((v,j)=>j?g.lineTo(X(j),Y(v)):g.moveTo(X(j),Y(v)));g.stroke();});
+  }
+
+  // rhythm-by-regime grid
+  const REGS=['calm-up','calm-down','storm-up','storm-down'];
+  const rh=document.getElementById('arRegHead');
+  if(rh){rh.innerHTML='<th>Strategy</th>'+REGS.map(r=>`<th>${r}</th>`).join('');
+    const gEl=document.getElementById('arRegGrid');
+    const cell=s=>{if(!s||!s.n)return '<td class="none">—</td>';
+      const v=s.avg_bps,a=Math.min(1,Math.abs(v)/250);
+      return `<td style="background:${v>=0?`rgba(63,185,80,${.08+.5*a})`:`rgba(248,81,73,${.08+.5*a})`}" title="n=${s.n}, hit ${s.hit_pct}%">${v>=0?'+':''}${v.toFixed(0)} <span style="color:var(--ink2);font-size:10px">n${s.n}</span></td>`;};
+    gEl.innerHTML=Object.entries(A.backtest).map(([k,b])=>`<tr><td class="tick">${k}</td>`+
+      REGS.map(r=>cell((b.by_regime||{})[r])).join('')+'</tr>').join('');}
+
+  // full blotter with filters
+  const FW=A.forward||{};
+  const fwdRows=(FW.closed_all||[]).map(r=>({...r,src:'FWD'}));
+  const btRows=(A.blotter_backtest||[]).map(r=>({...r,src:'BT'}));
+  const fEl=document.getElementById('arFilters'),blEl=document.getElementById('arBlotter'),nEl=document.getElementById('arBlotNote');
+  if(fEl&&blEl){
+    let fStrat='ALL',fSrc='ALL';
+    const CAP=800;
+    const chip=(txt,on)=>`<span style="display:inline-block;cursor:pointer;padding:3px 10px;margin:0 4px 4px 0;border-radius:14px;font-size:11.5px;font-weight:600;border:1px solid ${on?'var(--accent)':'#30363d'};color:${on?'var(--accent)':'var(--ink2)'}">${txt}</span>`;
+    function draw(){
+      fEl.innerHTML='<span style="color:var(--ink2);font-size:11px;margin-right:6px">source:</span>'+
+        ['ALL','FWD','BT'].map(s=>`<span data-src="${s}">${chip(s==='FWD'?'forward':s==='BT'?'backtest':'all',fSrc===s)}</span>`).join('')+
+        '<span style="color:var(--ink2);font-size:11px;margin:0 6px 0 14px">agent:</span>'+
+        ['ALL',...Object.keys(A.backtest)].map(s=>`<span data-st="${s}">${chip(s,fStrat===s)}</span>`).join('');
+      let rows=[...fwdRows,...btRows];
+      if(fSrc!=='ALL')rows=rows.filter(r=>r.src===fSrc);
+      if(fStrat!=='ALL')rows=rows.filter(r=>r.strategy===fStrat);
+      const total=rows.length;rows=rows.slice(0,CAP);
+      blEl.innerHTML=rows.map(r=>{const net=+r.net,ex=r.excess===''||r.excess==null?null:+r.excess;
+        return `<tr><td class="tick">${r.strategy}</td><td class="tick">${r.ticker}</td>
+        <td>${(+r.side||1)<0?'SHORT':'LONG'}</td><td style="font-size:11px;color:var(--ink2)">${r.regime||'—'} · ${r.src}</td>
+        <td>${r.entry_date}</td><td>${r.exit_date||'open'}</td>
+        <td class="${net>=0?'pos':'neg'}">${(net*100).toFixed(2)}%</td>
+        <td>${ex==null?'—':`<span class="${ex>=0?'pos':'neg'}">${(ex*100).toFixed(2)}%</span>`}</td></tr>`;}).join('')
+        ||'<tr><td colspan="8" class="none" style="text-align:left">no trades match</td></tr>';
+      nEl.textContent=total>CAP?`showing first ${CAP} of ${total} trades (filter by agent to narrow)`
+        :`${total} trades · forward closes are the record that counts; backtest rows are the replay`;
+    }
+    fEl.addEventListener('click',ev=>{const s=ev.target.closest('[data-src]'),t=ev.target.closest('[data-st]');
+      if(s){fSrc=s.dataset.src;draw();} if(t){fStrat=t.dataset.st;draw();}});
+    draw();
+  }
   const btEl=document.getElementById('arBt');
   if(btEl)btEl.innerHTML=Object.entries(A.backtest).map(([k,s])=>`<tr>
     <td class="tick">${k}</td><td style="text-align:left">${s.desc||''}</td><td>${s.side||''}</td>

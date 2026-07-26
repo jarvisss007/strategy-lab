@@ -49,3 +49,27 @@ Verdict drift in either direction is a real finding. New configs are not.
   daily cumulative backtest; watch `edge_found` and skill trajectory, expect ≈0.
 - **insider-radar**: deep-sample verdict OVERFIT (PBO 0.914) — frozen; feed keeps
   accruing events for a future, larger re-test.
+
+## Paper Arena rules (registered 2026-07-25, sign-off: Anupam in session — "make agents take as many trades as possible and learn accordingly")
+
+Fixed parameters, never tuned after registration. Evaluated in arena.py: 1y
+backtest replay + live forward paper book, entry/exit at signal close, 10 bps
+per side, benchmarked vs SPY. Every trade is tagged with the regime at entry
+(calm/storm = VIX < / ≥ 20 · up/down = SPY above/below its 50d MA) so each
+rule's per-condition record accrues honestly.
+
+| Rule | Registered | Thesis (pre-stated) | Status |
+|---|---|---|---|
+| DEEP_DIP (fresh −40% off 52w hi → long 10d) | 2026-07-25 | user hypothesis: deep discount from year-high mean-reverts | backtest DEAD (−112 bps vs SPY) |
+| PANIC_BOUNCE (1d ≤ −5% → long 2d) | 2026-07-25 | violent 1-day flush overshoots | backtest CANDIDATE (t 2.7) |
+| DOUBLE_DIP (2d ≤ −6% → long 3d) | 2026-07-25 | two-day washouts overshoot harder | backtest CANDIDATE (t 2.9) |
+| FRESH_HIGH (new 52w hi → long 10d) | 2026-07-25 | breakout momentum persists | backtest WATCH (t 1.7) |
+| SHORT_EXT (new hi & ≥2× 52w lo → short 5d) | 2026-07-25 | user hypothesis: over-extension snaps back | backtest DEAD (−75 bps vs SPY) |
+| TREND_RIDER (cross > 50MA, above 200MA → long 15d) | 2026-07-25 | classic trend-following entry | backtest DEAD (−149 bps vs SPY) |
+| PANIC_LITE (1d ≤ −3% → long 2d) | 2026-07-25 | if the −5% flush bounce is real, a −3% version trades 3-4× as often at lower per-trade edge — tests whether the effect scales or only lives in the extreme tail | NEW — no results yet |
+| STORM_DIP (1d ≤ −4% AND VIX ≥ 20 → long 3d) | 2026-07-25 | the dip-buy premium should concentrate in high-vol tape where liquidity providers demand more; regime-gated version of the same family | NEW — no results yet |
+
+Trials-budget note: these 8 count against the cumulative budget like everything
+else, and the two dip CANDIDATEs are same-family cousins of the mean-reversion
+configs already convicted on 15y data — forward record + deflation gate decide,
+not the 1y replay.
