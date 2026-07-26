@@ -17,6 +17,11 @@
 # intended 7:05 AM run — leaving the terminal ~17 hours stale by evening. Fix:
 # a pre-market stamp doesn't count as "done" — only a mark from 6 AM or later
 # (after the intended run window) satisfies the guard.
+# Asia Radar prediction engine: cheap (one Yahoo call), runs on EVERY trigger —
+# it must fire after the 1 PM PT US close, which the once-a-day guard below
+# would skip. It no-ops unless a new final US close has appeared.
+/opt/anaconda3/bin/python /Users/anupampatil/asia-radar/predictions.py >> /Users/anupampatil/strategy-lab/refresh.log 2>&1
+
 DONE_MARK=/Users/anupampatil/strategy-lab/.refresh_done_$(date '+%Y-%m-%d')
 if [ -f "$DONE_MARK" ] && [ "$(date +%u)" -le 5 ] && [ "$(date -r "$DONE_MARK" '+%H')" -ge 6 ]; then
   exit 0
