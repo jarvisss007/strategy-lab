@@ -44,7 +44,7 @@
    "entry_date": "2026-07-25",
    "entry_t": 20658,
    "entry_px": 112.14,
-   "mtm": 0.01512,
+   "mtm": -0.002,
    "days_left": 10,
    "regime": "calm-down"
   },
@@ -56,7 +56,7 @@
    "entry_date": "2026-07-25",
    "entry_t": 20658,
    "entry_px": 187.77,
-   "mtm": 0.17481,
+   "mtm": -0.002,
    "days_left": 2,
    "regime": "calm-down"
   },
@@ -212,8 +212,8 @@
    "entry_date": "2026-07-25",
    "entry_t": 20657,
    "entry_px": 558.3,
-   "mtm": -0.002,
-   "days_left": 15,
+   "mtm": -0.07096,
+   "days_left": 14,
    "regime": "calm-down"
   },
   {
@@ -224,7 +224,7 @@
    "entry_date": "2026-07-25",
    "entry_t": 20658,
    "entry_px": 1436.56,
-   "mtm": 0.11896,
+   "mtm": -0.002,
    "days_left": 2,
    "regime": "calm-down"
   },
@@ -260,8 +260,8 @@
    "entry_date": "2026-07-25",
    "entry_t": 20657,
    "entry_px": 349.9,
-   "mtm": -0.002,
-   "days_left": 10,
+   "mtm": 0.00746,
+   "days_left": 9,
    "regime": "calm-down"
   },
   {
@@ -332,7 +332,7 @@
    "entry_date": "2026-07-25",
    "entry_t": 20658,
    "entry_px": 289.26,
-   "mtm": -0.0095,
+   "mtm": -0.002,
    "days_left": 10,
    "regime": "calm-down"
   },
@@ -368,7 +368,7 @@
    "entry_date": "2026-07-25",
    "entry_t": 20658,
    "entry_px": 184.89,
-   "mtm": 0.17329,
+   "mtm": -0.002,
    "days_left": 10,
    "regime": "calm-down"
   },
@@ -380,7 +380,7 @@
    "entry_date": "2026-07-25",
    "entry_t": 20658,
    "entry_px": 184.89,
-   "mtm": 0.17329,
+   "mtm": -0.002,
    "days_left": 3,
    "regime": "calm-down"
   },
@@ -392,7 +392,7 @@
    "entry_date": "2026-07-25",
    "entry_t": 20658,
    "entry_px": 10.83,
-   "mtm": 0.1402,
+   "mtm": -0.002,
    "days_left": 10,
    "regime": "calm-down"
   },
@@ -440,8 +440,8 @@
    "entry_date": "2026-07-25",
    "entry_t": 20657,
    "entry_px": 34.3,
-   "mtm": -0.002,
-   "days_left": 15,
+   "mtm": -0.00375,
+   "days_left": 14,
    "regime": "calm-down"
   },
   {
@@ -464,8 +464,8 @@
    "entry_date": "2026-07-25",
    "entry_t": 20657,
    "entry_px": 86.82,
-   "mtm": -0.002,
-   "days_left": 3,
+   "mtm": 0.03762,
+   "days_left": 2,
    "regime": "calm-down"
   },
   {
@@ -536,7 +536,7 @@
    "entry_date": "2026-07-25",
    "entry_t": 20658,
    "entry_px": 187.77,
-   "mtm": 0.17481,
+   "mtm": -0.002,
    "days_left": 2,
    "regime": "calm-down"
   },
@@ -596,7 +596,7 @@
    "entry_date": "2026-07-25",
    "entry_t": 20658,
    "entry_px": 521.95,
-   "mtm": 0.03199,
+   "mtm": -0.002,
    "days_left": 2,
    "regime": "calm-down"
   },
@@ -608,7 +608,7 @@
    "entry_date": "2026-07-25",
    "entry_t": 20658,
    "entry_px": 920.95,
-   "mtm": 0.0732,
+   "mtm": -0.002,
    "days_left": 2,
    "regime": "calm-down"
   },
@@ -620,7 +620,7 @@
    "entry_date": "2026-07-25",
    "entry_t": 20658,
    "entry_px": 920.95,
-   "mtm": 0.0732,
+   "mtm": -0.002,
    "days_left": 2,
    "regime": "calm-down"
   },
@@ -728,7 +728,7 @@
    "entry_date": "2026-07-25",
    "entry_t": 20658,
    "entry_px": 210.52,
-   "mtm": 0.037,
+   "mtm": -0.002,
    "days_left": 2,
    "regime": "calm-down"
   },
@@ -764,7 +764,7 @@
    "entry_date": "2026-07-25",
    "entry_t": 20658,
    "entry_px": 519.8,
-   "mtm": 0.07207,
+   "mtm": -0.002,
    "days_left": 2,
    "regime": "calm-down"
   },
@@ -776,7 +776,7 @@
    "entry_date": "2026-07-25",
    "entry_t": 20658,
    "entry_px": 519.8,
-   "mtm": 0.07207,
+   "mtm": -0.002,
    "days_left": 2,
    "regime": "calm-down"
   },
@@ -812,7 +812,7 @@
    "entry_date": "2026-07-25",
    "entry_t": 20658,
    "entry_px": 1436.56,
-   "mtm": 0.11896,
+   "mtm": -0.002,
    "days_left": 2,
    "regime": "calm-down"
   },
@@ -848,7 +848,7 @@
    "entry_date": "2026-07-25",
    "entry_t": 20658,
    "entry_px": 149.51,
-   "mtm": 0.05967,
+   "mtm": -0.002,
    "days_left": 2,
    "regime": "calm-down"
   },
@@ -860,7 +860,7 @@
    "entry_date": "2026-07-25",
    "entry_t": 20658,
    "entry_px": 149.51,
-   "mtm": 0.05967,
+   "mtm": -0.002,
    "days_left": 2,
    "regime": "calm-down"
   },
@@ -872,7 +872,7 @@
    "entry_date": "2026-07-25",
    "entry_t": 20658,
    "entry_px": 290.36,
-   "mtm": 0.04511,
+   "mtm": -0.002,
    "days_left": 2,
    "regime": "calm-down"
   },
@@ -884,7 +884,7 @@
    "entry_date": "2026-07-25",
    "entry_t": 20658,
    "entry_px": 184.89,
-   "mtm": 0.17329,
+   "mtm": -0.002,
    "days_left": 2,
    "regime": "calm-down"
   },
@@ -896,7 +896,7 @@
    "entry_date": "2026-07-25",
    "entry_t": 20658,
    "entry_px": 184.89,
-   "mtm": 0.17329,
+   "mtm": -0.002,
    "days_left": 2,
    "regime": "calm-down"
   },
@@ -956,7 +956,7 @@
    "entry_date": "2026-07-25",
    "entry_t": 20658,
    "entry_px": 16.21,
-   "mtm": 0.0529,
+   "mtm": -0.002,
    "days_left": 2,
    "regime": "calm-down"
   },
@@ -968,7 +968,7 @@
    "entry_date": "2026-07-25",
    "entry_t": 20658,
    "entry_px": 16.21,
-   "mtm": 0.0529,
+   "mtm": -0.002,
    "days_left": 3,
    "regime": "calm-down"
   },
@@ -980,7 +980,7 @@
    "entry_date": "2026-07-25",
    "entry_t": 20658,
    "entry_px": 14.15,
-   "mtm": 0.04747,
+   "mtm": -0.002,
    "days_left": 3,
    "regime": "calm-down"
   },
@@ -1124,8 +1124,8 @@
    "entry_date": "2026-07-25",
    "entry_t": 20657,
    "entry_px": 112.0,
-   "mtm": -0.002,
-   "days_left": 2,
+   "mtm": 0.01362,
+   "days_left": 1,
    "regime": "calm-down"
   },
   {
@@ -1136,8 +1136,8 @@
    "entry_date": "2026-07-25",
    "entry_t": 20657,
    "entry_px": 112.0,
-   "mtm": -0.002,
-   "days_left": 2,
+   "mtm": 0.01362,
+   "days_left": 1,
    "regime": "calm-down"
   },
   {
@@ -1148,8 +1148,8 @@
    "entry_date": "2026-07-25",
    "entry_t": 20657,
    "entry_px": 112.0,
-   "mtm": -0.002,
-   "days_left": 3,
+   "mtm": 0.01362,
+   "days_left": 2,
    "regime": "calm-down"
   },
   {
@@ -1232,7 +1232,7 @@
    "entry_date": "2026-07-25",
    "entry_t": 20658,
    "entry_px": 32.84,
-   "mtm": 0.03545,
+   "mtm": -0.002,
    "days_left": 2,
    "regime": "calm-down"
   },
@@ -1244,7 +1244,7 @@
    "entry_date": "2026-07-25",
    "entry_t": 20658,
    "entry_px": 14.15,
-   "mtm": 0.04747,
+   "mtm": -0.002,
    "days_left": 2,
    "regime": "calm-down"
   },
@@ -1292,7 +1292,7 @@
    "entry_date": "2026-07-25",
    "entry_t": 20658,
    "entry_px": 10.83,
-   "mtm": 0.1402,
+   "mtm": -0.002,
    "days_left": 2,
    "regime": "calm-down"
   },
@@ -1304,7 +1304,7 @@
    "entry_date": "2026-07-25",
    "entry_t": 20658,
    "entry_px": 10.83,
-   "mtm": 0.1402,
+   "mtm": -0.002,
    "days_left": 2,
    "regime": "calm-down"
   },
@@ -1460,7 +1460,7 @@
    "entry_date": "2026-07-25",
    "entry_t": 20658,
    "entry_px": 187.77,
-   "mtm": 0.17481,
+   "mtm": -0.002,
    "days_left": 3,
    "regime": "calm-down"
   },
@@ -1472,7 +1472,7 @@
    "entry_date": "2026-07-25",
    "entry_t": 20658,
    "entry_px": 187.77,
-   "mtm": 0.17481,
+   "mtm": -0.002,
    "days_left": 5,
    "regime": "calm-down"
   },
@@ -1580,7 +1580,7 @@
    "entry_date": "2026-07-25",
    "entry_t": 20658,
    "entry_px": 279.58,
-   "mtm": 0.01735,
+   "mtm": -0.002,
    "days_left": 3,
    "regime": "calm-down"
   },
@@ -1592,7 +1592,7 @@
    "entry_date": "2026-07-25",
    "entry_t": 20658,
    "entry_px": 269.24,
-   "mtm": 0.0279,
+   "mtm": -0.002,
    "days_left": 3,
    "regime": "calm-down"
   },
@@ -1724,7 +1724,7 @@
    "entry_date": "2026-07-25",
    "entry_t": 20658,
    "entry_px": 519.8,
-   "mtm": 0.07207,
+   "mtm": -0.002,
    "days_left": 3,
    "regime": "calm-down"
   },
@@ -1736,7 +1736,7 @@
    "entry_date": "2026-07-25",
    "entry_t": 20658,
    "entry_px": 1436.56,
-   "mtm": 0.11896,
+   "mtm": -0.002,
    "days_left": 3,
    "regime": "calm-down"
   },
@@ -1880,8 +1880,8 @@
    "entry_date": "2026-07-25",
    "entry_t": 20657,
    "entry_px": 217.3,
-   "mtm": -0.002,
-   "days_left": 3,
+   "mtm": -0.15115,
+   "days_left": 2,
    "regime": "calm-down"
   },
   {
@@ -1916,7 +1916,7 @@
    "entry_date": "2026-07-25",
    "entry_t": 20658,
    "entry_px": 521.95,
-   "mtm": 0.03199,
+   "mtm": -0.002,
    "days_left": 3,
    "regime": "calm-down"
   },
@@ -1928,7 +1928,7 @@
    "entry_date": "2026-07-25",
    "entry_t": 20658,
    "entry_px": 521.95,
-   "mtm": 0.03199,
+   "mtm": -0.002,
    "days_left": 5,
    "regime": "calm-down"
   },
@@ -2024,7 +2024,7 @@
    "entry_date": "2026-07-25",
    "entry_t": 20658,
    "entry_px": 184.89,
-   "mtm": 0.17329,
+   "mtm": -0.002,
    "days_left": 2,
    "regime": "calm-down"
   },
@@ -2180,8 +2180,8 @@
    "entry_date": "2026-07-26",
    "entry_t": 20657,
    "entry_px": 7.47,
-   "mtm": -0.002,
-   "days_left": 2,
+   "mtm": 0.07564,
+   "days_left": 1,
    "regime": "calm-down"
   },
   {
@@ -2192,8 +2192,8 @@
    "entry_date": "2026-07-26",
    "entry_t": 20657,
    "entry_px": 7.47,
-   "mtm": -0.002,
-   "days_left": 3,
+   "mtm": 0.07564,
+   "days_left": 2,
    "regime": "calm-down"
   },
   {
@@ -2204,8 +2204,8 @@
    "entry_date": "2026-07-26",
    "entry_t": 20657,
    "entry_px": 7.47,
-   "mtm": -0.002,
-   "days_left": 3,
+   "mtm": 0.07564,
+   "days_left": 2,
    "regime": "calm-down"
   },
   {
@@ -2240,8 +2240,32 @@
    "entry_date": "2026-07-26",
    "entry_t": 20657,
    "entry_px": 321.66,
-   "mtm": 0.0,
-   "days_left": 3,
+   "mtm": 0.03332,
+   "days_left": 2,
+   "regime": "calm-down"
+  },
+  {
+   "strategy": "BOLL_SNAP",
+   "ticker": "CVNA",
+   "side": 1,
+   "hold": 3,
+   "entry_date": "2026-07-26",
+   "entry_t": 20657,
+   "entry_px": 60.19,
+   "mtm": 0.00249,
+   "days_left": 2,
+   "regime": "calm-down"
+  },
+  {
+   "strategy": "DOUBLE_DIP",
+   "ticker": "RDDT",
+   "side": 1,
+   "hold": 3,
+   "entry_date": "2026-07-26",
+   "entry_t": 20657,
+   "entry_px": 168.78,
+   "mtm": -0.0023,
+   "days_left": 2,
    "regime": "calm-down"
   }
  ]
