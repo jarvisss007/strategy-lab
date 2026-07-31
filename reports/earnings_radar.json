@@ -1,5 +1,5 @@
 {
- "built": "2026-07-26 21:50 PDT",
+ "built": "2026-07-27 06:19 PDT",
  "gap_threshold": 0.04,
  "vol_threshold": 2.0,
  "event_study": {
@@ -5795,12 +5795,12 @@
   },
   {
    "date": "2026-07-28",
-   "ticker": "BE",
+   "ticker": "TER",
    "when": "time-after-hours"
   },
   {
    "date": "2026-07-28",
-   "ticker": "TER",
+   "ticker": "BE",
    "when": "time-after-hours"
   },
   {
@@ -5959,6 +5959,11 @@
    "when": "time-after-hours"
   },
   {
+   "date": "2026-08-04",
+   "ticker": "KTOS",
+   "when": "time-after-hours"
+  },
+  {
    "date": "2026-08-05",
    "ticker": "LLY",
    "when": "time-pre-market"
@@ -6070,6 +6075,11 @@
   },
   {
    "date": "2026-08-06",
+   "ticker": "RGTI",
+   "when": "time-after-hours"
+  },
+  {
+   "date": "2026-08-06",
    "ticker": "LASR",
    "when": "time-after-hours"
   },
@@ -6081,7 +6091,7 @@
   {
    "date": "2026-08-06",
    "ticker": "PCT",
-   "when": "time-not-supplied"
+   "when": "time-after-hours"
   },
   {
    "date": "2026-08-06",
@@ -6089,5 +6099,5 @@
    "when": "time-not-supplied"
   }
  ],
- "upcoming_all_count": 2473
+ "upcoming_all_count": 2488
 }
