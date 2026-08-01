@@ -281,13 +281,21 @@
 <!-- POSITIONS -->
 <div class="pane" id="p-positions">
   <div class="legend">
-    <b>The Position Agent</b> — weekly, paper-only, equity. Takes discretionary
-    positions synthesized from this account's own signals (fundamentals, Graham
-    gate, day-type, insider activity), with a stop/target/horizon predefined
-    BEFORE entry (RULES.md Rule 1, enforced in code). Grading is real: the daily
-    price path is walked for stop/target breaches, benchmarked against SPY over
-    the identical window. Options are explicitly out of scope until a real
-    pricing feed exists — see <code>agent/POSITION_AGENT.md</code>.
+    <b>The Position Agent</b> — Mon/Wed/Fri, paper-only, equity, <b>technical
+    only</b> (mandate changed 2026-07-31). Theses rest on price structure alone —
+    trend, range location, breakouts, pullbacks, realized volatility, day-type
+    character. Fundamentals, the Graham gate, and insider activity are explicitly
+    excluded; earnings are a blackout, never a signal. Stop and target are drawn
+    off structure (swing levels / realized daily move) with reward:risk ≥ 1.5
+    required, all predefined BEFORE entry (RULES.md Rule 1, enforced in code).
+    Grading is real: the daily price path is walked for stop/target breaches,
+    benchmarked against SPY over the identical window. <b>Honest prior:</b> the
+    returns-matrix study already grades momentum weak and reversal sub-cost — this
+    re-tests convicted signals under stricter execution, not a new idea. Positions
+    opened before 2026-07-31 (<code>graham</code>, <code>insider</code> tags) are
+    legacy and kept unaltered; they are reported separately, never averaged in.
+    Options remain out of scope until a real pricing feed exists — see
+    <code>agent/POSITION_AGENT.md</code>.
   </div>
   <div id="posSummary" style="margin:10px 0;"></div>
   <h3>Open positions</h3>
