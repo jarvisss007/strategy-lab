@@ -828,7 +828,7 @@ function earnings(){
       <td class="${(up.drift_5d||0)>0?'pos':'neg'}">${up.drift_5d??'—'}%</td>
       <td class="${(dn.drift_5d||0)>0?'pos':'neg'}">${dn.drift_5d??'—'}%</td>
       <td style="text-align:left">${peers||'—'}</td></tr>`;
-  }).join('')||'<tr><td colspan="9" class="flat">no universe names reporting in the window</td></tr>';
+  }).join('')||('<tr><td colspan="9" class="flat">'+((E.calendar_status==='failed')?'\u26a0 earnings calendar fetch FAILED \u2014 upcoming reporters UNKNOWN, not zero (Nasdaq API blocked '+(E.calendar_days_err||'all')+' days)':'no universe names reporting in the window')+'</td></tr>');
   // shared ledger + scorecard
   const L=H.ledger||[];
   const scored=L.filter(r=>r.outcome==='right'||r.outcome==='wrong');

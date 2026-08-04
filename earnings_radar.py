@@ -25,7 +25,7 @@ import numpy as np
 import pandas as pd
 
 BASE = os.path.dirname(os.path.abspath(__file__))
-UA = {"User-Agent": "Mozilla/5.0", "Accept": "application/json",
+UA = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36", "Accept": "application/json, text/plain, */*",
       "Origin": "https://www.nasdaq.com", "Referer": "https://www.nasdaq.com/"}
 GAP, VOLX = 0.04, 2.0
 
@@ -84,7 +84,7 @@ def event_study(o, c, v):
 
 
 def upcoming(days=14):
-    cal = []
+    cal, ok, err = [], 0, 0
     today = dt.date.today()
     for k in range(days):
         d = today + dt.timedelta(days=k)
@@ -95,20 +95,24 @@ def upcoming(days=14):
             j = json.load(urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=15))
             for r in (j.get("data") or {}).get("rows") or []:
                 cal.append({"date": str(d), "ticker": r.get("symbol"), "when": r.get("time", "")})
+            ok += 1
         except Exception:
+            err += 1
             continue
-    return cal
+    # honest status: an all-days-failed fetch is FAILED (unknown), never "zero reporters"
+    status = "ok" if ok > 0 else "failed"
+    return cal, status, ok, err
 
 
 def main():
     o, c, v = load()
     study = event_study(o, c, v)
-    cal = upcoming()
+    cal, cal_status, cal_ok, cal_err = upcoming()
     uni = set(c.columns)
     ours = [r for r in cal if r["ticker"] in uni]
     out = {"built": dt.datetime.now().astimezone().strftime("%Y-%m-%d %H:%M %Z"),
            "gap_threshold": GAP, "vol_threshold": VOLX,
-           "event_study": study, "upcoming_universe": ours, "upcoming_all_count": len(cal)}
+           "event_study": study, "upcoming_universe": ours, "upcoming_all_count": len(cal), "calendar_status": cal_status, "calendar_days_ok": cal_ok, "calendar_days_err": cal_err}
     json.dump(out, open(os.path.join(BASE, "reports", "earnings_radar.json"), "w"), indent=1)
 
     print(f"=== Earnings Radar — event study on {len(study)} names (15y) ===\n")
