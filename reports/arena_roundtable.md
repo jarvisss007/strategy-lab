@@ -1,6 +1,6 @@
 # Arena Roundtable — 2026-08-04
 
-Tape: **calm-up** · 12 agents · opened 22 today, closed 127 · 139 open · 460 forward closes all-time
+Tape: **calm-up** · 12 agents · opened 22 today, closed 0 · 139 open · 460 forward closes all-time
 
 - Tape today: CALM-UP. Our pooled record in this weather — hot hands: FRESH_HIGH (+204), PANIC_LITE (-3), PANIC_BOUNCE (-19); cold hands: DEEP_DIP (-251), TREND_RIDER (-305). (History, not prophecy.)
 - FRESH_HIGH and SHORT_EXT enter on the same bar 45% of the time — one trade, two directions. The pooled ledger says the long side wins that argument; the skeptic keeps paying for the lesson.
