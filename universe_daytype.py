@@ -6,6 +6,20 @@ how trendy vs choppy the name is, and how much intraday opportunity it offers.
 
 Answers: which of my names behave like SNDK? Output: reports/universe_daytype.json
 + .csv, ranked by intraday opportunity. Run: python universe_daytype.py
+
+DATA-DEFECT AUDIT 2026-08-05 (verdict: REAL, no bug). The position agent flagged the
+2026-08-03 rebuild ("tradeable_pct 0.0 on nearly every name, 80/108 QUIET") as a
+suspected pipeline defect. Investigated: this is the file's normal state, not a
+regression. Every git-tracked version shows the same shape — QUIET counts 71/74/77/80
+across the four prior builds (the 2026-07-31 build was also exactly 80 QUIET), and
+49-62 names at tradeable_pct 0.0 in each. The 08-03 build actually has FEWER zeros (49)
+than any predecessor. Fresh Yahoo fetches on 2026-08-05 reproduce the stored numbers
+(HOOD avg_path 6.8% / tradeable 0.0 both stored and fresh; SNDK 16.6%->16.0% within
+one-day drift), so the 08-03 null-bar glitch left no residue — this script fetches
+live per run and uses no intraday cache. tradeable_pct 0.0 is the honest reading:
+most large-cap names never accumulate >=12% intraday zigzag path in a session; the
+12% bar (day_type.TRADEABLE_PATH_PCT) is intentionally SNDK-calibrated and high.
+No thresholds or computations were changed by this audit.
 """
 import csv, json, os, time
 from collections import defaultdict
