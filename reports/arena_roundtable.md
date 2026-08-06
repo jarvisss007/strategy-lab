@@ -1,32 +1,32 @@
-# Arena Roundtable — 2026-08-05
+# Arena Roundtable — 2026-08-06
 
-Tape: **calm-up** · 12 agents · opened 0 today, closed 0 · 115 open · 509 forward closes all-time
+Tape: **calm-up** · 12 agents · opened 43 today, closed 0 · 135 open · 532 forward closes all-time
 
-- Tape today: CALM-UP. Our pooled record in this weather — hot hands: FRESH_HIGH (+208), PANIC_LITE (+1), PANIC_BOUNCE (-16); cold hands: DEEP_DIP (-238), TREND_RIDER (-262). (History, not prophecy.)
+- Tape today: CALM-UP. Our pooled record in this weather — hot hands: FRESH_HIGH (+204), PANIC_LITE (+6), PANIC_BOUNCE (-11); cold hands: DEEP_DIP (-238), TREND_RIDER (-309). (History, not prophecy.)
 - FRESH_HIGH and SHORT_EXT enter on the same bar 45% of the time — one trade, two directions. The pooled ledger says the long side wins that argument; the skeptic keeps paying for the lesson.
-- PANIC_LITE contains 84% of PANIC_BOUNCE's entries; stripped to the −3%…−5% band alone (PANIC_LITE entries too shallow for PANIC_BOUNCE), it still earned +50 bps over 1440 trades (t=3.13) — the bounce is not only in the extreme tail.
+- PANIC_LITE contains 84% of PANIC_BOUNCE's entries; stripped to the −3%…−5% band alone (PANIC_LITE entries too shallow for PANIC_BOUNCE), it still earned +49 bps over 1438 trades (t=3.11) — the bounce is not only in the extreme tail.
 - Desk rule we all share: reading each other's regime stats and gating ourselves in hindsight is selection bias — STORM_DIP is the only pre-registered regime gate; any new gate goes to REGISTRY.md with a thesis BEFORE it trades.
 
 ## Playbook by regime (avg bps/trade, n>=20)
 
-- **calm-up**: FRESH_HIGH +208 (n=393) · PANIC_LITE +1 (n=1669) · PANIC_BOUNCE -16 (n=872) · DOUBLE_DIP -40 (n=714) · SHORT_EXT -81 (n=236) · BOLL_SNAP -96 (n=287) · PULLBACK_50 -100 (n=122) · REVERSAL_3 -126 (n=131) · RSI2_DIP -130 (n=342) · DEEP_DIP -238 (n=90) · TREND_RIDER -262 (n=60)
-- **calm-down**: BOLL_SNAP +396 (n=41) · PANIC_BOUNCE +192 (n=114) · PANIC_LITE +187 (n=182) · PULLBACK_50 +148 (n=31) · REVERSAL_3 +130 (n=61) · DOUBLE_DIP +120 (n=90) · RSI2_DIP -316 (n=81) · FRESH_HIGH -329 (n=22)
-- **storm-up**: PULLBACK_50 +705 (n=25) · FRESH_HIGH +548 (n=20) · RSI2_DIP +367 (n=42) · PANIC_LITE +34 (n=156) · PANIC_BOUNCE -4 (n=117) · BOLL_SNAP -134 (n=43) · DOUBLE_DIP -146 (n=89) · STORM_DIP -354 (n=153)
-- **storm-down**: DEEP_DIP +798 (n=32) · BOLL_SNAP +420 (n=232) · DOUBLE_DIP +407 (n=283) · STORM_DIP +354 (n=450) · PANIC_BOUNCE +221 (n=298) · PANIC_LITE +158 (n=608) · FRESH_HIGH -34 (n=27)
+- **calm-up**: FRESH_HIGH +204 (n=398) · PANIC_LITE +6 (n=1668) · PANIC_BOUNCE -11 (n=871) · DOUBLE_DIP -52 (n=710) · SHORT_EXT -80 (n=236) · BOLL_SNAP -94 (n=287) · PULLBACK_50 -97 (n=122) · RSI2_DIP -133 (n=337) · REVERSAL_3 -135 (n=128) · DEEP_DIP -238 (n=90) · TREND_RIDER -309 (n=59)
+- **calm-down**: BOLL_SNAP +396 (n=41) · PANIC_BOUNCE +192 (n=114) · PANIC_LITE +187 (n=182) · PULLBACK_50 +167 (n=31) · REVERSAL_3 +130 (n=61) · DOUBLE_DIP +120 (n=90) · FRESH_HIGH -306 (n=22) · RSI2_DIP -316 (n=81)
+- **storm-up**: PULLBACK_50 +705 (n=25) · RSI2_DIP +367 (n=42) · PANIC_LITE +28 (n=146) · PANIC_BOUNCE -10 (n=108) · DOUBLE_DIP -148 (n=88) · BOLL_SNAP -166 (n=40) · STORM_DIP -377 (n=143)
+- **storm-down**: DEEP_DIP +763 (n=32) · BOLL_SNAP +420 (n=232) · DOUBLE_DIP +407 (n=283) · STORM_DIP +354 (n=450) · PANIC_BOUNCE +221 (n=298) · PANIC_LITE +158 (n=608) · FRESH_HIGH -34 (n=27)
 
 ## Notes to the desk
 
-- DEEP_DIP to the desk: my weather is storm-down (+798 bps, n=32); keep me on a short leash in calm-up (-238). Status: DEAD — loses to costs/SPY.
-- PANIC_BOUNCE to the desk: my weather is storm-down (+221 bps, n=298); keep me on a short leash in calm-up (-16). Status: CANDIDATE — send to the deflation gate.
-- PANIC_LITE to the desk: my weather is calm-down (+187 bps, n=182); keep me on a short leash in calm-up (+1). Status: CANDIDATE — send to the deflation gate.
-- DOUBLE_DIP to the desk: my weather is storm-down (+407 bps, n=283); keep me on a short leash in storm-up (-146). Status: CANDIDATE — send to the deflation gate.
-- STORM_DIP to the desk: my weather is storm-down (+354 bps, n=450); keep me on a short leash in storm-up (-354). Status: CANDIDATE — send to the deflation gate.
-- FRESH_HIGH to the desk: my weather is storm-up (+548 bps, n=20); keep me on a short leash in calm-down (-329). Status: CANDIDATE — send to the deflation gate.
+- DEEP_DIP to the desk: my weather is storm-down (+763 bps, n=32); keep me on a short leash in calm-up (-238). Status: DEAD — loses to costs/SPY.
+- PANIC_BOUNCE to the desk: my weather is storm-down (+221 bps, n=298); keep me on a short leash in calm-up (-11). Status: CANDIDATE — send to the deflation gate.
+- PANIC_LITE to the desk: my weather is calm-down (+187 bps, n=182); keep me on a short leash in calm-up (+6). Status: CANDIDATE — send to the deflation gate.
+- DOUBLE_DIP to the desk: my weather is storm-down (+407 bps, n=283); keep me on a short leash in storm-up (-148). Status: CANDIDATE — send to the deflation gate.
+- STORM_DIP to the desk: my weather is storm-down (+354 bps, n=450); keep me on a short leash in storm-up (-377). Status: CANDIDATE — send to the deflation gate.
+- FRESH_HIGH to the desk: my weather is storm-up (+583 bps, n=15); keep me on a short leash in calm-down (-306). Status: CANDIDATE — send to the deflation gate.
 - SHORT_EXT to the desk: my weather is storm-down (+517 bps, n=14); keep me on a short leash in storm-up (-526). Status: DEAD — loses to costs/SPY.
-- TREND_RIDER to the desk: my weather is calm-down (+536 bps, n=17); keep me on a short leash in calm-up (-262). Status: DEAD — loses to costs/SPY.
+- TREND_RIDER to the desk: my weather is calm-down (+538 bps, n=17); keep me on a short leash in calm-up (-309). Status: DEAD — loses to costs/SPY.
 - RSI2_DIP to the desk: my weather is storm-down (+491 bps, n=8); keep me on a short leash in calm-down (-316). Status: DEAD — loses to costs/SPY.
 - REVERSAL_3 to the desk: my weather is calm-down (+130 bps, n=61); keep me on a short leash in storm-up (-175). Status: DEAD — loses to costs/SPY.
-- BOLL_SNAP to the desk: my weather is storm-down (+420 bps, n=232); keep me on a short leash in storm-up (-134). Status: CANDIDATE — send to the deflation gate.
-- PULLBACK_50 to the desk: my weather is storm-up (+705 bps, n=25); keep me on a short leash in calm-up (-100). Status: WATCH — positive but not significant.
+- BOLL_SNAP to the desk: my weather is storm-down (+420 bps, n=232); keep me on a short leash in storm-up (-166). Status: CANDIDATE — send to the deflation gate.
+- PULLBACK_50 to the desk: my weather is storm-up (+705 bps, n=25); keep me on a short leash in calm-up (-97). Status: WATCH — positive but not significant.
 
 Calibration experiment, not advice. Forward book + deflation gate decide; the replay only suggests.
