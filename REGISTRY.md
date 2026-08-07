@@ -105,3 +105,19 @@ Roundtable note (same sign-off): every refresh now writes reports/roundtable.md
 Agents READ the prior roundtable and cite peers in their journals. Reading is
 awareness only: no rule's entry/exit logic changes based on it — adaptive
 variants would be new registered rules, not silent edits.
+
+Date-semantics fix (2026-08-06 council audit): dates are bar dates, not run
+dates — corrected 2026-08-06. Forward rows had been stamped with the RUN date
+while being priced at the latest completed bar's close, so printed dates ran
+one session late vs their prices (e.g. BOLL_SNAP EBAY stamped "2026-08-04"
+@107.13, which is EBAY's 08-03 close). entry_date/exit_date now carry the date
+of the bar whose close the row is priced at; regime tags and the roundtable's
+opened/closed counters key off the same latest completed session. Existing
+rows (135 open + 532 closed) were migrated by matching each row's price to
+the dated bar series: 110 open and 526 closed entry dates shifted one session
+earlier; exit dates were already bar-dated (531/532 confirmed). Seven rows
+whose price matches no daily close (partial-bar-era fills: REVERSAL_3
+GFS/HUM/MOH 07-29, BOLL_SNAP TSLA 07-29, and three QBTS rows) kept their old
+stamp on the unmatched field rather than guessing. Regime tags were verified
+already bar-dated (0 changed on recomputation). No trading logic, thresholds,
+or rule parameters changed — labeling only.

@@ -20,6 +20,15 @@ Conventions (identical both modes): entry/exit at signal close · 10 bps per
 side · one open position per ticker per rule · max 25 concurrent per rule in
 forward mode · every trade benchmarked vs SPY over the identical window.
 
+Date semantics — dates are bar dates, not run dates (corrected 2026-08-06):
+entry_date/exit_date are the date of the completed session whose close the row
+is priced at, never the wall-clock date the refresh happened to run. Regime
+tags are looked up on that same bar date, and the roundtable's opened/closed
+counters refer to the latest completed session. Before 2026-08-06 forward
+entries were stamped with the run date (one session late vs their price);
+existing rows were migrated by matching each row's price to the dated bar
+series.
+
 Run: /opt/anaconda3/bin/python arena.py            (after stock-radar collector)
 """
 import csv, json, math, os
@@ -338,7 +347,8 @@ def main():
             cfg = STRATS[s]
             still_open.append({"strategy": s, "ticker": e["ticker"],
                                "side": cfg["side"], "hold": cfg["hold"],
-                               "entry_date": today, "entry_t": e["series_t"][i],
+                               "entry_date": d2iso(e["series_t"][i]),   # bar date, not run date
+                               "entry_t": e["series_t"][i],
                                "entry_px": c[i], "mtm": 0.0,
                                "days_left": cfg["hold"], "regime": reg})
             held.add((s, e["ticker"])); count[s] = count.get(s, 0) + 1
@@ -365,15 +375,24 @@ def main():
         except Exception:
             prior_rt = {}
 
-    opened_today_by, closed_today_by = {}, {}
-    for p in still_open:
-        if p["entry_date"] == today:
-            opened_today_by.setdefault(p["strategy"], []).append(p["ticker"])
-    for t in closed_now:
-        closed_today_by.setdefault(t["strategy"], []).append(
-            {"ticker": t["ticker"], "net": t["net"]})
+    # latest completed session (bar date) — counters key off this, not the
+    # wall-clock run date (date-semantics fix 2026-08-06)
+    last_session = d2iso(spy["series_t"][-1])
+    if intraday and last_session == today:      # partial same-day bar during RTH
+        prior = [t for t in spy["series_t"] if d2iso(t) < today]
+        if prior:
+            last_session = d2iso(prior[-1])
 
     fwd_trades = list(csv.DictReader(open(TRADES_F)))
+
+    opened_today_by, closed_today_by = {}, {}
+    for p in still_open:
+        if p["entry_date"] == last_session:
+            opened_today_by.setdefault(p["strategy"], []).append(p["ticker"])
+    for r in fwd_trades:
+        if r["exit_date"] == last_session:
+            closed_today_by.setdefault(r["strategy"], []).append(
+                {"ticker": r["ticker"], "net": float(r["net"])})
     fwd_stats, fwd_rhythm, journals = {}, {}, {}
     for k, cfg in STRATS.items():
         rows = [{"net": float(r["net"]),
@@ -476,8 +495,9 @@ def main():
                  "ourselves in hindsight is selection bias — STORM_DIP is the only "
                  "pre-registered regime gate; any new gate goes to REGISTRY.md with a "
                  "thesis BEFORE it trades.")
-    tempo = {"opened_today": sum(len(v) for v in opened_today_by.values()),
-             "closed_today": len(closed_now),
+    tempo = {"session": last_session,
+             "opened_today": sum(len(v) for v in opened_today_by.values()),
+             "closed_today": sum(len(v) for v in closed_today_by.values()),
              "open_total": len(still_open),
              "closed_total": len(fwd_trades),
              "agents": len(STRATS)}
@@ -488,8 +508,9 @@ def main():
     # single-place report for every agent (and human) to read
     with open(os.path.join(REPORTS, "arena_roundtable.md"), "w") as f:
         f.write(f"# Arena Roundtable — {today}\n\nTape: **{cur_reg}** · "
-                f"{tempo['agents']} agents · opened {tempo['opened_today']} today, "
-                f"closed {tempo['closed_today']} · {tempo['open_total']} open · "
+                f"session {tempo['session']} · {tempo['agents']} agents · "
+                f"opened {tempo['opened_today']}, closed {tempo['closed_today']} "
+                f"this session · {tempo['open_total']} open · "
                 f"{tempo['closed_total']} forward closes all-time\n\n")
         for ln in lines:
             f.write(f"- {ln}\n")
@@ -534,7 +555,7 @@ def main():
     json.dump(out, open(os.path.join(REPORTS, "arena.json"), "w"))
     print("OK arena: backtest " + ", ".join(f"{k}:{backtest[k]['n']}" for k in STRATS)
           + f" · forward open {len(still_open)}, closed {len(fwd_trades)}"
-          + f" · today +{tempo['opened_today']}/−{tempo['closed_today']}"
+          + f" · session {tempo['session']} +{tempo['opened_today']}/−{tempo['closed_today']}"
           + f" · regime {cur_reg}")
 
 
