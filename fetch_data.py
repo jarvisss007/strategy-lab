@@ -57,6 +57,18 @@ def main():
 
     # union of all dates, sorted
     all_dates = sorted({dt for d in panel.values() for dt in d})
+
+    # Refuse to overwrite a good panel with a bad fetch. On 2026-08-03 the Mac
+    # had no DNS at refresh time, every ticker failed, and this function
+    # truncated prices.csv to a bare header and meta.json to 0 bytes (IndexError
+    # on all_dates[0]) — destroying 15y of panel over a transient outage. A
+    # fetch that lost most of the universe is a network problem, not new data:
+    # leave the last good file in place and exit non-zero so the log shows it.
+    if len(ok) < 0.8 * len(tick) or not all_dates:
+        print(f"ABORT: only {len(ok)}/{len(tick)} tickers fetched — keeping the "
+              f"existing panel untouched; failed: {fail[:10]}")
+        raise SystemExit(1)
+
     with open(os.path.join(BASE, "data", "prices.csv"), "w", newline="") as f:
         w = csv.writer(f)
         w.writerow(["date"] + ok)

@@ -37,8 +37,16 @@ echo "=== refresh $(date '+%Y-%m-%d %H:%M:%S') ===" >> "$LOG"
 "$PY" /Users/anupampatil/asia-radar/analyze.py >> "$LOG" 2>&1
 "$PY" /Users/anupampatil/asia-radar/briefing.py >> "$LOG" 2>&1
 # Mondays: re-learn the studies on the grown dataset (research stays current)
+#
+# BUG (found 2026-08-01 by the sentinel, fixed 2026-08-08): only fetch_data.py
+# ran here, and it writes data/prices.csv. discover.py reads open.csv/close.csv/
+# volume.csv, which nothing refreshed — so those panels sat frozen at 2026-07-07
+# and every weekly "no drift" verdict was arithmetic on a static dataset, not
+# out-of-sample evidence. fetch_ohlc.py + fetch_volume.py now run alongside it.
 if [ "$(date +%u)" = "1" ]; then
   "$PY" /Users/anupampatil/strategy-lab/fetch_data.py >> "$LOG" 2>&1
+  "$PY" /Users/anupampatil/strategy-lab/fetch_ohlc.py >> "$LOG" 2>&1
+  "$PY" /Users/anupampatil/strategy-lab/fetch_volume.py >> "$LOG" 2>&1
   "$PY" /Users/anupampatil/strategy-lab/returns_matrix.py >> "$LOG" 2>&1
   "$PY" /Users/anupampatil/strategy-lab/universe_daytype.py >> "$LOG" 2>&1
   "$PY" /Users/anupampatil/strategy-lab/earnings_radar.py >> "$LOG" 2>&1
