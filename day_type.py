@@ -24,7 +24,10 @@ import numpy as np
 
 UA = {"User-Agent": "Mozilla/5.0"}
 TREND_EFF, CHOP_EFF = 0.40, 0.20
-TRADEABLE_PATH_PCT = 12.0   # total path >= 12% of price = "enough opportunity" (scale-free)
+TRADEABLE_PATH_PCT = 10.0   # total path >= 10% of price = "enough opportunity" (scale-free)
+                            # 12->10 on 2026-08-08, Anupam's Review #1 decision per
+                            # reports/daytype_threshold_brief_2026-08-05.md (12% was
+                            # SNDK-calibrated; at 10% dead-zero names drop ~43 -> ~29)
 ZIGZAG_PCT = 0.015          # a reversal >=1.5% starts a new swing (tunable)
 
 
