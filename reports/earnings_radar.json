@@ -1,5 +1,5 @@
 {
- "built": "2026-08-09 12:27 PDT",
+ "built": "2026-08-09 14:48 PDT",
  "gap_threshold": 0.04,
  "vol_threshold": 2.0,
  "event_study": {
@@ -13,7 +13,7 @@
     "same_day_oc": -0.08,
     "oc_hit": 30.8,
     "drift_5d": 1.88,
-    "drift_21d": NaN
+    "drift_21d": 2.07
    },
    "down": {
     "n": 9,
@@ -119,7 +119,7 @@
     "same_day_oc": 1.27,
     "oc_hit": 69.6,
     "drift_5d": 0.67,
-    "drift_21d": NaN
+    "drift_21d": 13.95
    },
    "down": {
     "n": 11,
@@ -180,7 +180,7 @@
     "same_day_oc": -0.0,
     "oc_hit": 38.5,
     "drift_5d": -0.39,
-    "drift_21d": NaN
+    "drift_21d": -2.49
    },
    "peers": [
     [
@@ -392,7 +392,7 @@
     "same_day_oc": 0.93,
     "oc_hit": 53.8,
     "drift_5d": -2.56,
-    "drift_21d": NaN
+    "drift_21d": 1.14
    },
    "peers": [
     [
@@ -444,7 +444,7 @@
     "avg_gap": -7.81,
     "same_day_oc": -0.24,
     "oc_hit": 42.9,
-    "drift_5d": NaN,
+    "drift_5d": 0.92,
     "drift_21d": 4.59
    },
    "peers": [
@@ -542,7 +542,7 @@
     "avg_gap": 6.48,
     "same_day_oc": 0.66,
     "oc_hit": 68.8,
-    "drift_5d": NaN,
+    "drift_5d": -3.44,
     "drift_21d": 0.98
    },
    "down": {
@@ -808,7 +808,7 @@
     "same_day_oc": -0.74,
     "oc_hit": 54.5,
     "drift_5d": 2.01,
-    "drift_21d": NaN
+    "drift_21d": 7.78
    },
    "down": {
     "n": 5,
@@ -1080,7 +1080,7 @@
     "avg_gap": -7.22,
     "same_day_oc": -0.24,
     "oc_hit": 61.1,
-    "drift_5d": NaN,
+    "drift_5d": 1.15,
     "drift_21d": 0.58
    },
    "peers": [
@@ -1126,7 +1126,7 @@
     "same_day_oc": -2.02,
     "oc_hit": 41.7,
     "drift_5d": 2.33,
-    "drift_21d": NaN
+    "drift_21d": 4.11
    },
    "down": {
     "n": 12,
@@ -1239,7 +1239,7 @@
     "avg_gap": -7.19,
     "same_day_oc": -0.88,
     "oc_hit": 20.0,
-    "drift_5d": NaN,
+    "drift_5d": 2.27,
     "drift_21d": 1.6
    },
    "peers": [
@@ -1284,7 +1284,7 @@
     "avg_gap": 10.2,
     "same_day_oc": 0.99,
     "oc_hit": 53.8,
-    "drift_5d": NaN,
+    "drift_5d": 2.34,
     "drift_21d": 4.8
    },
    "down": {
@@ -1338,7 +1338,7 @@
     "same_day_oc": 0.64,
     "oc_hit": 54.5,
     "drift_5d": 4.31,
-    "drift_21d": NaN
+    "drift_21d": 20.26
    },
    "down": null,
    "peers": [
@@ -4516,7 +4516,7 @@
     "same_day_oc": -1.53,
     "oc_hit": 53.3,
     "drift_5d": 7.05,
-    "drift_21d": NaN
+    "drift_21d": 10.14
    },
    "down": {
     "n": 12,
@@ -5342,7 +5342,7 @@
     "same_day_oc": -1.55,
     "oc_hit": 48.6,
     "drift_5d": -1.64,
-    "drift_21d": NaN
+    "drift_21d": 15.88
    },
    "down": {
     "n": 12,
@@ -5659,7 +5659,7 @@
     "avg_gap": 8.06,
     "same_day_oc": 0.01,
     "oc_hit": 42.9,
-    "drift_5d": NaN,
+    "drift_5d": -0.17,
     "drift_21d": 1.41
    },
    "down": {
@@ -6652,7 +6652,7 @@
     "avg_gap": -6.14,
     "same_day_oc": -1.0,
     "oc_hit": 40.0,
-    "drift_5d": NaN,
+    "drift_5d": -1.0,
     "drift_21d": -1.26
    },
    "peers": [
@@ -6711,6 +6711,16 @@
    "when": "time-after-hours"
   },
   {
+   "date": "2026-08-12",
+   "ticker": "CSCO",
+   "when": "time-after-hours"
+  },
+  {
+   "date": "2026-08-12",
+   "ticker": "NBIS",
+   "when": "time-pre-market"
+  },
+  {
    "date": "2026-08-13",
    "ticker": "AMAT",
    "when": "time-after-hours"
@@ -6746,8 +6756,8 @@
    "when": "time-not-supplied"
   }
  ],
- "upcoming_all_count": 1035,
+ "upcoming_all_count": 1355,
  "calendar_status": "ok",
- "calendar_days_ok": 8,
- "calendar_days_err": 2
+ "calendar_days_ok": 10,
+ "calendar_days_err": 0
 }

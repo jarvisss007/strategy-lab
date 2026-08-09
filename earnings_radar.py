@@ -37,6 +37,13 @@ def load():
     return o[common], c[common], v[common]
 
 
+def _nanmean(xs):
+    """Mean in pct, ignoring missing bars; None if nothing usable."""
+    a = np.asarray(xs, float)
+    a = a[np.isfinite(a)]
+    return round(float(a.mean() * 100), 2) if a.size else None
+
+
 def event_study(o, c, v):
     gap = o / c.shift(1) - 1
     relvol = v / v.rolling(20).mean()
@@ -64,8 +71,10 @@ def event_study(o, c, v):
             rec[lbl] = {"n": len(days), "avg_gap": round(float(ev[mask].mean() * 100), 2),
                         "same_day_oc": round(float(oc.mean() * 100), 2),
                         "oc_hit": round(float((oc > 0).mean() * 100), 1),
-                        "drift_5d": round(float(np.mean(d5) * 100), 2) if d5 else None,
-                        "drift_21d": round(float(np.mean(d21) * 100), 2) if d21 else None}
+                        # nanmean: a single missing bar in the price series used to poison the
+                        # whole leg (and then the universe average) with NaN — 14 legs on the
+                        # 2026-08-09 build, incl. the printed headline. Skip the gap, keep the leg.
+                        "drift_5d": _nanmean(d5), "drift_21d": _nanmean(d21)}
         # peer spillover
         corr = rets.corrwith(rets[t]).drop(t).dropna().sort_values(ascending=False)
         peers = list(corr.head(5).index)
