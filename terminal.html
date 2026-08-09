@@ -444,7 +444,7 @@ function positions(){
 (function(){
   const A=H.arena||{}; if(!A.backtest) return;
   const bps=v=>v==null?'—':`<span class="${v>=0?'pos':'neg'}">${v>=0?'+':''}${v} bps</span>`;
-  const vcls=v=>/CANDIDATE/.test(v)?'pos':/DEAD/.test(v)?'neg':'';
+  const vcls=v=>/UNPROVEN|DEAD/.test(v)?'neg':/CANDIDATE/.test(v)?'pos':'';
 
   // the roundtable: pooled desk report
   const regEl=document.getElementById('arRegime');
@@ -470,7 +470,7 @@ function positions(){
   if(jEl&&A.journals){
     jEl.innerHTML=Object.entries(A.journals).map(([k,txt],i)=>{
       const bt=A.backtest[k]||{};
-      return `<div style="background:var(--panel);border:1px solid #262c36;border-left:3px solid ${/CANDIDATE/.test(bt.verdict||'')?'#3fb950':/DEAD/.test(bt.verdict||'')?'#f85149':'#8b949e'};border-radius:8px;padding:10px 12px">
+      return `<div style="background:var(--panel);border:1px solid #262c36;border-left:3px solid ${/UNPROVEN|DEAD/.test(bt.verdict||'')?'#f85149':/CANDIDATE/.test(bt.verdict||'')?'#3fb950':'#8b949e'};border-radius:8px;padding:10px 12px">
       <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
         <b style="font-size:13px">${k}</b><canvas id="arEq${i}" width="120" height="26" style="width:120px;height:26px"></canvas></div>
       <div style="font-size:12px;color:var(--ink2);line-height:1.5;margin-top:5px">${txt}</div></div>`;}).join('');

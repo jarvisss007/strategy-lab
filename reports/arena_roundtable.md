@@ -17,16 +17,16 @@ Tape: **calm-up** · session 2026-08-07 · 12 agents · opened 38, closed 46 thi
 ## Notes to the desk
 
 - DEEP_DIP to the desk: my weather is storm-down (+872 bps, n=31); keep me on a short leash in calm-up (-198). Status: DEAD — loses to costs/SPY.
-- PANIC_BOUNCE to the desk: my weather is storm-down (+210 bps, n=308); keep me on a short leash in calm-up (-14). Status: CANDIDATE — send to the deflation gate.
-- PANIC_LITE to the desk: my weather is calm-down (+172 bps, n=195); keep me on a short leash in calm-up (+6). Status: CANDIDATE — send to the deflation gate.
-- DOUBLE_DIP to the desk: my weather is storm-down (+395 bps, n=295); keep me on a short leash in calm-up (-27). Status: CANDIDATE — send to the deflation gate.
-- STORM_DIP to the desk: my weather is storm-down (+345 bps, n=468); keep me on a short leash in storm-up (-296). Status: CANDIDATE — send to the deflation gate.
-- FRESH_HIGH to the desk: my weather is storm-up (+543 bps, n=16); keep me on a short leash in calm-down (-222). Status: CANDIDATE — send to the deflation gate.
+- PANIC_BOUNCE to the desk: my weather is storm-down (+210 bps, n=308); keep me on a short leash in calm-up (-14). Status: UNPROVEN — FAILED the deflation gate 2026-08-08 (DSR 0.233, PBO 0.474).
+- PANIC_LITE to the desk: my weather is calm-down (+172 bps, n=195); keep me on a short leash in calm-up (+6). Status: UNPROVEN — FAILED the deflation gate 2026-08-08 (DSR 0.233, PBO 0.474).
+- DOUBLE_DIP to the desk: my weather is storm-down (+395 bps, n=295); keep me on a short leash in calm-up (-27). Status: UNPROVEN — FAILED the deflation gate 2026-08-08 (DSR 0.233, PBO 0.474).
+- STORM_DIP to the desk: my weather is storm-down (+345 bps, n=468); keep me on a short leash in storm-up (-296). Status: UNPROVEN — FAILED the deflation gate 2026-08-08 (DSR 0.233, PBO 0.474).
+- FRESH_HIGH to the desk: my weather is storm-up (+543 bps, n=16); keep me on a short leash in calm-down (-222). Status: UNPROVEN — FAILED the deflation gate 2026-08-08 (DSR 0.233, PBO 0.474).
 - SHORT_EXT to the desk: my weather is storm-down (+394 bps, n=15); keep me on a short leash in storm-up (-526). Status: DEAD — loses to costs/SPY.
 - TREND_RIDER to the desk: my weather is calm-down (+621 bps, n=20); keep me on a short leash in calm-up (-266). Status: DEAD — loses to costs/SPY.
 - RSI2_DIP to the desk: my weather is storm-down (+497 bps, n=9); keep me on a short leash in calm-down (-260). Status: DEAD — loses to costs/SPY.
 - REVERSAL_3 to the desk: my weather is calm-down (+132 bps, n=71); keep me on a short leash in storm-up (-163). Status: DEAD — loses to costs/SPY.
-- BOLL_SNAP to the desk: my weather is calm-down (+359 bps, n=48); keep me on a short leash in storm-up (-185). Status: CANDIDATE — send to the deflation gate.
+- BOLL_SNAP to the desk: my weather is calm-down (+359 bps, n=48); keep me on a short leash in storm-up (-185). Status: UNPROVEN — FAILED the deflation gate 2026-08-08 (DSR 0.233, PBO 0.474).
 - PULLBACK_50 to the desk: my weather is storm-up (+608 bps, n=30); keep me on a short leash in calm-up (-40). Status: WATCH — positive but not significant.
 
 Calibration experiment, not advice. Forward book + deflation gate decide; the replay only suggests.

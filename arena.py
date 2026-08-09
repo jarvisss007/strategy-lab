@@ -144,13 +144,23 @@ def stats(trades):
             "t_stat": round(t, 2), "total_pct": round(sum(rs) * 100, 1)}
 
 
+# The gate was RUN on 2026-08-08 (arena_gate.py) and the whole slate failed it:
+# DSR 0.233 against a best-of-12 benchmark of 2.18 ann. Sharpe, PBO 0.474, IS→OOS slope
+# −0.568, and 198 sessions against the 1.5 YEARS this many trials requires. So no rule
+# may wear the word CANDIDATE any more — "send to the gate" was a promise that has now
+# been kept, and the answer was no. Verdicts below carry the gate's result, not the
+# per-trade t-stat's opinion. Re-run arena_gate.py after any material data growth and
+# update GATE_VERDICT here; never soften this string because a rule looks good again.
+GATE_VERDICT = "FAILED the deflation gate 2026-08-08 (DSR 0.233, PBO 0.474)"
+
+
 def verdict(s):
     if s["n"] < 10:
         return "too few trades"
     if s["avg_bps"] <= 0 or (s["avg_excess_bps"] or -1) <= 0:
         return "DEAD — loses to costs/SPY"
     if s["t_stat"] >= 2:
-        return "CANDIDATE — send to the deflation gate"
+        return f"UNPROVEN — {GATE_VERDICT}"
     return "WATCH — positive but not significant"
 
 

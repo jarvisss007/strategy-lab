@@ -1,0 +1,128 @@
+{
+ "n_trials": 12,
+ "sessions": 198,
+ "gate": {
+  "n_strategies": 12,
+  "n_obs": 198,
+  "best_strategy": 3,
+  "best_sharpe_annual": 1.363011901587977,
+  "psr": 0.8873923244794717,
+  "dsr": 0.23282568353476535,
+  "deflated_benchmark_sharpe_annual": 2.182962260129654,
+  "min_backtest_length_years": 1.4918693096485027,
+  "pbo": 0.47358197358197357,
+  "prob_oos_loss": 0.6243201243201243,
+  "degradation": -0.5683493568061124,
+  "verdict": "suspect: fails one of {deflated significance, low PBO} \u2014 treat as unproven"
+ },
+ "per_rule": {
+  "BOLL_SNAP": {
+   "sharpe_ann": -1.817,
+   "days_fired": 160,
+   "psr": 0.0547,
+   "min_track_days": null,
+   "bt_t": 4.27,
+   "bt_excess_bps": 52.2,
+   "bt_n": 745
+  },
+  "DEEP_DIP": {
+   "sharpe_ann": -0.991,
+   "days_fired": 82,
+   "psr": 0.1907,
+   "min_track_days": null,
+   "bt_t": 0.88,
+   "bt_excess_bps": -8.0,
+   "bt_n": 143
+  },
+  "DOUBLE_DIP": {
+   "sharpe_ann": 0.441,
+   "days_fired": 172,
+   "psr": 0.6515,
+   "min_track_days": 3516,
+   "bt_t": 3.75,
+   "bt_excess_bps": 55.3,
+   "bt_n": 1221
+  },
+  "FRESH_HIGH": {
+   "sharpe_ann": 1.363,
+   "days_fired": 153,
+   "psr": 0.8855,
+   "min_track_days": 369,
+   "bt_t": 2.92,
+   "bt_excess_bps": 104.3,
+   "bt_n": 574
+  },
+  "PANIC_BOUNCE": {
+   "sharpe_ann": -0.073,
+   "days_fired": 171,
+   "psr": 0.4743,
+   "min_track_days": null,
+   "bt_t": 2.73,
+   "bt_excess_bps": 36.1,
+   "bt_n": 1433
+  },
+  "PANIC_LITE": {
+   "sharpe_ann": -0.071,
+   "days_fired": 196,
+   "psr": 0.4749,
+   "min_track_days": null,
+   "bt_t": 4.37,
+   "bt_excess_bps": 35.8,
+   "bt_n": 2780
+  },
+  "PULLBACK_50": {
+   "sharpe_ann": -0.132,
+   "days_fired": 48,
+   "psr": 0.4536,
+   "min_track_days": null,
+   "bt_t": 1.45,
+   "bt_excess_bps": 42.6,
+   "bt_n": 243
+  },
+  "REVERSAL_3": {
+   "sharpe_ann": -2.547,
+   "days_fired": 45,
+   "psr": 0.0126,
+   "min_track_days": null,
+   "bt_t": -1.13,
+   "bt_excess_bps": -44.6,
+   "bt_n": 252
+  },
+  "RSI2_DIP": {
+   "sharpe_ann": -2.869,
+   "days_fired": 50,
+   "psr": 0.0059,
+   "min_track_days": null,
+   "bt_t": -3.14,
+   "bt_excess_bps": -102.6,
+   "bt_n": 610
+  },
+  "SHORT_EXT": {
+   "sharpe_ann": -0.69,
+   "days_fired": 98,
+   "psr": 0.2711,
+   "min_track_days": null,
+   "bt_t": -0.68,
+   "bt_excess_bps": -57.0,
+   "bt_n": 258
+  },
+  "STORM_DIP": {
+   "sharpe_ann": 0.767,
+   "days_fired": 40,
+   "psr": 0.7511,
+   "min_track_days": 1161,
+   "bt_t": 6.16,
+   "bt_excess_bps": 136.0,
+   "bt_n": 602
+  },
+  "TREND_RIDER": {
+   "sharpe_ann": -1.506,
+   "days_fired": 41,
+   "psr": 0.092,
+   "min_track_days": null,
+   "bt_t": -0.66,
+   "bt_excess_bps": -189.6,
+   "bt_n": 100
+  }
+ }
+}
