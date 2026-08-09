@@ -121,3 +121,11 @@ GFS/HUM/MOH 07-29, BOLL_SNAP TSLA 07-29, and three QBTS rows) kept their old
 stamp on the unmatched field rather than guessing. Regime tags were verified
 already bar-dated (0 changed on recomputation). No trading logic, thresholds,
 or rule parameters changed — labeling only.
+
+## ACCRUAL GATE — Anupam ruling, Review #2, 2026-08-09
+No Arena rule may be discussed as a promotion candidate until its forward book holds
+**≥20 distinct entry days AND ≥3 distinct storm sessions** (storm = VIX≥20 at entry).
+Origin: all 136 storm-down trades to date were entered on ONE day (2026-07-29);
+STORM_DIP's t=4.82 was that Wednesday wearing a sample size. Fixed before the data
+arrives, same shape as the zero-DTE 60-session gate and the n≥15 morning floor.
+The deflation gate (arena_gate.py, failed 2026-08-08) remains a separate, additional bar.
