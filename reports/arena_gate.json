@@ -15,6 +15,82 @@
   "degradation": -0.5683493568061124,
   "verdict": "suspect: fails one of {deflated significance, low PBO} \u2014 treat as unproven"
  },
+ "gate_size_weighted": {
+  "n_strategies": 12,
+  "n_obs": 198,
+  "best_strategy": 3,
+  "best_sharpe_annual": 2.167156330405972,
+  "psr": 0.9776753358524102,
+  "dsr": 0.48582831010501987,
+  "deflated_benchmark_sharpe_annual": 2.2055042459917678,
+  "min_backtest_length_years": 0.5901325834257862,
+  "pbo": 0.5729603729603729,
+  "prob_oos_loss": 0.42136752136752137,
+  "degradation": -0.421831293960486,
+  "verdict": "OVERFIT: not significant after deflation AND high overfitting probability"
+ },
+ "sparsity_audit": {
+  "BOLL_SNAP": {
+   "days_fired": 160,
+   "sr_zero_filled": -1.82,
+   "sr_fired_days_only": -2.02
+  },
+  "DEEP_DIP": {
+   "days_fired": 82,
+   "sr_zero_filled": -0.99,
+   "sr_fired_days_only": -1.54
+  },
+  "DOUBLE_DIP": {
+   "days_fired": 172,
+   "sr_zero_filled": 0.44,
+   "sr_fired_days_only": 0.47
+  },
+  "FRESH_HIGH": {
+   "days_fired": 153,
+   "sr_zero_filled": 1.36,
+   "sr_fired_days_only": 1.55
+  },
+  "PANIC_BOUNCE": {
+   "days_fired": 171,
+   "sr_zero_filled": -0.07,
+   "sr_fired_days_only": -0.08
+  },
+  "PANIC_LITE": {
+   "days_fired": 196,
+   "sr_zero_filled": -0.07,
+   "sr_fired_days_only": -0.07
+  },
+  "PULLBACK_50": {
+   "days_fired": 48,
+   "sr_zero_filled": -0.13,
+   "sr_fired_days_only": -0.27
+  },
+  "REVERSAL_3": {
+   "days_fired": 45,
+   "sr_zero_filled": -2.55,
+   "sr_fired_days_only": -5.55
+  },
+  "RSI2_DIP": {
+   "days_fired": 50,
+   "sr_zero_filled": -2.87,
+   "sr_fired_days_only": -5.96
+  },
+  "SHORT_EXT": {
+   "days_fired": 98,
+   "sr_zero_filled": -0.69,
+   "sr_fired_days_only": -0.98
+  },
+  "STORM_DIP": {
+   "days_fired": 40,
+   "sr_zero_filled": 0.77,
+   "sr_fired_days_only": 1.7
+  },
+  "TREND_RIDER": {
+   "days_fired": 41,
+   "sr_zero_filled": -1.51,
+   "sr_fired_days_only": -3.33
+  }
+ },
  "per_rule": {
   "BOLL_SNAP": {
    "sharpe_ann": -1.817,

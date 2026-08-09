@@ -23,6 +23,38 @@ The Arena dashboard has said *CANDIDATE — send to the deflation gate* since
   ============================================================
 ```
 
+## Robustness of the verdict to how I built the matrix
+
+| construction | DSR | PBO | best rule | its Sharpe | best-of-12 benchmark | verdict |
+|---|---|---|---|---|---|---|
+| per-day MEAN, zero-filled *(headline)* | 0.233 | 0.474 | FRESH_HIGH | 1.36 | 2.18 | suspect |
+| per-day SUM, size-weighted | 0.486 | 0.573 | FRESH_HIGH | 2.17 | 2.21 | OVERFIT |
+
+The verdict does not depend on the choice — and the headline construction is the
+**more generous** of the two. Size-weighting returns OVERFIT outright.
+
+## Sparsity bias — rules are penalised for not trading
+
+| rule | days fired (of 198) | Sharpe zero-filled | Sharpe on fired days only |
+|---|---|---|---|
+| STORM_DIP | 40 | +0.77 | +1.70 |
+| FRESH_HIGH | 153 | +1.36 | +1.55 |
+| DOUBLE_DIP | 172 | +0.44 | +0.47 |
+| PANIC_LITE | 196 | -0.07 | -0.07 |
+| PANIC_BOUNCE | 171 | -0.07 | -0.08 |
+| PULLBACK_50 | 48 | -0.13 | -0.27 |
+| SHORT_EXT | 98 | -0.69 | -0.98 |
+| DEEP_DIP | 82 | -0.99 | -1.54 |
+| BOLL_SNAP | 160 | -1.82 | -2.02 |
+| TREND_RIDER | 41 | -1.51 | -3.33 |
+| REVERSAL_3 | 45 | -2.55 | -5.55 |
+| RSI2_DIP | 50 | -2.87 | -5.96 |
+
+**This distorts the ranking in the table below and I reported that table before
+checking.** STORM_DIP fires 40 of 198 sessions; zero-filling more than halves its
+Sharpe (1.70 → 0.77). The count of rules with negative excess Sharpe is unchanged
+either way, so the conclusion held — but the ORDER did not, and I presented an order.
+
 ## Each rule standing alone
 
 | rule | backtest n | backtest vs-SPY | backtest t | days fired | ann. Sharpe (excess) | PSR | min track (days) |
@@ -50,3 +82,10 @@ file exists.
 119-name universe that is today's survivors; long-only rules in a bull tape; and the
 15-year survey already convicted the short-term-reversal family (OOS −0.74). A rule
 passing here has cleared one bar, not earned a trade.
+
+**One more limit of this file, stated because it is not obvious.** Each row is a
+trade's full multi-day return (holds run 2–15 days) attributed to its ENTRY day, then
+annualised by sqrt(252) as if the rows were daily. The columns are all built the same
+way, so the comparison between them — which is what DSR and PBO test — is sound. The
+absolute Sharpe MAGNITUDES are not real annualised Sharpes and should not be quoted
+as such. I quoted them as such on 2026-08-08 before auditing this.
