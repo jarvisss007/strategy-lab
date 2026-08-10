@@ -1,5 +1,5 @@
 {
- "built": "2026-08-10 00:31 PDT",
+ "built": "2026-08-10 06:28 PDT",
  "gap_threshold": 0.04,
  "vol_threshold": 2.0,
  "event_study": {
@@ -1002,7 +1002,7 @@
    "peer_spillover": {
     "up": {
      "same_day": 0.75,
-     "next_day": -0.66
+     "next_day": -0.67
     },
     "down": {
      "same_day": 0.64,
@@ -5970,7 +5970,7 @@
   },
   "COST": {
    "n_events": 8,
-   "avg_abs_gap": 4.79,
+   "avg_abs_gap": 4.8,
    "pct_gap_up": 37.5,
    "up": null,
    "down": {
@@ -6752,11 +6752,16 @@
   },
   {
    "date": "2026-08-20",
+   "ticker": "BABA",
+   "when": "time-pre-market"
+  },
+  {
+   "date": "2026-08-20",
    "ticker": "NMM",
    "when": "time-not-supplied"
   }
  ],
- "upcoming_all_count": 1355,
+ "upcoming_all_count": 1329,
  "calendar_status": "ok",
  "calendar_days_ok": 10,
  "calendar_days_err": 0
