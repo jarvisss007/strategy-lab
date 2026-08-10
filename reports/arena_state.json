@@ -1688,8 +1688,8 @@
    "entry_date": "2026-08-07",
    "entry_t": 20672,
    "entry_px": 29548.0,
-   "mtm": 0.0077,
-   "days_left": 15,
+   "mtm": 0.00973,
+   "days_left": 14,
    "regime": "calm-up"
   },
   {
@@ -1700,8 +1700,8 @@
    "entry_date": "2026-08-07",
    "entry_t": 20672,
    "entry_px": 7769.5,
-   "mtm": -0.00068,
-   "days_left": 10,
+   "mtm": 3e-05,
+   "days_left": 9,
    "regime": "calm-up"
   },
   {
