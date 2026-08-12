@@ -129,3 +129,38 @@ Origin: all 136 storm-down trades to date were entered on ONE day (2026-07-29);
 STORM_DIP's t=4.82 was that Wednesday wearing a sample size. Fixed before the data
 arrives, same shape as the zero-DTE 60-session gate and the n≥15 morning floor.
 The deflation gate (arena_gate.py, failed 2026-08-08) remains a separate, additional bar.
+
+## HORIZON HYPOTHESIS — pre-registered 2026-08-12, Anupam
+
+Registered BEFORE the data that will test it exists. Anupam, 2026-08-11: "why does
+the agent take the trade until a certain date? Is there any analysis based on that?
+Why not one day, two day, five day, ten day?" There was none. Every hold above was
+registered with its signal justified and its horizon simply asserted — 10d, 2d, 3d,
+15d — and this file is where that gap is now closed.
+
+**H1.** For Arena entries, mean excess vs SPY over the hold's own window is
+NON-DECREASING from 1 to 5 trading days and does NOT improve materially beyond 5.
+Informally: most of the move lands in the first week.
+
+**Where it came from, stated so it cannot later be dressed up as a prediction.**
+`stock-radar/horizon_study.py --arena`, run 2026-08-12 over all 622 closed Arena
+rows, gave +0.73 / +1.16 / +2.08 / +3.45 / +3.19 % at 1/2/3/5/10 days. That is a
+RETROSPECTIVE SWEEP over the same data that suggested the shape, and its best
+column FAILED its own bar: t = +2.18 against the 2.31 required on n = 9 entry days.
+It is a hypothesis, not a result. Recording it here is what makes the next test
+honest.
+
+**Test.** Entry days from 2026-08-13 onward ONLY — days the sweep never saw. Bar,
+fixed now: mean excess at 5d must exceed 1d by a margin significant across ENTRY
+DAYS (t computed on day means, not rows) at the Bonferroni-corrected level for the
+7 horizons swept. Costs must be modelled: a shorter hold trades more often, and the
+sweep above measured everything before the extra round trips.
+
+**Minimum sample.** 30 independent entry days. The Arena currently has 11 across
+622 rows, and this file will not be read as settled before then.
+
+**Not to be acted on in the meantime.** No rule's `hold` changes on the basis of the
+sweep. Sweeping a parameter and adopting the winner is the exact procedure
+~/backtest-overfitting convicted this account's own r17 for, and a horizon is a
+parameter like any other. A change requires this hypothesis to clear the bar above
+on unseen days AND to pass the deflation/PBO gate.
