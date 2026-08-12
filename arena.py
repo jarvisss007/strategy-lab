@@ -43,31 +43,43 @@ TRADES_F = os.path.join(REPORTS, "arena_trades.csv")
 COST = 0.001
 MAX_OPEN = 40      # raised 25→40 on 2026-07-25 (tempo sign-off in REGISTRY.md)
 
+# TAG-001, 2026-08-11. Every rule declares its own [tech]/[fund] tag HERE, at the
+# lab's end. Until now the Calibration Observatory inferred the Arena's tag from a
+# regex over a thesis string that calibration.py::read_arena BUILT ITSELF, so the
+# Arena could not have declared even if it wanted to — 622 rows, 73% of the whole
+# census, carried a downstream guess. The guess happened to be right, which is
+# exactly why it went unnoticed for a month.
+#
+# `tech` here is a statement of fact, not a classification call: every trigger below
+# is a price or volatility condition — 52-week highs and lows, daily percentage
+# moves, moving averages, RSI(2), Bollinger bands, a VIX regime gate. Not one reads
+# a financial statement. A future rule that does must set its own tag on this line;
+# that is the whole point of putting it here rather than in a shared default.
 STRATS = {
-    "DEEP_DIP":     {"hold": 10, "side": 1,  "desc": "fresh −40% off 52w high → buy 10d",
+    "DEEP_DIP":     {"hold": 10, "side": 1, "tags": "tech",  "desc": "fresh −40% off 52w high → buy 10d",
                      "voice": "the bargain hunter"},
-    "PANIC_BOUNCE": {"hold": 2,  "side": 1,  "desc": "1d ≤ −5% → buy 2d",
+    "PANIC_BOUNCE": {"hold": 2,  "side": 1, "tags": "tech",  "desc": "1d ≤ −5% → buy 2d",
                      "voice": "the flush fader"},
-    "PANIC_LITE":   {"hold": 2,  "side": 1,  "desc": "1d ≤ −3% → buy 2d",
+    "PANIC_LITE":   {"hold": 2,  "side": 1, "tags": "tech",  "desc": "1d ≤ −3% → buy 2d",
                      "voice": "the busy fader"},
-    "DOUBLE_DIP":   {"hold": 3,  "side": 1,  "desc": "2 down days ≤ −6% total → buy 3d",
+    "DOUBLE_DIP":   {"hold": 3,  "side": 1, "tags": "tech",  "desc": "2 down days ≤ −6% total → buy 3d",
                      "voice": "the washout buyer"},
-    "STORM_DIP":    {"hold": 3,  "side": 1,  "desc": "1d ≤ −4% in VIX ≥ 20 tape → buy 3d",
+    "STORM_DIP":    {"hold": 3,  "side": 1, "tags": "tech",  "desc": "1d ≤ −4% in VIX ≥ 20 tape → buy 3d",
                      "voice": "the storm chaser"},
-    "FRESH_HIGH":   {"hold": 10, "side": 1,  "desc": "new 52w high → buy 10d",
+    "FRESH_HIGH":   {"hold": 10, "side": 1, "tags": "tech",  "desc": "new 52w high → buy 10d",
                      "voice": "the momentum rider"},
-    "SHORT_EXT":    {"hold": 5,  "side": -1, "desc": "new high & ≥2× 52w low → short 5d",
+    "SHORT_EXT":    {"hold": 5,  "side": -1, "tags": "tech", "desc": "new high & ≥2× 52w low → short 5d",
                      "voice": "the skeptic"},
-    "TREND_RIDER":  {"hold": 15, "side": 1,  "desc": "cross above 50MA, above 200MA → buy 15d",
+    "TREND_RIDER":  {"hold": 15, "side": 1, "tags": "tech",  "desc": "cross above 50MA, above 200MA → buy 15d",
                      "voice": "the trend follower"},
     # tempo tier — registered 2026-07-25 PM (REGISTRY.md), higher signal frequency
-    "RSI2_DIP":     {"hold": 3,  "side": 1,  "desc": "RSI(2) < 10 above 200MA → buy 3d",
+    "RSI2_DIP":     {"hold": 3,  "side": 1, "tags": "tech",  "desc": "RSI(2) < 10 above 200MA → buy 3d",
                      "voice": "the twitchy scalper"},
-    "REVERSAL_3":   {"hold": 2,  "side": 1,  "desc": "3 straight down closes above 200MA → buy 2d",
+    "REVERSAL_3":   {"hold": 2,  "side": 1, "tags": "tech",  "desc": "3 straight down closes above 200MA → buy 2d",
                      "voice": "the three-day contrarian"},
-    "BOLL_SNAP":    {"hold": 3,  "side": 1,  "desc": "close < 20d MA − 2σ → buy 3d",
+    "BOLL_SNAP":    {"hold": 3,  "side": 1, "tags": "tech",  "desc": "close < 20d MA − 2σ → buy 3d",
                      "voice": "the rubber-band trader"},
-    "PULLBACK_50":  {"hold": 5,  "side": 1,  "desc": "uptrend, first close below 20d MA → buy 5d",
+    "PULLBACK_50":  {"hold": 5,  "side": 1, "tags": "tech",  "desc": "uptrend, first close below 20d MA → buy 5d",
                      "voice": "the dip-in-trend buyer"},
 }
 DAY0 = date(1970, 1, 1)
@@ -366,13 +378,18 @@ def main():
     os.makedirs(REPORTS, exist_ok=True)
     json.dump({"open": still_open}, open(STATE_F, "w"), indent=1)
     cols = ["strategy", "ticker", "side", "entry_date", "entry_px",
-            "exit_date", "exit_px", "net", "excess", "regime"]
+            "exit_date", "exit_px", "net", "excess", "regime", "tags"]
     old = list(csv.DictReader(open(TRADES_F))) if os.path.exists(TRADES_F) else []
     with open(TRADES_F, "w") as f:
         w = csv.DictWriter(f, fieldnames=cols, extrasaction="ignore")
         w.writeheader()
         for r in old + closed_now:
-            w.writerow({c: r.get(c, "") for c in cols})
+            row = {c: r.get(c, "") for c in cols}
+            # Declared from the rule's own definition, never from the row. The tag is a
+            # property of the STRATEGY, so it is deterministic and carries no knowledge
+            # of how the trade turned out.
+            row["tags"] = STRATS.get(r.get("strategy"), {}).get("tags", "")
+            w.writerow(row)
 
     cur_reg, _ = regime(spy["series_t"][-1])
 
