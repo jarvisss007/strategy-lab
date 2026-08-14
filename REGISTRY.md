@@ -167,29 +167,40 @@ on unseen days AND to pass the deflation/PBO gate.
 
 ---
 
-## RETIRED 2026-08-13 — the `fixed_10d` replay claim
+## RE-STATED 2026-08-13 — the `fixed_10d` replay claim, with its provenance
 
 **The claim:** a replay showed `fixed_10d` beating the registered exits by **+4.13pp over
 583 closes**.
 
-**Status: RETIRED, not disproved.** The council asked (directive 2026-08-13) that it be
-re-stated with its build date attached or retired. It cannot be re-stated. `exit_study.json`
-does not exist anywhere in this repo, and no file in the tree — code, report or data —
-contains the string `fixed_10d`. The build that produced the number is gone, and the last
-version the council saw was already a NON-Arena run (`arena_included: false`, 10 trades),
-which could not have produced a 583-close figure either.
+**Status: REPRODUCED, and it is a retrospective sweep — not a result.** The council
+(directive 2026-08-13) asked that it be re-stated with its build date attached or retired.
+It re-states. Provenance, in full:
 
-**Why it is retired rather than carried with a caveat.** A number that cannot be reproduced
-from anything on disk is not evidence, however true it was when it was written. Carrying it
-forward as "we once measured +4.13pp" is precisely how an unreproducible result becomes a
-premise. The claim is struck; it may be re-entered only as a fresh, pre-registered test.
+- **Source of truth:** `~/stock-radar/data/exit_study_cache/arena_progress.json`, the
+  per-trade cache written by `stock-radar/exit_study.py --arena`. **Build date
+  2026-08-09 14:43:50.** The study lives in `stock-radar`, not here — the same place
+  `horizon_study.py` does (see H1 above).
+- **Why the council saw an empty file:** `~/stock-radar/data/exit_study.json` — the
+  *report* — was overwritten on **2026-08-11 21:13:52** by a plain, non-Arena run
+  (`arena_included: false`, `n_trades: 10`). The report was clobbered; the cache was not.
+  A run without `--arena` silently replaces the Arena report with a ledger-only one.
+- **Recomputed today from that cache:** 583 cached Arena rows, of which **503 carry an
+  excess-vs-SPY figure** (80 do not). Mean excess: `registered` **+2.076pp**,
+  `fixed_10d` **+6.268pp**, `bracket` +0.297pp, `trail_1r` +0.784pp.
+  **`fixed_10d` − `registered` = +4.19pp**, against the +4.13pp on record. The small
+  difference is not reconciled and is not worth reconciling — the point is the figure
+  reproduces to a tenth of a point, not that the tenth matches.
 
-**What survives.** The hold-horizon hypothesis above, which is pre-registered, has its bar
-fixed in advance (30 independent entry days, entry days from 2026-08-13 onward only, t on
-day means at the Bonferroni-corrected level, costs modelled) and is explicitly not to be
-acted on. That is the only live version of this question. The Arena had 11 entry days at
-that writing; nothing about today's session changes the count materially.
+**What the number is NOT.** Those 583 rows span **2026-07-23 to 2026-08-05 across 10
+distinct entry days**. Ten days is the honest denominator, not 583. This is the same
+retrospective sweep over the same book that produced H1 above, and it is governed by H1's
+pre-registered bar: entry days from **2026-08-13 onward only**, t computed on **day means**
+at the Bonferroni-corrected level, costs modelled, **minimum 30 independent entry days**.
 
-**Standing reminder attached to it:** sweeping a parameter and adopting the winner is the
-exact procedure ~/backtest-overfitting convicted this account's own r17 for. A hold horizon
-is a parameter like any other.
+**Not to be acted on.** No rule's `hold` changes on the basis of this. Sweeping a parameter
+and adopting the winner is the exact procedure `~/backtest-overfitting` convicted this
+account's own r17 for, and a hold horizon is a parameter like any other. A change requires
+H1 to clear its bar on unseen days AND to pass the deflation/PBO gate.
+
+**Housekeeping owed:** re-run `exit_study.py --arena` so the *report* matches the cache
+again, and make a no-`--arena` run stop overwriting the Arena report. Filed, not done.
