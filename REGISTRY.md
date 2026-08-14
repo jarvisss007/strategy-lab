@@ -164,3 +164,32 @@ sweep. Sweeping a parameter and adopting the winner is the exact procedure
 ~/backtest-overfitting convicted this account's own r17 for, and a horizon is a
 parameter like any other. A change requires this hypothesis to clear the bar above
 on unseen days AND to pass the deflation/PBO gate.
+
+---
+
+## RETIRED 2026-08-13 — the `fixed_10d` replay claim
+
+**The claim:** a replay showed `fixed_10d` beating the registered exits by **+4.13pp over
+583 closes**.
+
+**Status: RETIRED, not disproved.** The council asked (directive 2026-08-13) that it be
+re-stated with its build date attached or retired. It cannot be re-stated. `exit_study.json`
+does not exist anywhere in this repo, and no file in the tree — code, report or data —
+contains the string `fixed_10d`. The build that produced the number is gone, and the last
+version the council saw was already a NON-Arena run (`arena_included: false`, 10 trades),
+which could not have produced a 583-close figure either.
+
+**Why it is retired rather than carried with a caveat.** A number that cannot be reproduced
+from anything on disk is not evidence, however true it was when it was written. Carrying it
+forward as "we once measured +4.13pp" is precisely how an unreproducible result becomes a
+premise. The claim is struck; it may be re-entered only as a fresh, pre-registered test.
+
+**What survives.** The hold-horizon hypothesis above, which is pre-registered, has its bar
+fixed in advance (30 independent entry days, entry days from 2026-08-13 onward only, t on
+day means at the Bonferroni-corrected level, costs modelled) and is explicitly not to be
+acted on. That is the only live version of this question. The Arena had 11 entry days at
+that writing; nothing about today's session changes the count materially.
+
+**Standing reminder attached to it:** sweeping a parameter and adopting the winner is the
+exact procedure ~/backtest-overfitting convicted this account's own r17 for. A hold horizon
+is a parameter like any other.

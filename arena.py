@@ -532,6 +532,22 @@ def main():
                   "marginal": marginal, "notes": notes, "lines": lines,
                   "tempo": tempo}
 
+    # Council FIX (strategy-lab-arena directive, 2026-08-13): the Arena is the large
+    # majority of the desk's scored rows, so ANY pooled Observatory number is mostly a
+    # statement about this one lab. The council wrote that caveat every session; it
+    # belongs at the source instead. Read the share from the Observatory's own output
+    # rather than hardcoding it — a frozen "88%" goes stale the day after it is written.
+    share = None
+    try:
+        with open(os.path.expanduser("~/command-center/calibration.js")) as cf:
+            _c = json.loads(cf.read().split("=", 1)[1].strip().rstrip(";"))
+        _tot = _c["pooled"]["scored"]
+        _mine = next(l["scored"] for l in _c["labs"] if l["lab"] == "Paper Arena")
+        if _tot:
+            share = (_mine, _tot, round(100 * _mine / _tot))
+    except Exception:
+        share = None  # Observatory not built yet — say nothing rather than guess
+
     # single-place report for every agent (and human) to read
     with open(os.path.join(REPORTS, "arena_roundtable.md"), "w") as f:
         f.write(f"# Arena Roundtable — {today}\n\nTape: **{cur_reg}** · "
@@ -539,6 +555,12 @@ def main():
                 f"opened {tempo['opened_today']}, closed {tempo['closed_today']} "
                 f"this session · {tempo['open_total']} open · "
                 f"{tempo['closed_total']} forward closes all-time\n\n")
+        if share:
+            f.write(f"> **This lab is {share[2]}% of the desk's scored record "
+                    f"({share[0]} of {share[1]} scored rows in the Calibration "
+                    f"Observatory).** Any pooled desk statistic is therefore mostly a "
+                    f"statement about the Arena, not about the desk. Read the other "
+                    f"labs' standings on their own n.\n\n")
         for ln in lines:
             f.write(f"- {ln}\n")
         f.write("\n## Playbook by regime (avg bps/trade, n>=20)\n\n")
