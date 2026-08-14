@@ -1,4 +1,4 @@
-# Arena Roundtable — 2026-08-13
+# Arena Roundtable — 2026-08-14
 
 Tape: **calm-up** · session 2026-08-13 · 12 agents · opened 50, closed 90 this session · 135 open · 780 forward closes all-time
 
