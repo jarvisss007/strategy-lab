@@ -1,0 +1,99 @@
+{
+ "checked": 915,
+ "unverifiable": 0,
+ "mismatched": 10,
+ "tolerance_pct": 2.0,
+ "rows": [
+  {
+   "ticker": "QBTS",
+   "entry_date": "2026-08-04",
+   "recorded": 16.21,
+   "feed": 21.83,
+   "err_pct": -25.7,
+   "strategy": "PANIC_BOUNCE",
+   "status": "closed"
+  },
+  {
+   "ticker": "QBTS",
+   "entry_date": "2026-08-04",
+   "recorded": 16.21,
+   "feed": 21.83,
+   "err_pct": -25.7,
+   "strategy": "PANIC_LITE",
+   "status": "closed"
+  },
+  {
+   "ticker": "QBTS",
+   "entry_date": "2026-08-13",
+   "recorded": 16.21,
+   "feed": 20.9,
+   "err_pct": -22.4,
+   "strategy": "PANIC_BOUNCE",
+   "status": "open"
+  },
+  {
+   "ticker": "QBTS",
+   "entry_date": "2026-08-13",
+   "recorded": 16.21,
+   "feed": 20.9,
+   "err_pct": -22.4,
+   "strategy": "PANIC_LITE",
+   "status": "open"
+  },
+  {
+   "ticker": "QBTS",
+   "entry_date": "2026-08-11",
+   "recorded": 16.21,
+   "feed": 20.23,
+   "err_pct": -19.9,
+   "strategy": "PANIC_BOUNCE",
+   "status": "closed"
+  },
+  {
+   "ticker": "QBTS",
+   "entry_date": "2026-08-11",
+   "recorded": 16.21,
+   "feed": 20.23,
+   "err_pct": -19.9,
+   "strategy": "PANIC_LITE",
+   "status": "closed"
+  },
+  {
+   "ticker": "QBTS",
+   "entry_date": "2026-08-11",
+   "recorded": 16.21,
+   "feed": 20.23,
+   "err_pct": -19.9,
+   "strategy": "DOUBLE_DIP",
+   "status": "open"
+  },
+  {
+   "ticker": "GFS",
+   "entry_date": "2026-07-29",
+   "recorded": 53.18,
+   "feed": 47.07,
+   "err_pct": 13.0,
+   "strategy": "REVERSAL_3",
+   "status": "closed"
+  },
+  {
+   "ticker": "HUM",
+   "entry_date": "2026-07-29",
+   "recorded": 381.15,
+   "feed": 365.41,
+   "err_pct": 4.3,
+   "strategy": "REVERSAL_3",
+   "status": "closed"
+  },
+  {
+   "ticker": "TSLA",
+   "entry_date": "2026-07-29",
+   "recorded": 309.22,
+   "feed": 298.32,
+   "err_pct": 3.7,
+   "strategy": "BOLL_SNAP",
+   "status": "closed"
+  }
+ ],
+ "generated": "2026-08-14 07:44 PT"
+}
