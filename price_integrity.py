@@ -85,7 +85,7 @@ def audit():
     px = truth()
     rows = [dict(r, _src="closed") for r in csv.DictReader(open(TRADES))]
     rows += [dict(o, _src="open") for o in json.load(open(STATE))["open"]]
-    bad, checked, unverifiable, zero_hold = [], 0, 0, []
+    bad, checked, unverifiable, zero_hold, disclosed = [], 0, 0, [], 0
     for r in rows:
         legs = [("entry", r["entry_date"], r["entry_px"])]
         if r["_src"] == "closed":
@@ -98,6 +98,19 @@ def audit():
             checked += 1
             p = float(recorded)
             if abs(p - a) / a > TOL:
+                # BENCH-002 (ruled 2026-08-12) forbids overwriting the number a
+                # CLOSED row was scored with, so on those rows "matches the tape"
+                # is the wrong thing to demand — it is unreachable by design. What
+                # is reachable, and what actually matters, is that the divergence
+                # be DECLARED: the row must carry the tape's price in its companion
+                # column. A closed row that disagrees with the tape and says so is
+                # an honest record. One that disagrees silently is the defect.
+                # Open rows have no scored outcome and must still match outright —
+                # marking a live position off a price that never traded is exactly
+                # what DATA-001 was raised for.
+                if r["_src"] == "closed" and str(r.get(f"{leg}_px_tape", "")).strip():
+                    disclosed += 1
+                    continue
                 bad.append({"ticker": r["ticker"], "leg": leg, "date": date,
                             "entry_date": r["entry_date"],
                             "recorded": round(p, 4), "feed": round(a, 4),
@@ -108,11 +121,18 @@ def audit():
         # two prices did not come from the bar it claims.
         if r["_src"] == "closed" and r["entry_date"] == r["exit_date"]:
             net = float(r["net"]) if r["net"] not in ("", None) else 0.0
-            if abs(net) > 2 * COST + 1e-9:
+            # Same BENCH-002 carve-out as above: the scored number stays, so an
+            # impossible zero-hold P&L is only a defect while it goes UNDECLARED.
+            # Once net_tape carries what the round trip could actually have paid,
+            # the row is an honest record of a bad fill rather than a hidden one.
+            if str(r.get("net_tape", "")).strip():
+                disclosed += 1
+            elif abs(net) > 2 * COST + 1e-9:
                 zero_hold.append({"ticker": r["ticker"], "strategy": r.get("strategy"),
                                   "date": r["entry_date"], "net_pct": round(100 * net, 2)})
     return {"checked": checked, "unverifiable": unverifiable,
             "mismatched": len(bad), "tolerance_pct": TOL * 100,
+            "disclosed_divergences": disclosed,
             "zero_hold_mispriced": len(zero_hold), "zero_hold_rows": zero_hold,
             "rows": sorted(bad, key=lambda x: -abs(x["err_pct"])),
             "generated": dt.datetime.now().strftime("%Y-%m-%d %H:%M PT")}
@@ -129,9 +149,13 @@ def main():
         return
     print(f"\nFill integrity — {rep['checked']} prices (both legs) checked against "
           f"radar.json, {rep['unverifiable']} unverifiable (off-feed)")
+    if rep["disclosed_divergences"]:
+        print(f"  {rep['disclosed_divergences']} closed-row divergence(s) declared in "
+              "*_px_tape columns (BENCH-002: scored number kept, tape carried beside it)")
     if not rep["rows"] and not rep["zero_hold_mispriced"]:
-        print("  every recorded price matches the tape within "
-              f"{rep['tolerance_pct']:.0f}%, and no zero-hold row books more than costs.")
+        print("  every price either matches the tape within "
+              f"{rep['tolerance_pct']:.0f}% or declares where it differs, and no "
+              "zero-hold row books more than costs.")
         return
     if rep["rows"]:
         by = collections.Counter(r["ticker"] for r in rep["rows"])

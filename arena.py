@@ -377,8 +377,15 @@ def main():
 
     os.makedirs(REPORTS, exist_ok=True)
     json.dump({"open": still_open}, open(STATE_F, "w"), indent=1)
+    # The *_tape columns carry what the tape says a row's prices should have been,
+    # beside the numbers it was actually scored on. BENCH-002 (ruled 2026-08-12):
+    # a closed row keeps the number it was scored with, and a correction may be
+    # ADDED as a new column but never overwritten. They must be listed here or the
+    # DictWriter below drops them silently on the next run — a rewrite that erases
+    # a correction is worse than never having recorded one.
     cols = ["strategy", "ticker", "side", "entry_date", "entry_px",
-            "exit_date", "exit_px", "net", "excess", "regime", "tags"]
+            "exit_date", "exit_px", "net", "excess", "regime", "tags",
+            "entry_px_tape", "exit_px_tape", "net_tape", "excess_tape"]
     old = list(csv.DictReader(open(TRADES_F))) if os.path.exists(TRADES_F) else []
     with open(TRADES_F, "w") as f:
         w = csv.DictWriter(f, fieldnames=cols, extrasaction="ignore")
