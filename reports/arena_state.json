@@ -907,8 +907,8 @@
    "hold": 3,
    "entry_date": "2026-08-11",
    "entry_t": 20676,
-   "entry_px": 16.21,
-   "mtm": 0.29473,
+   "entry_px": 20.23,
+   "mtm": 0.04447,
    "days_left": 0,
    "regime": "calm-up"
   },
@@ -1363,8 +1363,8 @@
    "hold": 2,
    "entry_date": "2026-08-13",
    "entry_t": 20678,
-   "entry_px": 16.21,
-   "mtm": 0.29473,
+   "entry_px": 20.9,
+   "mtm": 0.01092,
    "days_left": 1,
    "regime": "calm-up"
   },
@@ -1375,8 +1375,8 @@
    "hold": 2,
    "entry_date": "2026-08-13",
    "entry_t": 20678,
-   "entry_px": 16.21,
-   "mtm": 0.29473,
+   "entry_px": 20.9,
+   "mtm": 0.01092,
    "days_left": 1,
    "regime": "calm-up"
   },

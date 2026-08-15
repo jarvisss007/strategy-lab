@@ -52,6 +52,13 @@ if [ "$(date +%u)" = "1" ]; then
   "$PY" /Users/anupampatil/strategy-lab/earnings_radar.py >> "$LOG" 2>&1
 fi
 "$PY" /Users/anupampatil/strategy-lab/arena.py >> "$LOG" 2>&1        # paper arena: takes/closes rule trades
+# Check the fills the moment they are written, not whenever someone remembers.
+# The Arena opens at c[len(c)-1] — the freshest, least-settled bar in the feed —
+# so a stale refresh writes a wrong price into a permanent row (DATA-001: QBTS
+# recorded at its 07-24 close on three later dates). The feed self-heals; a
+# written row does not. Running the check here means a bad fill is caught on the
+# next pass instead of surviving until Anupam reads his own portfolio.
+"$PY" /Users/anupampatil/strategy-lab/price_integrity.py >> "$LOG" 2>&1
 "$PY" /Users/anupampatil/strategy-lab/learning_meter.py >> "$LOG" 2>&1
 "$PY" /Users/anupampatil/strategy-lab/build_hub.py >> "$LOG" 2>&1
 echo "window.LAST_REFRESH=\"$(date '+%Y-%m-%dT%H:%M:%S')\";" > /Users/anupampatil/command-center/freshness.js

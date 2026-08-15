@@ -10,10 +10,20 @@ the front page.
 
 WHY IT HAPPENED, precisely, because the cause is not what it looks like.
 arena.py is correct: it stamps entry_date from the BAR date and entry_px from
-that same bar, so date and price cannot drift apart within a run. radar.json
-holds the right prices TODAY. What happened is that the feed was wrong on the day
-the Arena ran, the Arena faithfully recorded what it was told, and the bad number
-was fossilised in a permanent record that nothing ever re-checks.
+that same bar, so date and price cannot drift apart within a run (entry_t agrees
+with entry_date on all 135 open rows). radar.json holds the right prices TODAY.
+What happened is that the feed served a STALE BAR under a fresh date, the Arena
+faithfully recorded what it was told, and the bad number was fossilised in a
+permanent record that nothing ever re-checks.
+
+The signature is unmistakable once you look for it: every wrong price is a real
+close from an EARLIER bar. GFS 53.18, HUM 381.15, TSLA 309.22 and MOH 199.48 are
+all recorded on 2026-07-29 and are all exactly their 2026-07-27 close; QBTS 16.21,
+recorded on 08-04, 08-11 and 08-13, is its 2026-07-24 close. Four unrelated
+tickers landing on the same prior bar is not adjusted-vs-raw noise — it is one
+stale refresh. Which also means arena.py enters on the least-settled bar it has:
+it opens at c[len(c)-1], the freshest and therefore most provisional price in the
+feed.
 
 That is the gap this file closes. The desk validated benchmarks, clustering,
 survivorship and effective bets — every layer of ANALYSIS — and never once
@@ -47,6 +57,7 @@ STATE = os.path.join(HERE, "reports", "arena_state.json")
 OUT = os.path.join(HERE, "reports", "price_integrity.json")
 DAY0 = dt.date(1970, 1, 1)
 TOL = 0.02          # 2%. Below this is adjusted-vs-raw noise, not a wrong fill.
+COST = 0.001        # arena.py:43 — a zero-hold trade can only ever cost 2*COST.
 
 
 def _iso(t):
@@ -64,24 +75,45 @@ def truth():
 
 
 def audit():
+    """Both legs of every trade, plus the trades that never had two legs.
+
+    Extended 2026-08-14: the first version checked entries only, and the exit leg
+    was carrying the single largest error in the book — STORM_DIP QBTS booked
+    -0.01% where the tape says +23.3%, because its EXIT was stamped 16.21. Half a
+    trade validated is not a validated trade.
+    """
     px = truth()
     rows = [dict(r, _src="closed") for r in csv.DictReader(open(TRADES))]
     rows += [dict(o, _src="open") for o in json.load(open(STATE))["open"]]
-    bad, checked, unverifiable = [], 0, 0
+    bad, checked, unverifiable, zero_hold = [], 0, 0, []
     for r in rows:
-        a = px.get(r["ticker"], {}).get(r["entry_date"])
-        if a is None:
-            unverifiable += 1          # off-watchlist or bar not in the feed
-            continue
-        checked += 1
-        ep = float(r["entry_px"])
-        if abs(ep - a) / a > TOL:
-            bad.append({"ticker": r["ticker"], "entry_date": r["entry_date"],
-                        "recorded": round(ep, 4), "feed": round(a, 4),
-                        "err_pct": round(100 * (ep - a) / a, 1),
-                        "strategy": r.get("strategy"), "status": r["_src"]})
+        legs = [("entry", r["entry_date"], r["entry_px"])]
+        if r["_src"] == "closed":
+            legs.append(("exit", r["exit_date"], r["exit_px"]))
+        for leg, date, recorded in legs:
+            a = px.get(r["ticker"], {}).get(date)
+            if a is None:
+                unverifiable += 1      # off-watchlist or bar not in the feed
+                continue
+            checked += 1
+            p = float(recorded)
+            if abs(p - a) / a > TOL:
+                bad.append({"ticker": r["ticker"], "leg": leg, "date": date,
+                            "entry_date": r["entry_date"],
+                            "recorded": round(p, 4), "feed": round(a, 4),
+                            "err_pct": round(100 * (p - a) / a, 1),
+                            "strategy": r.get("strategy"), "status": r["_src"]})
+        # A position opened and closed on the same close cannot have made or lost
+        # anything but its costs. Non-zero P&L on a zero-hold row means one of the
+        # two prices did not come from the bar it claims.
+        if r["_src"] == "closed" and r["entry_date"] == r["exit_date"]:
+            net = float(r["net"]) if r["net"] not in ("", None) else 0.0
+            if abs(net) > 2 * COST + 1e-9:
+                zero_hold.append({"ticker": r["ticker"], "strategy": r.get("strategy"),
+                                  "date": r["entry_date"], "net_pct": round(100 * net, 2)})
     return {"checked": checked, "unverifiable": unverifiable,
             "mismatched": len(bad), "tolerance_pct": TOL * 100,
+            "zero_hold_mispriced": len(zero_hold), "zero_hold_rows": zero_hold,
             "rows": sorted(bad, key=lambda x: -abs(x["err_pct"])),
             "generated": dt.datetime.now().strftime("%Y-%m-%d %H:%M PT")}
 
@@ -95,22 +127,28 @@ def main():
     if args.json:
         print(json.dumps(rep, indent=1))
         return
-    print(f"\nEntry-price integrity — {rep['checked']} entries checked against radar.json"
-          f", {rep['unverifiable']} unverifiable (off-feed)")
-    if not rep["rows"]:
-        print("  every recorded entry price matches the tape within "
-              f"{rep['tolerance_pct']:.0f}%.")
+    print(f"\nFill integrity — {rep['checked']} prices (both legs) checked against "
+          f"radar.json, {rep['unverifiable']} unverifiable (off-feed)")
+    if not rep["rows"] and not rep["zero_hold_mispriced"]:
+        print("  every recorded price matches the tape within "
+              f"{rep['tolerance_pct']:.0f}%, and no zero-hold row books more than costs.")
         return
-    by = collections.Counter(r["ticker"] for r in rep["rows"])
-    print(f"  {rep['mismatched']} disagree by more than {rep['tolerance_pct']:.0f}% "
-          f"({100*rep['mismatched']/rep['checked']:.1f}% of the book)\n")
-    print(f"  {'ticker':<8}{'entry date':<13}{'recorded':>10}{'feed':>10}{'err':>8}  {'status'}")
-    for r in rep["rows"][:20]:
-        print(f"  {r['ticker']:<8}{r['entry_date']:<13}{r['recorded']:>10.2f}"
-              f"{r['feed']:>10.2f}{r['err_pct']:>7.0f}%  {r['status']}")
-    print(f"\n  worst offender: {by.most_common(1)[0][0]} ({by.most_common(1)[0][1]} rows)")
-    print("  NOT auto-corrected. The recorded row is the record; rewriting a written")
-    print("  entry price is a BENCH-002-shaped decision and belongs to Anupam.")
+    if rep["rows"]:
+        by = collections.Counter(r["ticker"] for r in rep["rows"])
+        print(f"  {rep['mismatched']} disagree by more than {rep['tolerance_pct']:.0f}% "
+              f"({100*rep['mismatched']/rep['checked']:.1f}% of the book)\n")
+        print(f"  {'ticker':<8}{'leg':<7}{'bar date':<13}{'recorded':>10}{'feed':>10}"
+              f"{'err':>8}  {'status'}")
+        for r in rep["rows"][:20]:
+            print(f"  {r['ticker']:<8}{r['leg']:<7}{r['date']:<13}{r['recorded']:>10.2f}"
+                  f"{r['feed']:>10.2f}{r['err_pct']:>7.0f}%  {r['status']}")
+        print(f"\n  worst offender: {by.most_common(1)[0][0]} ({by.most_common(1)[0][1]} rows)")
+    for z in rep["zero_hold_rows"]:
+        print(f"  zero-hold: {z['strategy']} {z['ticker']} {z['date']} books "
+              f"{z['net_pct']:+.2f}% on a same-bar round trip")
+    print("\n  NOT auto-corrected here. This file only ever reports. Restating a written")
+    print("  row is a BENCH-002-shaped decision that belongs to Anupam, and when he")
+    print("  makes it, restate_prices.py --apply does it and logs every before/after.")
 
 
 if __name__ == "__main__":
