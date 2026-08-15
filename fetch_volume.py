@@ -4,6 +4,8 @@ Writes data/volume.csv. Run: /opt/anaconda3/bin/python fetch_volume.py"""
 import csv, json, os, time, urllib.request
 from datetime import datetime, timezone
 
+from panel_guard import report, trim_incomplete_tail
+
 BASE = os.path.dirname(os.path.abspath(__file__))
 UA = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)"}
 
@@ -42,6 +44,8 @@ def main():
             vol[s] = d; ok.append(s)
         time.sleep(0.2)
     dates = sorted({dt for d in vol.values() for dt in d})
+    dates, dropped = trim_incomplete_tail(dates, vol, ok)   # see panel_guard.py
+    report(dropped)
     with open(os.path.join(BASE, "data", "volume.csv"), "w", newline="") as f:
         w = csv.writer(f)
         w.writerow(["date"] + ok)

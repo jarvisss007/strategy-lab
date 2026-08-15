@@ -5,6 +5,8 @@ data/meta.json. Run: /opt/anaconda3/bin/python fetch_data.py"""
 import csv, json, os, time, urllib.request
 from datetime import datetime, timezone
 
+from panel_guard import report, trim_incomplete_tail
+
 BASE = os.path.dirname(os.path.abspath(__file__))
 UA = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)"}
 RANGE = "15y"
@@ -67,6 +69,14 @@ def main():
     if len(ok) < 0.8 * len(tick) or not all_dates:
         print(f"ABORT: only {len(ok)}/{len(tick)} tickers fetched — keeping the "
               f"existing panel untouched; failed: {fail[:10]}")
+        raise SystemExit(1)
+
+    # Same posture, other end of the axis: a trailing bar most of the universe has
+    # not traded is the clock, not new data (see panel_guard.py).
+    all_dates, dropped = trim_incomplete_tail(all_dates, panel, ok)
+    report(dropped)
+    if not all_dates:
+        print("ABORT: every fetched date was an incomplete bar — panel untouched")
         raise SystemExit(1)
 
     with open(os.path.join(BASE, "data", "prices.csv"), "w", newline="") as f:

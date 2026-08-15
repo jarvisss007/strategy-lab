@@ -6,6 +6,8 @@ Writes data/open.csv and data/close.csv. Run: /opt/anaconda3/bin/python fetch_oh
 import csv, json, os, time, urllib.request
 from datetime import datetime, timezone
 
+from panel_guard import report, trim_incomplete_tail
+
 BASE = os.path.dirname(os.path.abspath(__file__))
 UA = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)"}
 RANGE = "15y"
@@ -57,6 +59,10 @@ def main():
             ok.append(s)
         time.sleep(0.2)
     dates = sorted({dt for d in closes.values() for dt in d})
+    # The Monday refresh runs ~5 min before the cash open, so the union axis can
+    # carry a date only the overnight futures have traded (see panel_guard.py).
+    dates, dropped = trim_incomplete_tail(dates, closes, ok)
+    report(dropped)
     for name, panel in (("open", opens), ("close", closes)):
         with open(os.path.join(BASE, "data", f"{name}.csv"), "w", newline="") as f:
             w = csv.writer(f)

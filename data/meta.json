@@ -1,10 +1,10 @@
 {
- "built": "2026-08-10 06:23 PDT",
+ "built": "2026-08-15 09:12 PDT",
  "range": "15y",
- "n_tickers": 146,
- "n_dates": 3776,
- "start": "2011-08-08",
- "end": "2026-08-10",
+ "n_tickers": 147,
+ "n_dates": 3775,
+ "start": "2011-08-15",
+ "end": "2026-08-14",
  "tickers": [
   "SPY",
   "MSFT",
@@ -118,6 +118,7 @@
   "IREN",
   "LASR",
   "LPTH",
+  "CBRS",
   "INFQ",
   "Q",
   "KDEF",
@@ -154,7 +155,6 @@
   "XOM"
  ],
  "failed": [
-  "CBRS",
   "SPCX"
  ]
 }
