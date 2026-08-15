@@ -58,6 +58,12 @@ fi
 # recorded at its 07-24 close on three later dates). The feed self-heals; a
 # written row does not. Running the check here means a bad fill is caught on the
 # next pass instead of surviving until Anupam reads his own portfolio.
+# DATA-002 (ruled 2026-08-15): re-check the last session's fills against the feed
+# as it has since SETTLED. radar.json is a rolling window that gets corrected on
+# later refreshes; a written row never is. Open rows are repaired in place; closed
+# rows only ever gain a *_tape column, never lose their scored number (BENCH-002).
+# Runs BEFORE the integrity check so the check reports the reconciled state.
+"$PY" /Users/anupampatil/strategy-lab/auto_reconcile.py >> "$LOG" 2>&1
 "$PY" /Users/anupampatil/strategy-lab/price_integrity.py >> "$LOG" 2>&1
 "$PY" /Users/anupampatil/strategy-lab/learning_meter.py >> "$LOG" 2>&1
 "$PY" /Users/anupampatil/strategy-lab/build_hub.py >> "$LOG" 2>&1

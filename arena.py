@@ -358,9 +358,31 @@ def main():
 
     held = {(p["strategy"], p["ticker"]) for p in still_open}
     count = {k: sum(1 for p in still_open if p["strategy"] == k) for k in STRATS}
+    # STALE-BAR GATE (DATA-002, ruled 2026-08-15). The Arena opens at c[len(c)-1],
+    # the freshest and therefore least-settled bar in the feed, so a collector that
+    # re-serves one cached value writes a permanent row at a price that never
+    # traded — QBTS sat at 16.21, its 07-24 close, on entries dated 08-04, 08-11
+    # and 08-13. Three identical consecutive closes is the signature of that stall
+    # and, measured over the actual feed, of nothing else: across 147 tickers and
+    # ~251 bars each (~36,900 bars) there are 90 runs of exactly two and ZERO runs
+    # of three or more, ever. So this refuses only what is provably frozen and has
+    # never once fired on real data.
+    #
+    # It gates ENTRIES only, never exits — refusing to close a position because its
+    # feed looks odd would strand it, which is a worse failure than a wrong mark.
+    # Same class as the intraday fill-integrity gate above: a data-integrity
+    # refusal, not a strategy gate. It selects on whether the price is real, never
+    # on whether the trade looks good, so it needs no REGISTRY thesis.
+    def frozen(c):
+        return len(c) >= 3 and c[-1] == c[-2] == c[-3]
+
+    skipped_frozen = []
     for e in (eq if not intraday else []):
         c = e["series_c"]; i = len(c) - 1
         if i < 51:
+            continue
+        if frozen(c):
+            skipped_frozen.append(e["ticker"])
             continue
         reg, storm = regime(e["series_t"][i])
         for s in signals_at(c, i, storm):
@@ -612,7 +634,10 @@ def main():
     print("OK arena: backtest " + ", ".join(f"{k}:{backtest[k]['n']}" for k in STRATS)
           + f" · forward open {len(still_open)}, closed {len(fwd_trades)}"
           + f" · session {tempo['session']} +{tempo['opened_today']}/−{tempo['closed_today']}"
-          + f" · regime {cur_reg}")
+          + f" · regime {cur_reg}"
+          # a refusal that prints nothing is a refusal nobody audits
+          + (f" · SKIPPED {len(skipped_frozen)} frozen-bar name(s): "
+             + ", ".join(sorted(skipped_frozen)) if skipped_frozen else ""))
 
 
 if __name__ == "__main__":
