@@ -65,6 +65,10 @@ fi
 # Runs BEFORE the integrity check so the check reports the reconciled state.
 "$PY" /Users/anupampatil/strategy-lab/auto_reconcile.py >> "$LOG" 2>&1
 "$PY" /Users/anupampatil/strategy-lab/price_integrity.py >> "$LOG" 2>&1
+# Rotation overlay (REGISTRY.md 2026-08-17): Anupam's cull-losers-feed-winners
+# rule as a pre-registered paper arm scored against the same open set held flat.
+# Runs after the integrity chain so it marks off reconciled prices.
+"$PY" /Users/anupampatil/strategy-lab/rotation_arm.py >> "$LOG" 2>&1
 "$PY" /Users/anupampatil/strategy-lab/learning_meter.py >> "$LOG" 2>&1
 "$PY" /Users/anupampatil/strategy-lab/build_hub.py >> "$LOG" 2>&1
 echo "window.LAST_REFRESH=\"$(date '+%Y-%m-%dT%H:%M:%S')\";" > /Users/anupampatil/command-center/freshness.js

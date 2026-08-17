@@ -204,3 +204,37 @@ H1 to clear its bar on unseen days AND to pass the deflation/PBO gate.
 
 **Housekeeping owed:** re-run `exit_study.py --arena` so the *report* matches the cache
 again, and make a no-`--arena` run stop overwriting the Arena report. Filed, not done.
+
+## Rotation overlay arm — registered 2026-08-17, BEFORE first run (Anupam's direct ask, in writing)
+
+**The proposal, his words:** "if the position is not doing good and some other
+position is doing good, exit the bad one and invest that money in the good one,
+so you are accumulating in the position which is doing good."
+
+**The rule, frozen before any result is seen:** each post-close run, rank the
+Arena's open book by unrealized mtm. CULL any position with mtm < −2% (exit at
+current mark, before its scheduled hold expiry). Reallocate the freed weight
+equally across the top quartile of positions by mtm. New entries arrive at
+weight 1.0. The overlay trades the SAME entries as the frozen agents — it is an
+exit-and-sizing overlay, never a new signal.
+
+**Scored against:** the base book — the identical open set, equal-weighted,
+held to each rule's own expiry. Both NAVs start at 100. Daily series, so the
+comparison is day-clustered by construction.
+
+**The desk's prediction, stated now so it cannot be fitted to the answer:
+the rotation arm UNDERPERFORMS the base book (p≈0.65).** Three reasons on the
+record: (1) this book is predominantly mean-reversion families — PANIC, DIP,
+SNAP — whose open losers are mid-dip by design; culling them sells the exact
+bottom the strategy was built to buy. (2) The desk's own paper_account arm B
+("size up on wins") already trails flat-weight arm A on every comparison to
+date. (3) At 2–15 day horizons the documented cross-sectional effect is
+REVERSAL, not momentum — accumulate-the-winner is a 3–12 MONTH effect being
+applied at a 5-day horizon. If the overlay nonetheless beats the base with the
+gap exceeding its day-clustered noise, that is a genuine finding and the desk
+will say so.
+
+**What would make it real:** ≥40 sessions of forward NAV, gap > 2×SE clustered
+by day, and survival of the same cost model (2×COST per forced exit + re-entry).
+Until then it is an experiment, not a rule, and it changes nothing in any
+frozen agent's record.
