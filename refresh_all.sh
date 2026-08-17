@@ -75,3 +75,5 @@ echo "window.LAST_REFRESH=\"$(date '+%Y-%m-%dT%H:%M:%S')\";" > /Users/anupampati
 echo "done $(date '+%H:%M:%S')" >> "$LOG"
 touch "$DONE_MARK"
 find /Users/anupampatil/strategy-lab -maxdepth 1 -name ".refresh_done_*" -mtime +2 -delete
+# Firm-wide positions view: assemble positions.js after all books have moved.
+"$PY" /Users/anupampatil/command-center/positions_data.py >> "$LOG" 2>&1
