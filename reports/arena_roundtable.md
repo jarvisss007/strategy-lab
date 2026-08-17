@@ -1,8 +1,8 @@
-# Arena Roundtable — 2026-08-16
+# Arena Roundtable — 2026-08-17
 
-Tape: **calm-up** · session 2026-08-14 · 12 agents · opened 35, closed 27 this session · 143 open · 807 forward closes all-time
+Tape: **calm-up** · session 2026-08-14 · 12 agents · opened 35, closed 27 this session · 144 open · 807 forward closes all-time
 
-> **This lab is 89% of the desk's scored record (807 of 907 scored rows in the Calibration Observatory).** Any pooled desk statistic is therefore mostly a statement about the Arena, not about the desk. Read the other labs' standings on their own n.
+> **This lab is 88% of the desk's scored record (807 of 913 scored rows in the Calibration Observatory).** Any pooled desk statistic is therefore mostly a statement about the Arena, not about the desk. Read the other labs' standings on their own n.
 
 - Tape today: CALM-UP. Our pooled record in this weather — hot hands: FRESH_HIGH (+180), PULLBACK_50 (+24), PANIC_LITE (+6); cold hands: REVERSAL_3 (-141), TREND_RIDER (-144). (History, not prophecy.)
 - FRESH_HIGH and SHORT_EXT enter on the same bar 45% of the time — one trade, two directions. The pooled ledger says the long side wins that argument; the skeptic keeps paying for the lesson.
