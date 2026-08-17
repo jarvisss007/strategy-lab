@@ -22,6 +22,22 @@
 # would skip. It no-ops unless a new final US close has appeared.
 /opt/anaconda3/bin/python /Users/anupampatil/asia-radar/predictions.py >> /Users/anupampatil/strategy-lab/refresh.log 2>&1
 
+# Calibration Observatory census: rebuilt on EVERY trigger, immediately after the
+# Asia engine writes — the OBS-004 fix the council asked for (directive 2026-08-14,
+# applied 2026-08-17 by labs-morning-sweep).
+#
+# The bug: the pooled census was built only by the morning sweep at ~08:41, while
+# asia-radar's engine writes its forecasts after the 1 PM PT US close. So the
+# Observatory read Asia as 69 scored / 0 pending while six live rows sat in its
+# ledger — the census was always a day behind the lab it was reporting on. Moving
+# the rebuild onto this 30-minute loop means it now always runs AFTER the last lab
+# writes, which is what actually closes OBS-004; rebuilding earlier cannot.
+#
+# Placed here, above the once-a-day DONE_MARK guard, for the same reason
+# predictions.py is: the guard would skip every post-US-close firing. Cost is one
+# cheap local rebuild per trigger. The sweep's own 08:41 rebuild stays as a floor.
+/usr/bin/python3 /Users/anupampatil/command-center/calibration.py >> /Users/anupampatil/strategy-lab/refresh.log 2>&1
+
 DONE_MARK=/Users/anupampatil/strategy-lab/.refresh_done_$(date '+%Y-%m-%d')
 if [ -f "$DONE_MARK" ] && [ "$(date +%u)" -le 5 ] && [ "$(date -r "$DONE_MARK" '+%H')" -ge 6 ]; then
   exit 0
