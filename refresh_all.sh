@@ -37,6 +37,9 @@
 # predictions.py is: the guard would skip every post-US-close firing. Cost is one
 # cheap local rebuild per trigger. The sweep's own 08:41 rebuild stays as a floor.
 /usr/bin/python3 /Users/anupampatil/command-center/calibration.py >> /Users/anupampatil/strategy-lab/refresh.log 2>&1
+# The evidence room is GENERATED from the census (DIAG-001); regenerating it in
+# the same breath as the census is the only thing that keeps them in step.
+/opt/anaconda3/bin/python /Users/anupampatil/command-center/gen_evidence_room.py >> /Users/anupampatil/strategy-lab/refresh.log 2>&1
 
 DONE_MARK=/Users/anupampatil/strategy-lab/.refresh_done_$(date '+%Y-%m-%d')
 if [ -f "$DONE_MARK" ] && [ "$(date +%u)" -le 5 ] && [ "$(date -r "$DONE_MARK" '+%H')" -ge 6 ]; then
