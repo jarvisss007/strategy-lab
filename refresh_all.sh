@@ -66,6 +66,8 @@ if [ "$(date +%u)" = "1" ]; then
   "$PY" /Users/anupampatil/strategy-lab/returns_matrix.py >> "$LOG" 2>&1
   "$PY" /Users/anupampatil/strategy-lab/universe_daytype.py >> "$LOG" 2>&1
   "$PY" /Users/anupampatil/strategy-lab/earnings_radar.py >> "$LOG" 2>&1
+  # IPO desk (IPO_DESK.md): EDGAR pipeline + Anthropic watch + observation book
+  "$PY" /Users/anupampatil/stock-radar/ipo_radar.py >> "$LOG" 2>&1
 fi
 "$PY" /Users/anupampatil/strategy-lab/arena.py >> "$LOG" 2>&1        # paper arena: takes/closes rule trades
 # Check the fills the moment they are written, not whenever someone remembers.
