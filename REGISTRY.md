@@ -238,3 +238,39 @@ will say so.
 by day, and survival of the same cost model (2×COST per forced exit + re-entry).
 Until then it is an experiment, not a rule, and it changes nothing in any
 frozen agent's record.
+
+## Exit overlays — registered 2026-08-18, BEFORE first run (Anupam's ask + EXIT-001)
+
+**His ask, verbatim:** "when market is in downturn, the agent should know it and
+exit beforehand... I wanted everything to be more intelligent." The prophetic
+version is impossible and the desk has measured its impossibility (no feature
+beats the direction base rate; forecasts anti-informative). What IS testable is
+the reactive version, and the desk's own playbook motivates it: family
+expectancies flip sign by regime (FRESH_HIGH +179 calm-up / −210 calm-down).
+
+**Two overlay arms, same mechanics as the rotation arm (same entries as the
+Arena, NAV vs the base book held flat, one row per session, frozen rules):**
+
+- **REGIME_EXIT:** when the measured regime FLIPS (calm↔storm on VIX 20, up↔down
+  on SPY vs 50MA), exit — at that day's mark — every open position whose family
+  shows NEGATIVE recorded avg bps in the NEW regime (from the frozen replay
+  table). Positions re-enter only as the Arena itself re-enters. This is
+  reaction to a measured state, one day late by construction, never prediction.
+- **STOP_ONLY (EXIT-001, the coach's fifth rule):** exit any position at
+  mtm ≤ −5%, nothing else — no targets, no trails. The exit study already
+  convicted managed stops (t=0.37) and trails (t=0.75); this isolates the
+  simplest possible stop at a pre-registered level.
+
+**Predictions, filed now:**
+- STOP_ONLY underperforms the base book (p≈0.65) — this is a dip-buying book;
+  a −5% stop sells the exact bottoms the families were built to buy. Same
+  reasoning as the rotation prediction, and the exit study's prior.
+- REGIME_EXIT is the desk's first overlay at genuine equipoise (p≈0.50-0.55
+  that it fails to beat base after costs): the per-regime spreads are large and
+  real, but the VIX-20 boundary whipsaws, every flip pays 2×COST per exited
+  position, and a one-day-late reaction forfeits the worst day. THIS
+  UNCERTAINTY IS WHY IT IS WORTH 40 SESSIONS. If it wins, it is the first
+  overlay the desk adopts; if it loses, "exit intelligence" is convicted at the
+  regime level too and the question closes with a number on it.
+
+**Bar: 40 sessions, day-clustered, costs included — identical to rotation.**

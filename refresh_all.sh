@@ -98,3 +98,6 @@ touch "$DONE_MARK"
 find /Users/anupampatil/strategy-lab -maxdepth 1 -name ".refresh_done_*" -mtime +2 -delete
 # Firm-wide positions view: assemble positions.js after all books have moved.
 "$PY" /Users/anupampatil/command-center/positions_data.py >> "$LOG" 2>&1
+# Exit overlays (REGISTRY.md 2026-08-18): REGIME_EXIT + STOP_ONLY as registered
+# paper arms — the honest test of "exit intelligently", after rotation.
+"$PY" /Users/anupampatil/strategy-lab/exit_overlays.py >> "$LOG" 2>&1
