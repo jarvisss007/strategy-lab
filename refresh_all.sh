@@ -50,6 +50,8 @@ LOG=/Users/anupampatil/strategy-lab/refresh.log
 echo "=== refresh $(date '+%Y-%m-%d %H:%M:%S') ===" >> "$LOG"
 "$PY" /Users/anupampatil/stock-radar/collector.py >> "$LOG" 2>&1
 "$PY" /Users/anupampatil/stock-radar/check_plans.py >> "$LOG" 2>&1
+# BRIEF v2 renderer feed (build queue item, built 2026-08-19)
+"$PY" /Users/anupampatil/stock-radar/embed_brief.py >> "$LOG" 2>&1
 "$PY" /Users/anupampatil/stock-radar/collector.py >> "$LOG" 2>&1   # re-embed ledger if a plan fired
 # Asia Radar: cross-market web (US·India·China·HK·Korea·Japan·Taiwan)
 "$PY" /Users/anupampatil/asia-radar/collector.py >> "$LOG" 2>&1
