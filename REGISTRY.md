@@ -295,3 +295,34 @@ wrong before, the 2026-08 selloff is exactly the weather where this rule
 shines, and if it beats base past day-clustered noise at 40 sessions it gets
 ADOPTED like any winner. His instinct is now a bet, not an argument — for both
 of us.
+
+## CANSLIM-approx — registered 2026-08-20, BEFORE first run (Anupam's ask: "William O'Neil, CANSLIM modeling")
+
+**What it is:** O'Neil's growth-momentum system, approximated from what this
+desk can compute honestly, with every proxy disclosed:
+  C/A (earnings growth)  → fundamentals.json: revenue growth ≥ 25% YoY AND
+                           F-score ≥ 6 (true quarterly EPS accel needs data we
+                           don't have; this proxy is DISCLOSED, not hidden)
+  N (new highs)          → within 5% of the 52-week high (radar off_hi ≥ −5%)
+  L (leadership)         → 3-month return in the universe's top quintile
+  M (market direction)   → entries only in SPY>200MA · VIX-calm regime
+  S, I (supply, funds)   → NOT computable free; omitted and SAID SO
+**Native exits, faithful to the book:** stop −7.5%, target +22.5%, else 60-
+session time exit. This is the ONLY desk strategy with O'Neil's exit pair
+built in — which is precisely why it earns a slot: it tests Anupam's stop/
+target instincts inside the system that canonized them.
+
+**The desk's own evidence, both directions, on the record:**
+- AGAINST: this universe's 52-week-high study found near-high momentum LOST
+  money; FRESH_HIGH (the nearest frozen family) is unproven at best; the
+  overlays' stop machinery has twice measured as silence.
+- FOR: O'Neil's M-filter and earnings screen are exactly what the naked
+  price studies lacked; AAII's long-running CANSLIM screen posted strong
+  returns (with brutal drawdowns); momentum-quality composites survive
+  academically where raw high-chasing fails.
+
+**Prediction, filed now:** fails to beat SPY after costs at the 60-entry-day
+bar (p≈0.6) — but this is the desk's second-most-live registrant after
+REGIME_EXIT, and it debits the carried trials budget like every family.
+Tagged [canslim] [tech] (the TRIGGER is price action; earnings are a filter —
+the tag choice is stated, not assumed).

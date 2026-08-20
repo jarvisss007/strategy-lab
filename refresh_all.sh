@@ -103,3 +103,5 @@ find /Users/anupampatil/strategy-lab -maxdepth 1 -name ".refresh_done_*" -mtime 
 # Exit overlays (REGISTRY.md 2026-08-18): REGIME_EXIT + STOP_ONLY as registered
 # paper arms — the honest test of "exit intelligently", after rotation.
 "$PY" /Users/anupampatil/strategy-lab/exit_overlays.py >> "$LOG" 2>&1
+# CANSLIM-approx (REGISTRY.md 2026-08-20): O'Neil's system with native exits
+"$PY" /Users/anupampatil/stock-radar/canslim.py >> "$LOG" 2>&1
