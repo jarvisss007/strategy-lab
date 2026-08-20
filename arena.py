@@ -590,6 +590,34 @@ def main():
                     f"Observatory).** Any pooled desk statistic is therefore mostly a "
                     f"statement about the Arena, not about the desk. Read the other "
                     f"labs' standings on their own n.\n\n")
+        # Council directive (strategy-lab-arena, 2026-08-19): ARENA-003 asks whether the
+        # open book's due column actually drains, or whether rows sit on it forever. The
+        # council was wrong about India Arena on 08-17 for exactly this reason — an open
+        # book with a due column that nothing visibly empties LOOKS stuck whether or not
+        # it is. So publish the mechanism every run rather than answering the question by
+        # hand each time: how many rows are due, how many are actually past due, how many
+        # closed this session, and the oldest due row on the book. Exits are suppressed
+        # while `intraday` (fill integrity), so a due row during market hours is waiting
+        # for the next non-intraday pass by design, not stuck.
+        _due = [p for p in still_open if p.get("days_left", 99) <= 0]
+        _past = [p for p in _due if p.get("days_left", 0) < 0]
+        _oldest = min(_due, key=lambda p: p["entry_date"]) if _due else None
+        f.write(f"**Drain (ARENA-003).** {len(_due)} of {len(still_open)} open rows read "
+                f"`days_left <= 0`; {len(_past)} of those are PAST due (negative). "
+                f"{tempo['closed_today']} closed this session, {tempo['closed_total']} "
+                f"all-time. ")
+        if _oldest:
+            f.write(f"Oldest due row: {_oldest['strategy']} {_oldest['ticker']}, entered "
+                    f"{_oldest['entry_date']}, hold {_oldest['hold']}, days_left "
+                    f"{_oldest['days_left']}. ")
+        else:
+            f.write("No due rows on the book. ")
+        f.write("Exits are suppressed during market hours by the fill-integrity gate, so a "
+                "due row right now is waiting for the next non-intraday pass, not stuck.\n\n"
+                if intraday else
+                "This pass ran outside market hours, so every due row was eligible to "
+                "close.\n\n")
+
         for ln in lines:
             f.write(f"- {ln}\n")
         f.write("\n## Playbook by regime (avg bps/trade, n>=20)\n\n")
