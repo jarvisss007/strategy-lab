@@ -14,6 +14,10 @@ touch the Arena itself.
   REGIME_EXIT  on a regime flip, exit positions whose family's recorded avg bps
                in the NEW regime is negative (frozen replay table, arena.json).
   STOP_ONLY    exit any position at mtm <= -5%. Nothing else.
+  TAKE_PROFIT  exit any position at mtm >= +10% (registered 2026-08-20 after
+               the +$3,074 round trip; predicted to underperform -- it amputates
+               the right tail that funds a dip-buying book -- and tested
+               honestly because prediction is not knowledge).
 
 Run:  /opt/anaconda3/bin/python exit_overlays.py     (daily, after rotation_arm)
 """
@@ -67,6 +71,8 @@ def main():
             "nav_base": 100.0}
     if os.path.exists(BOOK):
         book = json.load(open(BOOK))
+    # an arm registered after the book was born initializes mid-flight at 100
+    book["arms"].setdefault("TAKE_PROFIT", {"nav": 100.0, "weights": {}})
     if book.get("last_run") == today:
         print("exit_overlays: already ran today")
         return
@@ -101,7 +107,7 @@ def main():
 
     flipped = regime != book.get("last_regime")
     marks = {k: cur[k].get("mtm", 0.0) for k in cur}
-    actions = {"REGIME_EXIT": [], "STOP_ONLY": []}
+    actions = {"REGIME_EXIT": [], "STOP_ONLY": [], "TAKE_PROFIT": []}
 
     # REGIME_EXIT: on a flip, exit families negative in the NEW regime
     w = book["arms"]["REGIME_EXIT"]["weights"]
@@ -115,6 +121,15 @@ def main():
                 book["arms"]["REGIME_EXIT"]["nav"] = round(
                     book["arms"]["REGIME_EXIT"]["nav"] * (1 - 2 * COST / max(len(w), 1)), 4)
                 actions["REGIME_EXIT"].append(cur[k]["ticker"])
+
+    # TAKE_PROFIT: bank anything at or through +10% (REGISTRY.md 2026-08-20)
+    w = book["arms"]["TAKE_PROFIT"]["weights"]
+    for k in list(w):
+        if w[k] > 0 and marks.get(k, 0.0) >= 0.10:
+            w[k] = 0.0
+            book["arms"]["TAKE_PROFIT"]["nav"] = round(
+                book["arms"]["TAKE_PROFIT"]["nav"] * (1 - 2 * COST / max(len(w), 1)), 4)
+            actions.setdefault("TAKE_PROFIT", []).append(cur[k]["ticker"])
 
     # STOP_ONLY: exit anything at or through -5%
     w = book["arms"]["STOP_ONLY"]["weights"]
@@ -133,12 +148,15 @@ def main():
         wcsv = csv.writer(f)
         if new:
             wcsv.writerow(["date", "regime", "flipped", "nav_base", "nav_regime_exit",
-                           "nav_stop_only", "regime_exits", "stop_exits"])
+                           "nav_stop_only", "regime_exits", "stop_exits",
+                           "nav_take_profit", "tp_exits"])
         wcsv.writerow([today, regime, int(flipped), book["nav_base"],
                        book["arms"]["REGIME_EXIT"]["nav"],
                        book["arms"]["STOP_ONLY"]["nav"],
                        ";".join(actions["REGIME_EXIT"]),
-                       ";".join(actions["STOP_ONLY"])])
+                       ";".join(actions["STOP_ONLY"]),
+                       book["arms"]["TAKE_PROFIT"]["nav"],
+                       ";".join(actions.get("TAKE_PROFIT", []))])
     print(f"exit_overlays {today} [{regime}{' FLIP' if flipped else ''}]: "
           f"base {book['nav_base']:.2f} · regime-exit "
           f"{book['arms']['REGIME_EXIT']['nav']:.2f} "

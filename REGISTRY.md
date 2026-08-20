@@ -274,3 +274,24 @@ Arena, NAV vs the base book held flat, one row per session, frozen rules):**
   regime level too and the question closes with a number on it.
 
 **Bar: 40 sessions, day-clustered, costs included — identical to rotation.**
+
+## TAKE_PROFIT overlay — registered 2026-08-20, BEFORE first run (Anupam's ask)
+
+**His ask, after watching +$3,074 of open marks round-trip to −$700 in the
+selloff:** "why was the agent not trained to take the profits?"
+
+**The rule, frozen now:** exit any open position at mtm ≥ +10%, bank the mark,
+never re-enter that row. Same entries as the Arena, same NAV-vs-base mechanics
+and 2×COST per forced exit as the other overlays. Starts next session (today's
+overlay pass already ran).
+
+**The desk's prediction, filed before any result:** TAKE_PROFIT UNDERPERFORMS
+the base book (p≈0.6). Reasons on the record: (1) the book's few large winners
+pay for its many small losers — capping winners at +10% amputates the right
+tail that funds the whole dip-buying profile; (2) the trailing/target machinery
+was already convicted once at n=503 (trails t=0.75); (3) "sell before the drop"
+is timing, and timing here has measured out at a coin. AND: the desk has been
+wrong before, the 2026-08 selloff is exactly the weather where this rule
+shines, and if it beats base past day-clustered noise at 40 sessions it gets
+ADOPTED like any winner. His instinct is now a bet, not an argument — for both
+of us.
