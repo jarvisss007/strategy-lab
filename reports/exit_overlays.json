@@ -1,10 +1,10 @@
 {
  "start": "2026-08-18",
- "last_run": "2026-08-22",
+ "last_run": "2026-08-23",
  "last_regime": "calm-up",
  "arms": {
   "REGIME_EXIT": {
-   "nav": 92.9531,
+   "nav": 93.2377,
    "weights": {
     "TREND_RIDER|GOOG|2026-08-03": 1.0,
     "TREND_RIDER|NVDA|2026-08-03": 1.0,
@@ -245,7 +245,7 @@
    }
   },
   "STOP_ONLY": {
-   "nav": 93.3971,
+   "nav": 93.5659,
    "weights": {
     "TREND_RIDER|GOOG|2026-08-03": 0.0,
     "TREND_RIDER|NVDA|2026-08-03": 1.0,
@@ -486,7 +486,7 @@
    }
   },
   "TAKE_PROFIT": {
-   "nav": 98.5538,
+   "nav": 98.7355,
    "weights": {
     "TREND_RIDER|GOOG|2026-08-03": 1.0,
     "TREND_RIDER|NVDA|2026-08-03": 1.0,
@@ -727,5 +727,5 @@
    }
   }
  },
- "nav_base": 92.9531
+ "nav_base": 93.2377
 }
