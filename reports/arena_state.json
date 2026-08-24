@@ -164,8 +164,8 @@
    "entry_date": "2026-08-07",
    "entry_t": 20672,
    "entry_px": 29548.0,
-   "mtm": -0.00742,
-   "days_left": 5,
+   "mtm": -0.01339,
+   "days_left": 4,
    "regime": "calm-up"
   },
   {
@@ -1389,18 +1389,6 @@
    "entry_t": 20684,
    "entry_px": 221.73,
    "mtm": -0.02829,
-   "days_left": 1,
-   "regime": "calm-up"
-  },
-  {
-   "strategy": "REVERSAL_3",
-   "ticker": "NQ=F",
-   "side": 1,
-   "hold": 2,
-   "entry_date": "2026-08-20",
-   "entry_t": 20685,
-   "entry_px": 29505.0,
-   "mtm": -0.00597,
    "days_left": 1,
    "regime": "calm-up"
   },
@@ -2830,6 +2818,30 @@
    "entry_px": 103.7,
    "mtm": -0.002,
    "days_left": 3,
+   "regime": "calm-up"
+  },
+  {
+   "strategy": "PULLBACK_50",
+   "ticker": "NQ=F",
+   "side": 1,
+   "hold": 5,
+   "entry_date": "2026-08-24",
+   "entry_t": 20689,
+   "entry_px": 29285.25,
+   "mtm": -0.00452,
+   "days_left": 5,
+   "regime": "calm-up"
+  },
+  {
+   "strategy": "PULLBACK_50",
+   "ticker": "ES=F",
+   "side": 1,
+   "hold": 5,
+   "entry_date": "2026-08-24",
+   "entry_t": 20689,
+   "entry_px": 7678.75,
+   "mtm": -0.00197,
+   "days_left": 5,
    "regime": "calm-up"
   }
  ]

@@ -1,0 +1,95 @@
+{
+ "run": "2026-08-24 08:18 PT",
+ "hypothesis": "FAMILY 9 own-history value + quality floor",
+ "names": 124,
+ "months": 199,
+ "is_range": [
+  "2010-02-28",
+  "2021-08-31"
+ ],
+ "oos_range": [
+  "2021-09-30",
+  "2026-08-31"
+ ],
+ "best_config": {
+  "D": 20,
+  "Q": 6,
+  "H": 6
+ },
+ "is_best_sharpe_excess": 0.514,
+ "deflated_benchmark": 0.215,
+ "dsr": 0.7934,
+ "pbo": 0.5185,
+ "oos_sharpe_excess": 0.353,
+ "oos_total_excess_pct": 23.1,
+ "bars": {
+  "1_dsr_ge_0.95": false,
+  "2_pbo_lt_0.5": false,
+  "3_oos_excess_gt_0": true
+ },
+ "verdict": "FAILS the gate",
+ "toolkit_verdict": "OVERFIT: not significant after deflation AND high overfitting probability",
+ "grid": [
+  {
+   "D": 10,
+   "Q": 6,
+   "H": 6,
+   "is_sharpe_xs": 0.133,
+   "oos_sharpe_xs": 0.109
+  },
+  {
+   "D": 10,
+   "Q": 6,
+   "H": 12,
+   "is_sharpe_xs": 0.123,
+   "oos_sharpe_xs": 0.196
+  },
+  {
+   "D": 10,
+   "Q": 7,
+   "H": 6,
+   "is_sharpe_xs": 0.099,
+   "oos_sharpe_xs": -0.141
+  },
+  {
+   "D": 10,
+   "Q": 7,
+   "H": 12,
+   "is_sharpe_xs": 0.095,
+   "oos_sharpe_xs": -0.275
+  },
+  {
+   "D": 20,
+   "Q": 6,
+   "H": 6,
+   "is_sharpe_xs": 0.363,
+   "oos_sharpe_xs": 0.353
+  },
+  {
+   "D": 20,
+   "Q": 6,
+   "H": 12,
+   "is_sharpe_xs": 0.329,
+   "oos_sharpe_xs": 0.464
+  },
+  {
+   "D": 20,
+   "Q": 7,
+   "H": 6,
+   "is_sharpe_xs": 0.185,
+   "oos_sharpe_xs": -0.098
+  },
+  {
+   "D": 20,
+   "Q": 7,
+   "H": 12,
+   "is_sharpe_xs": 0.222,
+   "oos_sharpe_xs": -0.259
+  }
+ ],
+ "caveats": [
+  "survivorship-tilted, growth-heavy universe (bias against value in-sample, stated at registration)",
+  "annual filings only; quarterly TTM would react faster",
+  "one 70/30 split; n=1 experiment"
+ ]
+}

@@ -327,7 +327,18 @@ REGIME_EXIT, and it debits the carried trials budget like every family.
 Tagged [canslim] [tech] (the TRIGGER is price action; earnings are a filter —
 the tag choice is stated, not assumed).
 
-## FAMILY 9 — REGISTERED 2026-08-24, NOT YET TESTED: Own-history value with a quality floor
+## FAMILY 9 — RUN 2026-08-24: **FAILS the gate — the closest miss in the firm's history**
+Result (reports/family9_gate.md): best of 8 (D=20th pctile, F≥6, hold 6m) earned IS excess Sharpe 0.51 vs a deflated
+benchmark of 0.22 → DSR 0.79 ❌ (bar is 0.95) · PBO 0.52 ❌ (bar is <0.50, missed by 0.02) · OOS 2021→2026: **+23.1%
+total excess over SPY, Sharpe 0.35 ✅** — the only family ever to pass bar 3 with the IS-chosen config. Two bars
+missed, so the verdict is FAIL and the bar does not move; a near-miss promoted is a bar lowered. Desk prediction
+p=0.20 → outcome 0, scored (the desk is now 4-for-4 saying 'probably not' before its own gates).
+FOLLOW-UP REGISTERED NOW, per the CANSLIM precedent (failed-gate families may run FORWARD as paper measurement —
+that is what the whole arena is): a VALUE slow book, quarterly formations at quarter-ends starting 2026-09-30,
+rule frozen as the IS-chosen config (D=20, F≥6, H=6m), $2,000 paper units, excess vs SPY, runner `value_forward.py`
+to exist before the first formation date. The forward book decides; nothing else may.
+ORIGINAL REGISTRATION (unchanged below):
+Own-history value with a quality floor
 Anupam's ask (2026-08-24): "buying stocks when cheaper, for longer-term investing — buy when it is
 at its cheapest value." Distinguished at registration from price-cheapness, which the desk already
 measures (DEEP_DIP: −40% off 52w high, forward +1093bps/25 but 9 entry days and gate-failed) and
