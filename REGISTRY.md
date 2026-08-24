@@ -326,3 +326,22 @@ bar (p≈0.6) — but this is the desk's second-most-live registrant after
 REGIME_EXIT, and it debits the carried trials budget like every family.
 Tagged [canslim] [tech] (the TRIGGER is price action; earnings are a filter —
 the tag choice is stated, not assumed).
+
+## FAMILY 9 — REGISTERED 2026-08-24, NOT YET TESTED: Own-history value with a quality floor
+Anupam's ask (2026-08-24): "buying stocks when cheaper, for longer-term investing — buy when it is
+at its cheapest value." Distinguished at registration from price-cheapness, which the desk already
+measures (DEEP_DIP: −40% off 52w high, forward +1093bps/25 but 9 entry days and gate-failed) and
+from static screens (graham_gate.py, live): this family asks whether a stock trading in the BOTTOM
+DECILE OF ITS OWN HISTORICAL VALUATION (trailing P/E from point-in-time SEC filings; P/B where
+E≤0), WHILE the business stays healthy (Piotroski F ≥ 6 from the same filings), beats SPY over
+long holds. The quality floor exists because "cheapest ever" without it is the value-trap catalogue.
+Rule family: quarterly rebalance; buy names in own-history valuation decile ≤ D with F ≥ Q; hold
+until valuation percentile > exit threshold or max H months; equal weight; 10 bps/side.
+Grid, fixed now: D ∈ {10th, 20th pctile} × Q ∈ {6, 7} × H ∈ {6, 12 months} = 8 configs.
+Data law: every fundamental uses only facts whose SEC `filed` date precedes the rebalance date
+(the earnings_lab discipline). Benchmark: SPY (long-only equity). Bars: the standard three
+(DSR ≥ 0.95 over the 8-grid on the first 70%; PBO < 0.5; positive net OOS excess on the last 30%).
+KNOWN BIASES, stated: the 120-name universe is survivorship-tilted and growth-heavy, which biases
+AGAINST value in-sample and the desk will not use that as an excuse either way. Build required
+before any run: point-in-time valuation history fetcher (SEC companyfacts, ~120 names). The desk's
+prediction is filed in stock-radar/agent/forecasts.csv BEFORE the fetcher exists.
