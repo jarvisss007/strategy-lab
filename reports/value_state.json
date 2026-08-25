@@ -1,0 +1,9 @@
+{
+ "generated": "2026-08-24 19:24 PT",
+ "open": [],
+ "open_n": 0,
+ "closed_n": 0,
+ "avg_excess_pct": null,
+ "next_formation": "2026-09-30",
+ "rule": "FAMILY 9 frozen: own-history valuation pctile <= 20 (>=20 prior quarters) AND Piotroski F >= 6; $2,000 units; exit at pctile > 50 or 6 months; excess vs SPY"
+}
