@@ -1,10 +1,10 @@
 {
  "start": "2026-08-18",
- "last_run": "2026-08-25",
+ "last_run": "2026-08-26",
  "last_regime": "calm-up",
  "arms": {
   "REGIME_EXIT": {
-   "nav": 90.8002,
+   "nav": 91.2733,
    "weights": {
     "TREND_RIDER|PLTR|2026-08-04": 1.0,
     "TREND_RIDER|CSCO|2026-08-04": 1.0,
@@ -246,7 +246,7 @@
    }
   },
   "STOP_ONLY": {
-   "nav": 91.2975,
+   "nav": 91.6652,
    "weights": {
     "TREND_RIDER|PLTR|2026-08-04": 1.0,
     "TREND_RIDER|CSCO|2026-08-04": 0.0,
@@ -312,7 +312,7 @@
     "PULLBACK_50|DELL|2026-08-19": 1.0,
     "DEEP_DIP|GLW|2026-08-19": 1.0,
     "PULLBACK_50|GLW|2026-08-19": 1.0,
-    "FRESH_HIGH|LLY|2026-08-19": 1.0,
+    "FRESH_HIGH|LLY|2026-08-19": 0.0,
     "PULLBACK_50|HUM|2026-08-19": 1.0,
     "PULLBACK_50|HWM|2026-08-19": 0.0,
     "DEEP_DIP|BE|2026-08-19": 1.0,
@@ -488,7 +488,7 @@
    }
   },
   "TAKE_PROFIT": {
-   "nav": 96.0877,
+   "nav": 96.6026,
    "weights": {
     "TREND_RIDER|PLTR|2026-08-04": 0.0,
     "TREND_RIDER|CSCO|2026-08-04": 1.0,
@@ -507,7 +507,7 @@
     "FRESH_HIGH|OKTA|2026-08-13": 1.0,
     "FRESH_HIGH|HPE|2026-08-13": 1.0,
     "TREND_RIDER|STX|2026-08-13": 1.0,
-    "TREND_RIDER|HOOD|2026-08-13": 1.0,
+    "TREND_RIDER|HOOD|2026-08-13": 0.0,
     "FRESH_HIGH|NMM|2026-08-13": 0.0,
     "TREND_RIDER|COST|2026-08-13": 1.0,
     "FRESH_HIGH|MRK|2026-08-13": 0.0,
@@ -591,7 +591,7 @@
     "RSI2_DIP|PKE|2026-08-20": 1.0,
     "RSI2_DIP|CGNX|2026-08-20": 1.0,
     "RSI2_DIP|CAT|2026-08-20": 1.0,
-    "RSI2_DIP|BE|2026-08-20": 1.0,
+    "RSI2_DIP|BE|2026-08-20": 0.0,
     "DOUBLE_DIP|RGTI|2026-08-20": 0.0,
     "DEEP_DIP|ONDS|2026-08-20": 1.0,
     "BOLL_SNAP|JBLU|2026-08-20": 1.0,
@@ -699,8 +699,8 @@
     "BOLL_SNAP|TXT|2026-08-24": 1.0,
     "PANIC_LITE|CGNX|2026-08-24": 1.0,
     "RSI2_DIP|VRT|2026-08-24": 1.0,
-    "PANIC_BOUNCE|OKLO|2026-08-24": 1.0,
-    "PANIC_LITE|OKLO|2026-08-24": 1.0,
+    "PANIC_BOUNCE|OKLO|2026-08-24": 0.0,
+    "PANIC_LITE|OKLO|2026-08-24": 0.0,
     "PANIC_LITE|SMR|2026-08-24": 1.0,
     "PANIC_BOUNCE|IONQ|2026-08-24": 1.0,
     "PANIC_LITE|IONQ|2026-08-24": 1.0,
@@ -730,5 +730,5 @@
    }
   }
  },
- "nav_base": 90.8002
+ "nav_base": 91.2733
 }
