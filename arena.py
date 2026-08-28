@@ -142,18 +142,53 @@ def net_ret(entry, exit_, side):
     return side * (exit_ / entry - 1) - 2 * COST
 
 
+# CLUSTER-001, 2026-08-27. `n` counts TRADES; inference needs EVENTS. On 2026-07-29
+# a single flush opened all 40 of STORM_DIP's forward positions at once, and three
+# sessions later the V-bottom paid every one of them: n=40, t=4.8, +830 bps vs SPY.
+# Read as 40 observations that is overwhelming; it is ONE observation of one tape,
+# taken 40 ways. The same day carries 87% of the whole forward book's summed P&L,
+# and the book's vs-SPY mean flips from +68 bps (t=+3.3) to -58 bps (t=-2.8) when
+# the 07-28..07-31 window is dropped. Nothing in the Arena said so: STORM_DIP's own
+# journal called n=40 a "small sample", which is the right instinct attached to the
+# wrong number.
+#
+# So every stat block now carries `n_events` (distinct entry dates) beside `n`, and
+# `t_clustered` — the t-stat on the per-event MEAN, which is the coarsest honest
+# unit when trades that share an entry date share a shock. It is deliberately the
+# conservative reading: events inside one drawdown are themselves correlated, so
+# t_clustered is an upper bound on significance, never a floor. `None` when a rule
+# has fired on one date only, because one event supports no inference at all — and
+# a missing number a reader must notice beats a number that flatters.
+#
+# t_stat is unchanged and still reported: this ADDS the honest denominator, it does
+# not restate a published figure (BENCH-002).
 def stats(trades):
     if not trades:
         return {"n": 0}
     rs = [t["net"] for t in trades]
-    ex = [t["excess"] for t in trades if t.get("excess") is not None]
+    ex = [t["excess"] for t in trades
+          if isinstance(t.get("excess"), (int, float))]
     n = len(rs); mean = sum(rs) / n
     sd = math.sqrt(sum((r - mean) ** 2 for r in rs) / n) if n > 1 else 0
     t = mean / (sd / math.sqrt(n)) if sd > 0 else 0
+    ev = {}
+    for tr in trades:
+        day = tr.get("entry_date")
+        if day:
+            ev.setdefault(day, []).append(tr["net"])
+    k = len(ev)
+    tc = None
+    if k > 1:
+        em = [sum(v) / len(v) for v in ev.values()]
+        m2 = sum(em) / k
+        s2 = math.sqrt(sum((x - m2) ** 2 for x in em) / (k - 1))
+        if s2 > 0:
+            tc = round(m2 / (s2 / math.sqrt(k)), 2)
     return {"n": n, "avg_bps": round(mean * 1e4, 1),
             "hit_pct": round(100 * sum(1 for r in rs if r > 0) / n, 1),
             "avg_excess_bps": round(sum(ex) / len(ex) * 1e4, 1) if ex else None,
-            "t_stat": round(t, 2), "total_pct": round(sum(rs) * 100, 1)}
+            "t_stat": round(t, 2), "total_pct": round(sum(rs) * 100, 1),
+            "n_events": k, "t_clustered": tc}
 
 
 # The gate was RUN on 2026-08-08 (arena_gate.py) and the whole slate failed it:
@@ -181,9 +216,13 @@ def journal(name, cfg, st, by_regime, open_n, fwd, closed_recent, live=None):
     L = [f"I'm {name} — {cfg['voice']}. My rule: {cfg['desc']}, "
          f"{'short' if cfg['side'] < 0 else 'long'} side, no discretion allowed."]
     if st.get("n"):
-        L.append(f"This past year I took {st['n']} trades: {st['avg_bps']:+.0f} bps per trade "
+        L.append(f"This past year I took {st['n']} trades on {st.get('n_events', 0)} separate "
+                 f"days: {st['avg_bps']:+.0f} bps per trade "
                  f"({st['avg_excess_bps']:+.0f} vs SPY), hit rate {st['hit_pct']:.0f}%, "
-                 f"t-stat {st['t_stat']}. Verdict on me so far: {verdict(st)}.")
+                 f"t-stat {st['t_stat']}"
+                 + (f" — but {st['t_clustered']} once same-day trades are counted as the one "
+                    f"event they are" if st.get("t_clustered") is not None else "")
+                 + f". Verdict on me so far: {verdict(st)}.")
     regs = {k: v for k, v in by_regime.items() if v.get("n", 0) >= 8}
     if len(regs) >= 2:
         best = max(regs, key=lambda k: regs[k]["avg_bps"])
@@ -195,6 +234,13 @@ def journal(name, cfg, st, by_regime, open_n, fwd, closed_recent, live=None):
                      f"{regs[worst]['n']}). Watch me in the current regime accordingly.")
     if fwd.get("n"):
         L.append(f"Forward (the exam that counts): {fwd['n']} closed at {fwd['avg_bps']:+.0f} bps"
+                 + (f" — but off only {fwd['n_events']} entry day"
+                    + ("s" if fwd["n_events"] != 1 else "")
+                    + (", so there is one event here and no inference to draw from it"
+                       if fwd["n_events"] == 1
+                       else f", clustered t {fwd['t_clustered']}"
+                            if fwd.get("t_clustered") is not None else "")
+                    if fwd.get("n_events") else "")
                  + (f", last exits: " + ", ".join(
                      f"{r['ticker']} {float(r['net'])*100:+.1f}%" for r in closed_recent[:3])
                     if closed_recent else "") + ".")
@@ -227,7 +273,13 @@ def journal(name, cfg, st, by_regime, open_n, fwd, closed_recent, live=None):
     if fr:
         b = max(fr, key=lambda r: fr[r]["avg_bps"])
         L.append(f"Forward rhythm forming: my real closes cluster best in {b} "
-                 f"({fr[b]['avg_bps']:+.0f} bps, n={fr[b]['n']}) — small sample, hold me to it.")
+                 f"({fr[b]['avg_bps']:+.0f} bps, n={fr[b]['n']} trades over "
+                 f"{fr[b].get('n_events', 0)} entry day"
+                 + ("s" if fr[b].get("n_events") != 1 else "")
+                 + ") — "
+                 + ("that is ONE event dressed as a sample; hold me to nothing yet."
+                    if fr[b].get("n_events") == 1
+                    else "small sample, hold me to it."))
     # what I took from the last roundtable (awareness only; rules stay frozen)
     pb = live.get("prior_playbook") or []
     peers = [p for p in pb if p["agent"] != name]
@@ -451,8 +503,12 @@ def main():
                 {"ticker": r["ticker"], "net": float(r["net"])})
     fwd_stats, fwd_rhythm, journals = {}, {}, {}
     for k, cfg in STRATS.items():
+        # entry_date is carried, not dropped: stats() needs it to count EVENTS
+        # (CLUSTER-001). Without it the forward book reports n_events 0 and every
+        # clustered t-stat comes back null — the exact silence this was built to end.
         rows = [{"net": float(r["net"]),
-                 "excess": float(r["excess"]) if r["excess"] else None}
+                 "excess": float(r["excess"]) if r["excess"] else None,
+                 "entry_date": r["entry_date"]}
                 for r in fwd_trades if r["strategy"] == k]
         fwd_stats[k] = stats(rows)
         by_reg_rows = {}
@@ -460,7 +516,8 @@ def main():
             if r["strategy"] == k:
                 by_reg_rows.setdefault(r.get("regime") or "unknown", []).append(
                     {"net": float(r["net"]),
-                     "excess": float(r["excess"]) if r["excess"] else None})
+                     "excess": float(r["excess"]) if r["excess"] else None,
+                     "entry_date": r["entry_date"]})
         fwd_rhythm[k] = {rr: stats(v) for rr, v in by_reg_rows.items()}
         recent = [r for r in fwd_trades if r["strategy"] == k][::-1]
         streak = 0
@@ -640,9 +697,20 @@ def main():
                        "only — no fills on partial bars) · 10 bps/side · vs-SPY benchmark · "
                        "regime tags: calm/storm = VIX </≥ 20, up/down = SPY vs 50d MA · "
                        f"{len(STRATS)} rules registered in REGISTRY.md, parameters frozen",
+        # The forward book's two standing caveats, published on its own face rather
+        # than left for a reader to discover: what the record is missing (ARENA-006)
+        # and what it is really made of (CLUSTER-001). Both are permanent facts about
+        # this book, so they belong beside its numbers, not in a register nobody opens.
         "honesty": f"{len(STRATS)} rules tested at once — the best backtest flatters "
                    "itself. Only the forward record + the Strategy Lab deflation gate "
-                   "promote a rule.",
+                   "promote a rule. · Read n_events, not n: entry date 2026-07-29 alone "
+                   "carries ~87% of this book's summed P&L, and its vs-SPY mean flips "
+                   "from +68 bps (t=+3.3) to −58 bps (t=−2.8) when the 07-28..07-31 "
+                   "window is dropped. · Two sessions are missing and cannot be "
+                   "recovered — 2026-08-12 and 2026-08-25 had 60 and 45 signals and "
+                   "the Arena entered nothing, because its only daily pass then landed "
+                   "inside the intraday window where it must refuse to fill "
+                   "(ARENA-006, scheduling fixed 2026-08-27).",
         "backtest": backtest,
         "journals": journals,
         "blotter_backtest": sorted((t for v in bt.values() for t in v),

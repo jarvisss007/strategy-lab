@@ -41,6 +41,49 @@
 # the same breath as the census is the only thing that keeps them in step.
 /opt/anaconda3/bin/python /Users/anupampatil/command-center/gen_evidence_room.py >> /Users/anupampatil/strategy-lab/refresh.log 2>&1
 
+# ── PAPER ARENA POST-CLOSE PASS (SCHED-ARENA, 2026-08-27) ────────────────────
+# ARENA-005 found the Arena's exit drain stuck and blamed the fire time. That was
+# right and it was only half of it. The Arena refuses to open OR close on intraday
+# prices (6:30–13:05 PT), and its only invocation lives BELOW the once-a-day guard,
+# in a body whose intended trigger is 7:05 AM PT — dead centre in the window where
+# the Arena must say no. So on a normal weekday the Arena is structurally incapable
+# of trading: the 7:05 pass no-ops it and then stamps DONE_MARK, which turns every
+# later trigger that day into an early `exit 0`. It has been trading only by
+# accident — on the nights the Mac happened to wake before 6:30 AM.
+#
+# A stuck EXIT is recoverable; the row is still open and closes on the next good
+# pass, which is why ARENA-005 could be closed on "no past-due rows". A missed
+# ENTRY is not. The Arena only ever reads the LAST bar (c[len(c)-1]), so a session
+# that goes by without a non-intraday pass is gone from the forward record forever.
+# Two already are: 2026-08-12 (60 signals) and 2026-08-25 (45) have zero entries in
+# arena_trades.csv and never will. That is 2 of 19 August sessions — ~10% of the
+# record that the desk calls "the exam that counts" — lost with no error, no
+# past-due row, and nothing in the register watching the entry side at all.
+#
+# Fixed here rather than by re-timing the whole refresh, because the rest of the
+# body is correct at 7:05 and only the Arena chain needs the close. Placed ABOVE
+# the guard for the same reason predictions.py and calibration.py are: the guard
+# would skip every post-close firing. Own stamp, so it fires exactly once a day, on
+# the first 30-min trigger after 13:05 PT — the same boundary arena.py enforces
+# internally, quoted from the same clock. Repeated non-intraday passes on one bar
+# are idempotent (a held position blocks its own re-entry), so a double fire costs
+# nothing; a missed one costs a session.
+ARENA_MARK=/Users/anupampatil/strategy-lab/.arena_done_$(date '+%Y-%m-%d')
+ARENA_MIN=$((10#$(date '+%H') * 60 + 10#$(date '+%M')))
+if [ ! -f "$ARENA_MARK" ] && [ "$ARENA_MIN" -ge 785 ]; then
+  echo "=== arena post-close $(date '+%Y-%m-%d %H:%M:%S') ===" >> /Users/anupampatil/strategy-lab/refresh.log
+  # the settled close the Arena will price the session at — it reads radar.json
+  /opt/anaconda3/bin/python /Users/anupampatil/stock-radar/collector.py >> /Users/anupampatil/strategy-lab/refresh.log 2>&1
+  /opt/anaconda3/bin/python /Users/anupampatil/strategy-lab/arena.py >> /Users/anupampatil/strategy-lab/refresh.log 2>&1
+  # same integrity chain the morning body runs, in the same order and for the same
+  # reason (DATA-002 then BENCH-002): reconcile the fills, then report on them.
+  /opt/anaconda3/bin/python /Users/anupampatil/strategy-lab/auto_reconcile.py >> /Users/anupampatil/strategy-lab/refresh.log 2>&1
+  /opt/anaconda3/bin/python /Users/anupampatil/strategy-lab/price_integrity.py >> /Users/anupampatil/strategy-lab/refresh.log 2>&1
+  /opt/anaconda3/bin/python /Users/anupampatil/strategy-lab/build_hub.py >> /Users/anupampatil/strategy-lab/refresh.log 2>&1
+  touch "$ARENA_MARK"
+  find /Users/anupampatil/strategy-lab -maxdepth 1 -name ".arena_done_*" -mtime +2 -delete
+fi
+
 DONE_MARK=/Users/anupampatil/strategy-lab/.refresh_done_$(date '+%Y-%m-%d')
 if [ -f "$DONE_MARK" ] && [ "$(date +%u)" -le 5 ] && [ "$(date -r "$DONE_MARK" '+%H')" -ge 6 ]; then
   exit 0
