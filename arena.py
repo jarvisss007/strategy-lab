@@ -681,6 +681,24 @@ def main():
         for r, ps in playbook.items():
             f.write(f"- **{r}**: " + " · ".join(
                 f"{p['agent']} {p['avg_bps']:+.0f} (n={p['n']})" for p in ps) + "\n")
+        # ARENA / council directive 2026-08-27: the coach's standing retirement test is
+        # "arena reaching 15 ENTRY DAYS" for a strategy, and until now that number lived in
+        # the coach's memory rather than on the page it reads. Surfaced per strategy, from
+        # the forward book only (closed rows with a real entry_date), so the test has a
+        # number to fire on. This publishes a count; it changes no bar, retires nothing, and
+        # is not itself a gate.
+        _ed = {}
+        for _t in fwd_trades:
+            _d = _t.get("entry_date")
+            if _d:
+                _ed.setdefault(_t["strategy"], set()).add(_d)
+        if _ed:
+            f.write("\n## Forward entry days per strategy (coach's 15-day retirement test)\n\n")
+            f.write("Entry DAYS, not trades — same-day entries share one regime and are one "
+                    "observation. The coach's standing test fires at 15.\n\n")
+            for _k, _v in sorted(_ed.items(), key=lambda kv: -len(kv[1])):
+                f.write(f"- {_k}: **{len(_v)}** entry days"
+                        + (" — **test LIVE (>=15)**\n" if len(_v) >= 15 else "\n"))
         f.write("\n## Notes to the desk\n\n")
         for n_ in notes:
             f.write(f"- {n_}\n")
