@@ -17,6 +17,32 @@
 # intended 7:05 AM run — leaving the terminal ~17 hours stale by evening. Fix:
 # a pre-market stamp doesn't count as "done" — only a mark from 6 AM or later
 # (after the intended run window) satisfies the guard.
+# Asia Radar COLLECTOR: hoisted here 2026-08-29 to close ASIA-008.
+#
+# This writes data/markets.json — the only thing that does — and it used to sit at
+# L100, BELOW the once-a-day DONE_MARK guard, while its reader (predictions.py, two
+# lines down) sat above it. So the reader ran every 30 minutes against a file written
+# once a day. On 2026-08-28 markets.json was written at 08:40 PDT, mid-US-session, and
+# predictions.py then fired 13 times between 14:07 and 20:07 asking for a SETTLED US
+# close that the file could never contain. It refused all 13. Zero rows were written
+# for the 2026-08-31 Asian session and, under that wiring, none could ever be written
+# again on any weekday.
+#
+# The ASIA-005 guard shipped the day before was CORRECT — before it, predictions.py
+# anchored happily to that stale 08:40 mid-session bar, which was the contamination it
+# was built to stop. Fixing the symptom converted an invisible contamination into an
+# invisible outage on the desk's second-largest scored book. Nothing errored; "made 0"
+# reads exactly like a quiet day. The council found it by reading one line out of
+# 41,000 in refresh.log.
+#
+# A reader hoisted above a daily guard must bring its writer with it.
+#
+# Literal paths, not "$PY"/"$LOG": those are defined at L112, BELOW this point. Writing
+# them here would expand to an empty command and an empty redirect target — a silent
+# no-op, which is precisely the failure mode this hoist exists to end. Same shape as the
+# defect being fixed: a line placed above the thing it depends on.
+/opt/anaconda3/bin/python /Users/anupampatil/asia-radar/collector.py >> /Users/anupampatil/strategy-lab/refresh.log 2>&1
+
 # Asia Radar prediction engine: cheap (one Yahoo call), runs on EVERY trigger —
 # it must fire after the 1 PM PT US close, which the once-a-day guard below
 # would skip. It no-ops unless a new final US close has appeared.
@@ -97,7 +123,8 @@ echo "=== refresh $(date '+%Y-%m-%d %H:%M:%S') ===" >> "$LOG"
 "$PY" /Users/anupampatil/stock-radar/embed_brief.py >> "$LOG" 2>&1
 "$PY" /Users/anupampatil/stock-radar/collector.py >> "$LOG" 2>&1   # re-embed ledger if a plan fired
 # Asia Radar: cross-market web (US·India·China·HK·Korea·Japan·Taiwan)
-"$PY" /Users/anupampatil/asia-radar/collector.py >> "$LOG" 2>&1
+# collector.py moved ABOVE the daily guard (ASIA-008, 2026-08-29) — it runs on every
+# trigger now, so calling it again here would be a duplicate fetch, not a safety net.
 "$PY" /Users/anupampatil/asia-radar/analyze.py >> "$LOG" 2>&1
 "$PY" /Users/anupampatil/asia-radar/briefing.py >> "$LOG" 2>&1
 # Mondays: re-learn the studies on the grown dataset (research stays current)
