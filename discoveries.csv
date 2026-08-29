@@ -436,3 +436,38 @@ run_date,family,config,gross_sharpe,net_sharpe,oos_net_sharpe,walk_forward,famil
 2026-08-22,Price-action confluence (fade + trend agreement),confluence-fade q0.1 H5,-0.73,-1.08,-1.11,0/5,,,,
 2026-08-22,Price-action confluence (fade + trend agreement),confluence-fade q0.2 H10,-1.15,-1.26,-1.17,0/5,,,,
 2026-08-22,Price-action confluence (fade + trend agreement),confluence-fade q0.2 H5,-1.14,-1.35,-1.25,0/5,,,,
+2026-08-29,Overnight vs intraday,basket overnight,1.51,-0.41,0.13,1/5,0.0,0.0,1.26,structural-but-uncostable
+2026-08-29,Overnight vs intraday,basket intraday,0.43,-1.09,-0.94,0/5,,,,
+2026-08-29,Overnight vs intraday,SPY overnight,0.93,-1.4,-1.41,0/5,,,,
+2026-08-29,Overnight vs intraday,SPY intraday,0.44,-1.54,-1.43,0/5,,,,
+2026-08-29,Overnight vs intraday,basket overnight-minus-intraday,0.6,-1.8,-1.18,0/5,,,,
+2026-08-29,Overnight vs intraday,SPY overnight-minus-intraday,0.26,-2.78,-2.54,0/5,,,,
+2026-08-29,Options-expiry flow,post-opex-week,0.69,0.57,0.74,5/5,0.89,0.7,1.26,real-but-loses-to-buy&hold
+2026-08-29,Options-expiry flow,pre-opex-week,0.66,0.55,1.17,4/5,,,,
+2026-08-29,Options-expiry flow,opex-week,0.54,0.41,0.09,4/5,,,,
+2026-08-29,Options-expiry flow,post-quadwitch-week,0.08,0.02,-0.16,3/5,,,,
+2026-08-29,Turn-of-month flow,turn-of-month t5,1.2,1.12,1.13,5/5,1.0,0.04,1.26,real-but-loses-to-buy&hold
+2026-08-29,Turn-of-month flow,turn-of-month t3,0.86,0.75,0.75,4/5,,,,
+2026-08-29,Turn-of-month flow,turn-of-month t1,0.6,0.42,0.93,4/5,,,,
+2026-08-29,Volume/liquidity microstructure,illiquidity-premium q0.2,0.79,0.77,1.17,4/5,0.1,0.0,1.26,real-but-loses-to-buy&hold
+2026-08-29,Volume/liquidity microstructure,illiquidity-premium q0.1,0.39,0.38,1.0,3/5,,,,
+2026-08-29,Volume/liquidity microstructure,high-volume-premium q0.2 H5,0.67,0.18,0.05,3/5,,,,
+2026-08-29,Volume/liquidity microstructure,high-volume-premium q0.1 H5,0.46,0.11,-0.01,3/5,,,,
+2026-08-29,Volume/liquidity microstructure,high-volume-premium q0.2 H21,-0.33,-0.46,-0.26,0/5,,,,
+2026-08-29,Volume/liquidity microstructure,high-volume-premium q0.1 H21,-0.41,-0.51,-0.4,0/5,,,,
+2026-08-29,Volume/liquidity microstructure,volume-shock-reversal q0.1 H5,-0.5,-0.73,-0.5,0/5,,,,
+2026-08-29,Volume/liquidity microstructure,volume-shock-reversal q0.2 H5,-0.72,-0.87,-0.49,0/5,,,,
+2026-08-29,Volume/liquidity microstructure,volume-shock-reversal q0.1 H3,-0.76,-1.14,-0.79,0/5,,,,
+2026-08-29,Volume/liquidity microstructure,volume-shock-reversal q0.2 H3,-1.09,-1.34,-1.04,0/5,,,,
+2026-08-29,Price-action value-area fade,value-area-fade q0.2 H21,-0.12,-0.2,-0.32,3/5,0.08,0.35,1.26,dead
+2026-08-29,Price-action value-area fade,value-area-fade q0.1 H21,-0.21,-0.27,-0.45,3/5,,,,
+2026-08-29,Price-action value-area fade,value-area-fade q0.2 H5,-0.17,-0.36,-0.65,1/5,,,,
+2026-08-29,Price-action value-area fade,value-area-fade q0.1 H5,-0.25,-0.41,-0.84,2/5,,,,
+2026-08-29,Price-action value-area fade,value-area-fade q0.2 H10,-0.32,-0.46,-0.75,1/5,,,,
+2026-08-29,Price-action value-area fade,value-area-fade q0.1 H10,-0.43,-0.55,-0.87,1/5,,,,
+2026-08-29,Price-action confluence (fade + trend agreement),confluence-fade q0.1 H21,-0.15,-0.23,0.04,1/5,0.0,0.0,1.26,dead
+2026-08-29,Price-action confluence (fade + trend agreement),confluence-fade q0.1 H10,-0.55,-0.73,-0.7,0/5,,,,
+2026-08-29,Price-action confluence (fade + trend agreement),confluence-fade q0.2 H21,-0.98,-1.04,-0.82,0/5,,,,
+2026-08-29,Price-action confluence (fade + trend agreement),confluence-fade q0.1 H5,-0.73,-1.08,-1.11,0/5,,,,
+2026-08-29,Price-action confluence (fade + trend agreement),confluence-fade q0.2 H10,-1.15,-1.26,-1.17,0/5,,,,
+2026-08-29,Price-action confluence (fade + trend agreement),confluence-fade q0.2 H5,-1.14,-1.35,-1.25,0/5,,,,
