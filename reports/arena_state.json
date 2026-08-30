@@ -344,8 +344,8 @@
    "entry_date": "2026-08-24",
    "entry_t": 20689,
    "entry_px": 29285.25,
-   "mtm": 0.01202,
-   "days_left": 2,
+   "mtm": 0.00505,
+   "days_left": 1,
    "regime": "calm-up"
   },
   {
@@ -356,8 +356,8 @@
    "entry_date": "2026-08-24",
    "entry_t": 20689,
    "entry_px": 7678.75,
-   "mtm": 0.0063,
-   "days_left": 2,
+   "mtm": 0.00363,
+   "days_left": 1,
    "regime": "calm-up"
   },
   {
@@ -2192,8 +2192,8 @@
    "entry_date": "2026-08-27",
    "entry_t": 20692,
    "entry_px": 29695.75,
-   "mtm": -0.002,
-   "days_left": 15,
+   "mtm": -0.00887,
+   "days_left": 14,
    "regime": "calm-up"
   }
  ]
