@@ -74,6 +74,9 @@
 # 13:45 scorer, so on Monday morning it still claimed "first registration fires
 # Monday" — a live book wearing Saturday's page.
 /opt/anaconda3/bin/python /Users/anupampatil/command-center/gen_tracks_page.py >> /Users/anupampatil/strategy-lab/refresh.log 2>&1
+# EV shadow scans (built 2026-08-31, Anupam: "build all"): freeze today's cohorts, score
+# matured ones, refresh the EV-6 split. Self-deduping per day; computed books only.
+/opt/anaconda3/bin/python /Users/anupampatil/stock-radar/evolution_scans.py >> /Users/anupampatil/strategy-lab/refresh.log 2>&1
 # The evidence room is GENERATED from the census (DIAG-001); regenerating it in
 # the same breath as the census is the only thing that keeps them in step.
 /opt/anaconda3/bin/python /Users/anupampatil/command-center/gen_evidence_room.py >> /Users/anupampatil/strategy-lab/refresh.log 2>&1
