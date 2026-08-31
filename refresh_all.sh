@@ -70,6 +70,10 @@
 # works. The build is seconds and display-only (no pre-registration surface). Same
 # hoist-the-writer lesson as ASIA-008.
 /opt/anaconda3/bin/python /Users/anupampatil/strategy-lab/build_hub.py >> /Users/anupampatil/strategy-lab/refresh.log 2>&1
+# tracks.html regenerated every cycle too (2026-08-31): it only rebuilt inside the
+# 13:45 scorer, so on Monday morning it still claimed "first registration fires
+# Monday" — a live book wearing Saturday's page.
+/opt/anaconda3/bin/python /Users/anupampatil/command-center/gen_tracks_page.py >> /Users/anupampatil/strategy-lab/refresh.log 2>&1
 # The evidence room is GENERATED from the census (DIAG-001); regenerating it in
 # the same breath as the census is the only thing that keeps them in step.
 /opt/anaconda3/bin/python /Users/anupampatil/command-center/gen_evidence_room.py >> /Users/anupampatil/strategy-lab/refresh.log 2>&1
