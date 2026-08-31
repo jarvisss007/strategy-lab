@@ -1,5 +1,5 @@
 {
- "built": "2026-08-30 14:41 PDT",
+ "built": "2026-08-31 06:29 PDT",
  "gap_threshold": 0.04,
  "vol_threshold": 2.0,
  "event_study": {
@@ -419,7 +419,7 @@
    "peer_spillover": {
     "up": {
      "same_day": 1.87,
-     "next_day": -0.53
+     "next_day": -0.54
     },
     "down": {
      "same_day": -0.64,
@@ -779,11 +779,11 @@
      0.47
     ],
     [
-     "NQ=F",
+     "XYZ",
      0.44
     ],
     [
-     "XYZ",
+     "NQ=F",
      0.44
     ]
    ],
@@ -1627,7 +1627,7 @@
    "peer_spillover": {
     "up": {
      "same_day": 0.7,
-     "next_day": 0.46
+     "next_day": 0.45
     },
     "down": {
      "same_day": -0.42,
@@ -2531,7 +2531,7 @@
      "next_day": -0.72
     },
     "down": {
-     "same_day": -2.59,
+     "same_day": -2.6,
      "next_day": 0.22
     }
    }
@@ -3406,11 +3406,11 @@
    },
    "peers": [
     [
-     "XYZ",
+     "NQ=F",
      0.48
     ],
     [
-     "NQ=F",
+     "XYZ",
      0.48
     ],
     [
@@ -4498,7 +4498,7 @@
    "peer_spillover": {
     "up": {
      "same_day": 0.91,
-     "next_day": 0.57
+     "next_day": 0.58
     },
     "down": {
      "same_day": -0.91,
@@ -4700,7 +4700,7 @@
     ],
     [
      "NQ=F",
-     0.41
+     0.42
     ],
     [
      "ANET",
@@ -5970,7 +5970,7 @@
   },
   "COST": {
    "n_events": 8,
-   "avg_abs_gap": 4.79,
+   "avg_abs_gap": 4.8,
    "pct_gap_up": 37.5,
    "up": null,
    "down": {
@@ -6674,7 +6674,7 @@
     ],
     [
      "ES=F",
-     0.4
+     0.39
     ]
    ],
    "peer_spillover": {
@@ -6714,10 +6714,20 @@
    "date": "2026-09-03",
    "ticker": "IOT",
    "when": "time-after-hours"
+  },
+  {
+   "date": "2026-09-08",
+   "ticker": "ORCL",
+   "when": "time-not-supplied"
+  },
+  {
+   "date": "2026-09-09",
+   "ticker": "AVAV",
+   "when": "time-after-hours"
   }
  ],
- "upcoming_all_count": 147,
+ "upcoming_all_count": 230,
  "calendar_status": "ok",
- "calendar_days_ok": 6,
- "calendar_days_err": 4
+ "calendar_days_ok": 10,
+ "calendar_days_err": 0
 }
