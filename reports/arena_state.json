@@ -338,30 +338,6 @@
   },
   {
    "strategy": "PULLBACK_50",
-   "ticker": "NQ=F",
-   "side": 1,
-   "hold": 5,
-   "entry_date": "2026-08-24",
-   "entry_t": 20689,
-   "entry_px": 29285.25,
-   "mtm": 0.00505,
-   "days_left": 1,
-   "regime": "calm-up"
-  },
-  {
-   "strategy": "PULLBACK_50",
-   "ticker": "ES=F",
-   "side": 1,
-   "hold": 5,
-   "entry_date": "2026-08-24",
-   "entry_t": 20689,
-   "entry_px": 7678.75,
-   "mtm": 0.00363,
-   "days_left": 1,
-   "regime": "calm-up"
-  },
-  {
-   "strategy": "PULLBACK_50",
    "ticker": "HPE",
    "side": 1,
    "hold": 5,
@@ -2192,8 +2168,8 @@
    "entry_date": "2026-08-27",
    "entry_t": 20692,
    "entry_px": 29695.75,
-   "mtm": -0.00887,
-   "days_left": 14,
+   "mtm": -0.01308,
+   "days_left": 13,
    "regime": "calm-up"
   }
  ]

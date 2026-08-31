@@ -1,10 +1,10 @@
-# Arena Roundtable — 2026-08-29
+# Arena Roundtable — 2026-08-30
 
-Tape: **calm-up** · session 2026-08-28 · 12 agents · opened 95, closed 32 this session · 183 open · 1411 forward closes all-time
+Tape: **calm-up** · session 2026-08-28 · 12 agents · opened 95, closed 32 this session · 181 open · 1413 forward closes all-time
 
-> **This lab is 82% of the desk's scored record (1411 of 1727 scored rows in the Calibration Observatory).** Any pooled desk statistic is therefore mostly a statement about the Arena, not about the desk. Read the other labs' standings on their own n.
+> **This lab is 82% of the desk's scored record (1411 of 1730 scored rows in the Calibration Observatory).** Any pooled desk statistic is therefore mostly a statement about the Arena, not about the desk. Read the other labs' standings on their own n.
 
-**Drain (ARENA-003).** 0 of 183 open rows read `days_left <= 0`; 0 of those are PAST due (negative). 32 closed this session, 1411 all-time. No due rows on the book. This pass ran outside market hours, so every due row was eligible to close.
+**Drain (ARENA-003).** 0 of 181 open rows read `days_left <= 0`; 0 of those are PAST due (negative). 32 closed this session, 1413 all-time. No due rows on the book. This pass ran outside market hours, so every due row was eligible to close.
 
 - Tape today: CALM-UP. Our pooled record in this weather — hot hands: FRESH_HIGH (+204), PANIC_LITE (+2), PANIC_BOUNCE (-27); cold hands: REVERSAL_3 (-116), TREND_RIDER (-569). (History, not prophecy.)
 - FRESH_HIGH and SHORT_EXT enter on the same bar 45% of the time — one trade, two directions. The pooled ledger says the long side wins that argument; the skeptic keeps paying for the lesson.
@@ -25,9 +25,9 @@ Entry DAYS, not trades — same-day entries share one regime and are one observa
 - PANIC_LITE: **23** entry days — **test LIVE (>=15)**
 - PANIC_BOUNCE: **23** entry days — **test LIVE (>=15)**
 - RSI2_DIP: **22** entry days — **test LIVE (>=15)**
+- PULLBACK_50: **22** entry days — **test LIVE (>=15)**
 - REVERSAL_3: **21** entry days — **test LIVE (>=15)**
 - DOUBLE_DIP: **21** entry days — **test LIVE (>=15)**
-- PULLBACK_50: **21** entry days — **test LIVE (>=15)**
 - BOLL_SNAP: **16** entry days — **test LIVE (>=15)**
 - FRESH_HIGH: **11** entry days
 - DEEP_DIP: **10** entry days

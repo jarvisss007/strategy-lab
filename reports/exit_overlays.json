@@ -1,10 +1,10 @@
 {
  "start": "2026-08-18",
- "last_run": "2026-08-29",
+ "last_run": "2026-08-30",
  "last_regime": "calm-up",
  "arms": {
   "REGIME_EXIT": {
-   "nav": 89.2917,
+   "nav": 86.634,
    "weights": {
     "TREND_RIDER|ASML|2026-08-11": 1.0,
     "TREND_RIDER|STX|2026-08-13": 1.0,
@@ -192,7 +192,7 @@
    }
   },
   "STOP_ONLY": {
-   "nav": 89.8076,
+   "nav": 87.4352,
    "weights": {
     "TREND_RIDER|ASML|2026-08-11": 0.0,
     "TREND_RIDER|STX|2026-08-13": 0.0,
@@ -380,7 +380,7 @@
    }
   },
   "TAKE_PROFIT": {
-   "nav": 94.6249,
+   "nav": 91.8496,
    "weights": {
     "TREND_RIDER|ASML|2026-08-11": 1.0,
     "TREND_RIDER|STX|2026-08-13": 1.0,
@@ -568,5 +568,5 @@
    }
   }
  },
- "nav_base": 89.2917
+ "nav_base": 86.634
 }
