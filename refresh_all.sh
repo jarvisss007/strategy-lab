@@ -63,6 +63,13 @@
 # predictions.py is: the guard would skip every post-US-close firing. Cost is one
 # cheap local rebuild per trigger. The sweep's own 08:41 rebuild stays as a floor.
 /usr/bin/python3 /Users/anupampatil/command-center/calibration.py >> /Users/anupampatil/strategy-lab/refresh.log 2>&1
+
+# build_hub HOISTED 2026-08-31: it lived only inside the once-a-day arena block, so the
+# terminal was rebuilt at ~06:50 and then aged all day under a "DATA LIVE" badge —
+# Anupam read "refreshed 1h ago" mid-morning and concluded, reasonably, that nothing
+# works. The build is seconds and display-only (no pre-registration surface). Same
+# hoist-the-writer lesson as ASIA-008.
+/opt/anaconda3/bin/python /Users/anupampatil/strategy-lab/build_hub.py >> /Users/anupampatil/strategy-lab/refresh.log 2>&1
 # The evidence room is GENERATED from the census (DIAG-001); regenerating it in
 # the same breath as the census is the only thing that keeps them in step.
 /opt/anaconda3/bin/python /Users/anupampatil/command-center/gen_evidence_room.py >> /Users/anupampatil/strategy-lab/refresh.log 2>&1
