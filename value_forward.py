@@ -169,6 +169,17 @@ def main():
             w = csv.DictWriter(f, fieldnames=COLS); w.writeheader()
             for r in rows: w.writerow({c: r.get(c, "") for c in COLS})
 
+    # An empty book must EXIST. Until 2026-08-30 the file was written only inside the
+    # formation branch, so with zero positions formed (next formation 2026-09-30) it
+    # simply was not there — and coverage_ratchet flagged the check that reads it as "a
+    # light wired to nothing". A missing artifact is indistinguishable from a runner that
+    # never ran, which is the failure mode this desk keeps rediscovering. An empty book
+    # with headers is a statement: the runner ran and formed nothing.
+    if not dry and not os.path.exists(BOOK):
+        os.makedirs(os.path.dirname(BOOK), exist_ok=True)
+        with open(BOOK, "w", newline="") as f:
+            csv.DictWriter(f, fieldnames=COLS).writeheader()
+
     if dry:
         sig = ratios_and_f(panel, names, last_day, mraw)
         picks = sorted([(tk, round(pct), f) for tk, (ratio, pct, f) in sig.items() if pct <= D_PCT and f >= F_MIN])
