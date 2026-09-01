@@ -1,10 +1,10 @@
-# Arena Roundtable — 2026-08-31
+# Arena Roundtable — 2026-09-01
 
-Tape: **calm-up** · session 2026-08-31 · 12 agents · opened 46, closed 26 this session · 203 open · 1437 forward closes all-time
+Tape: **calm-up** · session 2026-08-31 · 12 agents · opened 51, closed 26 this session · 209 open · 1437 forward closes all-time
 
-> **This lab is 81% of the desk's scored record (1413 of 1749 scored rows in the Calibration Observatory).** Any pooled desk statistic is therefore mostly a statement about the Arena, not about the desk. Read the other labs' standings on their own n.
+> **This lab is 81% of the desk's scored record (1437 of 1780 scored rows in the Calibration Observatory).** Any pooled desk statistic is therefore mostly a statement about the Arena, not about the desk. Read the other labs' standings on their own n.
 
-**Drain (ARENA-003).** 0 of 203 open rows read `days_left <= 0`; 0 of those are PAST due (negative). 26 closed this session, 1437 all-time. No due rows on the book. This pass ran outside market hours, so every due row was eligible to close.
+**Drain (ARENA-003).** 0 of 209 open rows read `days_left <= 0`; 0 of those are PAST due (negative). 26 closed this session, 1437 all-time. No due rows on the book. This pass ran outside market hours, so every due row was eligible to close.
 
 - Tape today: CALM-UP. Our pooled record in this weather — hot hands: FRESH_HIGH (+198), PANIC_LITE (+10), PANIC_BOUNCE (-18); cold hands: REVERSAL_3 (-115), TREND_RIDER (-560). (History, not prophecy.)
 - FRESH_HIGH and SHORT_EXT enter on the same bar 45% of the time — one trade, two directions. The pooled ledger says the long side wins that argument; the skeptic keeps paying for the lesson.
@@ -13,7 +13,7 @@ Tape: **calm-up** · session 2026-08-31 · 12 agents · opened 46, closed 26 thi
 
 ## Playbook by regime (avg bps/trade, n>=20)
 
-- **calm-up**: FRESH_HIGH +198 (n=442) · PANIC_LITE +10 (n=1815) · PANIC_BOUNCE -18 (n=899) · PULLBACK_50 -29 (n=188) · SHORT_EXT -43 (n=217) · BOLL_SNAP -48 (n=327) · DOUBLE_DIP -54 (n=762) · DEEP_DIP -74 (n=104) · RSI2_DIP -97 (n=486) · REVERSAL_3 -115 (n=200) · TREND_RIDER -560 (n=84)
+- **calm-up**: FRESH_HIGH +198 (n=442) · PANIC_LITE +10 (n=1815) · PANIC_BOUNCE -18 (n=899) · PULLBACK_50 -29 (n=188) · SHORT_EXT -43 (n=217) · BOLL_SNAP -48 (n=327) · DOUBLE_DIP -54 (n=762) · DEEP_DIP -74 (n=104) · RSI2_DIP -98 (n=488) · REVERSAL_3 -115 (n=200) · TREND_RIDER -560 (n=84)
 - **calm-down**: BOLL_SNAP +359 (n=48) · PANIC_BOUNCE +186 (n=118) · PANIC_LITE +172 (n=195) · DOUBLE_DIP +144 (n=93) · PULLBACK_50 +138 (n=38) · REVERSAL_3 +132 (n=71) · FRESH_HIGH -208 (n=32) · RSI2_DIP -261 (n=105)
 - **storm-up**: DOUBLE_DIP +45 (n=67) · PANIC_LITE +38 (n=142) · PANIC_BOUNCE +0 (n=103) · BOLL_SNAP -201 (n=42) · STORM_DIP -296 (n=134)
 - **storm-down**: DEEP_DIP +1034 (n=33) · DOUBLE_DIP +398 (n=295) · STORM_DIP +351 (n=469) · BOLL_SNAP +348 (n=291) · PANIC_BOUNCE +216 (n=307) · PANIC_LITE +152 (n=652) · FRESH_HIGH -34 (n=37)
