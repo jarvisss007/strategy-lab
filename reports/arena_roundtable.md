@@ -1,14 +1,14 @@
-# Arena Roundtable — 2026-09-02
+# Arena Roundtable — 2026-09-03
 
-Tape: **calm-up** · session 2026-09-02 · 12 agents · opened 47, closed 55 this session · 225 open · 1571 forward closes all-time
+Tape: **calm-up** · session 2026-09-02 · 12 agents · opened 47, closed 55 this session · 224 open · 1572 forward closes all-time
 
-> **This lab is 79% of the desk's scored record (1516 of 1915 scored rows in the Calibration Observatory).** Any pooled desk statistic is therefore mostly a statement about the Arena, not about the desk. Read the other labs' standings on their own n.
+> **This lab is 78% of the desk's scored record (1572 of 2011 scored rows in the Calibration Observatory).** Any pooled desk statistic is therefore mostly a statement about the Arena, not about the desk. Read the other labs' standings on their own n.
 
-**Drain (ARENA-003).** 0 of 225 open rows read `days_left <= 0`; 0 of those are PAST due (negative). 55 closed this session, 1571 all-time. No due rows on the book. This pass ran outside market hours, so every due row was eligible to close.
+**Drain (ARENA-003).** 0 of 224 open rows read `days_left <= 0`; 0 of those are PAST due (negative). 55 closed this session, 1572 all-time. No due rows on the book. This pass ran outside market hours, so every due row was eligible to close.
 
 - Tape today: CALM-UP. Our pooled record in this weather — hot hands: FRESH_HIGH (+206), PANIC_LITE (+4), PANIC_BOUNCE (-20); cold hands: RSI2_DIP (-112), TREND_RIDER (-643). (History, not prophecy.)
 - FRESH_HIGH and SHORT_EXT enter on the same bar 44% of the time — one trade, two directions. The pooled ledger says the long side wins that argument; the skeptic keeps paying for the lesson.
-- PANIC_LITE contains 85% of PANIC_BOUNCE's entries; stripped to the −3%…−5% band alone (PANIC_LITE entries too shallow for PANIC_BOUNCE), it still earned +49 bps over 1601 trades (t=3.42) — the bounce is not only in the extreme tail.
+- PANIC_LITE contains 85% of PANIC_BOUNCE's entries; stripped to the −3%…−5% band alone (PANIC_LITE entries too shallow for PANIC_BOUNCE), it still earned +49 bps over 1601 trades (t=3.43) — the bounce is not only in the extreme tail.
 - Desk rule we all share: reading each other's regime stats and gating ourselves in hindsight is selection bias — STORM_DIP is the only pre-registered regime gate; any new gate goes to REGISTRY.md with a thesis BEFORE it trades.
 
 ## Playbook by regime (avg bps/trade, n>=20)
@@ -24,8 +24,8 @@ Entry DAYS, not trades — same-day entries share one regime and are one observa
 
 - PANIC_LITE: **26** entry days — **test LIVE (>=15)**
 - PANIC_BOUNCE: **25** entry days — **test LIVE (>=15)**
+- REVERSAL_3: **25** entry days — **test LIVE (>=15)**
 - RSI2_DIP: **25** entry days — **test LIVE (>=15)**
-- REVERSAL_3: **24** entry days — **test LIVE (>=15)**
 - PULLBACK_50: **23** entry days — **test LIVE (>=15)**
 - DOUBLE_DIP: **22** entry days — **test LIVE (>=15)**
 - BOLL_SNAP: **19** entry days — **test LIVE (>=15)**
