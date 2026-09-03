@@ -41,6 +41,16 @@
 # them here would expand to an empty command and an empty redirect target — a silent
 # no-op, which is precisely the failure mode this hoist exists to end. Same shape as the
 # defect being fixed: a line placed above the thing it depends on.
+# cloud-integrate (2026-09-02): GitHub Actions now writes to these repos while the Mac sleeps.
+# Pull (rebase, never force) BEFORE any local writer touches them; a conflict is logged LOUD
+# and that repo is left alone for a hand, never clobbered.
+for _r in asia-radar zero-dte-lab macro-branch stock-radar; do
+  _R="/Users/anupampatil/$_r"
+  if ! git -C "$_R" pull --rebase -q origin main >> /Users/anupampatil/strategy-lab/refresh.log 2>&1; then
+    git -C "$_R" rebase --abort >/dev/null 2>&1
+    echo "cloud-integrate: REBASE CONFLICT in $_r — left untouched" >> /Users/anupampatil/strategy-lab/refresh.log
+  fi
+done
 /opt/anaconda3/bin/python /Users/anupampatil/asia-radar/collector.py >> /Users/anupampatil/strategy-lab/refresh.log 2>&1
 
 # Asia Radar prediction engine: cheap (one Yahoo call), runs on EVERY trigger —
