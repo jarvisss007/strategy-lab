@@ -567,7 +567,16 @@ def main():
         rank = [(k, backtest[k]["by_regime"][r]) for k in STRATS
                 if backtest[k]["by_regime"][r].get("n", 0) >= 20]
         rank.sort(key=lambda kv: -kv[1]["avg_bps"])
+        # ARENA / council directive 2026-09-03: n_events (distinct entry dates) travels
+        # WITH n everywhere this table is published. The 2026-08-27 audit found one entry
+        # date (2026-07-29) carrying ~87% of the forward book's P&L, with the vs-SPY mean
+        # flipping negative without it; a t-stat on correlated rows is an anecdote wearing
+        # a sample's clothes (Firm Brain #4). stats() has computed n_events all along —
+        # it simply was not carried into the dict the page renders from. This publishes a
+        # count that already existed; it changes no bar, ranks nothing differently, and
+        # is not itself a gate.
         playbook[r] = [{"agent": k, "avg_bps": v["avg_bps"], "n": v["n"],
+                        "n_events": v.get("n_events", 0),
                         "hit_pct": v["hit_pct"]} for k, v in rank]
 
     notes = []
@@ -678,9 +687,13 @@ def main():
         for ln in lines:
             f.write(f"- {ln}\n")
         f.write("\n## Playbook by regime (avg bps/trade, n>=20)\n\n")
+        f.write("_Read n_events, not n: `n` counts rows, `d` counts the distinct entry "
+                "DAYS behind them. Rows on one day share a regime and are one "
+                "observation, not many (Firm Brain #4)._\n\n")
         for r, ps in playbook.items():
             f.write(f"- **{r}**: " + " · ".join(
-                f"{p['agent']} {p['avg_bps']:+.0f} (n={p['n']})" for p in ps) + "\n")
+                f"{p['agent']} {p['avg_bps']:+.0f} (n={p['n']}, d={p.get('n_events', 0)})"
+                for p in ps) + "\n")
         # ARENA / council directive 2026-08-27: the coach's standing retirement test is
         # "arena reaching 15 ENTRY DAYS" for a strategy, and until now that number lived in
         # the coach's memory rather than on the page it reads. Surfaced per strategy, from
