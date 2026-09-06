@@ -19,6 +19,16 @@ Honest caveats: event days are a proxy (earnings + other shocks); base rates are
 averages with big variance; the universe is survivorship-biased; none of this is
 advice — it is evidence to attach to falsifiable paper calls in the agent ledger.
 Run: /opt/anaconda3/bin/python earnings_radar.py"""
+# SESSION-001 (2026-09-05): the estate's one NYSE calendar lives in stock-radar/sessions.py;
+# loaded by path (this repo runs alone), weekday-only fallback if it is unavailable.
+try:
+    import importlib.util as _iu
+    _sp = _iu.spec_from_file_location("_sessions", "/Users/anupampatil/stock-radar/sessions.py")
+    _SESS = _iu.module_from_spec(_sp); _sp.loader.exec_module(_SESS)
+except Exception:
+    _SESS = None
+def _is_session(d):
+    return _SESS.is_session(d) if _SESS else d.weekday() < 5
 import json, os, urllib.request
 import datetime as dt
 import numpy as np
@@ -97,7 +107,7 @@ def upcoming(days=14):
     today = dt.date.today()
     for k in range(days):
         d = today + dt.timedelta(days=k)
-        if d.weekday() >= 5:
+        if not _is_session(d):
             continue
         try:
             url = f"https://api.nasdaq.com/api/calendar/earnings?date={d}"
