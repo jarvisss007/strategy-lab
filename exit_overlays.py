@@ -22,6 +22,32 @@ touch the Arena itself.
 Run:  /opt/anaconda3/bin/python exit_overlays.py     (daily, after rotation_arm)
 """
 from __future__ import annotations
+# ROT-001 / SESSION-001 (2026-09-07): NAV compounds once per SESSION, never per run. The estate's one
+# NYSE calendar is stock-radar/sessions.py, loaded by path (this repo is public and runs alone);
+# weekday-only fallback if unavailable. Bars are picked by DATE (series_t, epoch days), never by position.
+try:
+    import importlib.util as _iu
+    _sp = _iu.spec_from_file_location("_sessions", "/Users/anupampatil/stock-radar/sessions.py")
+    _SESS = _iu.module_from_spec(_sp); _sp.loader.exec_module(_SESS)
+except Exception:
+    _SESS = None
+def _settled_session():
+    import datetime as _dt
+    if _SESS: return _SESS.settled_session()
+    now = _dt.datetime.now(); d = now.date()
+    if d.weekday() >= 5 or (now.hour, now.minute) < (13, 5):
+        d -= _dt.timedelta(days=1)
+        while d.weekday() >= 5: d -= _dt.timedelta(days=1)
+    return d
+def _closes_for_session(e, sess):
+    """(prev_close, close) for the bar dated `sess` and the bar before it, by DATE; None if the
+    series has no bar for that session (radar not refreshed) — then nothing compounds."""
+    import datetime as _dt
+    ts = e.get("series_t", []) or []; cs = e.get("series_c", []) or []
+    bars = [(_dt.date(1970, 1, 1) + _dt.timedelta(days=int(t)), c) for t, c in zip(ts, cs) if c]
+    idx = [i for i, (d, _) in enumerate(bars) if d == sess]
+    if not idx or idx[0] < 1: return None
+    return (bars[idx[0] - 1][1], bars[idx[0]][1])
 
 import csv
 import datetime as dt
@@ -43,12 +69,10 @@ def key(p):
     return f"{p['strategy']}|{p['ticker']}|{p['entry_date']}"
 
 
-def last_two(tk, d):
+def last_two(tk, d, sess):
+    """Closes for session `sess` and the one before, by date (ROT-001)."""
     e = next((x for x in d if x.get("ticker") == tk), None)
-    if not e:
-        return None
-    c = [x for x in e.get("series_c", []) if x]
-    return (c[-2], c[-1]) if len(c) >= 2 else None
+    return _closes_for_session(e, sess) if e else None
 
 
 def main():
@@ -56,6 +80,7 @@ def main():
     arena = json.load(open(ARENA))
     opens = json.load(open(STATE))["open"]
     today = dt.date.today().isoformat()
+    sess = _settled_session(); sess_iso = sess.isoformat()
     regime = arena.get("current_regime", "unknown")
 
     # family -> avg bps in each regime, from the FROZEN replay table
@@ -73,15 +98,18 @@ def main():
         book = json.load(open(BOOK))
     # an arm registered after the book was born initializes mid-flight at 100
     book["arms"].setdefault("TAKE_PROFIT", {"nav": 100.0, "weights": {}})
-    if book.get("last_run") == today:
-        print("exit_overlays: already ran today")
-        return
+    if book.get("last_session") == sess_iso:   # ROT-001: one compounding per settled session
+        print(f"exit_overlays: session {sess_iso} already compounded — refusing a second row"); return
+    if not book.get("last_session"):
+        book["last_session"] = sess_iso; book["last_run"] = today; book["last_session"] = sess_iso
+        json.dump(book, open(BOOK, "w"), indent=1)
+        print(f"exit_overlays: anchored to session {sess_iso} without compounding (ROT-001); rows resume at the next settled session"); return
 
     cur = {key(p): p for p in opens}
     eq = radar.get("equities", [])
     rets = {}
     for k, p in cur.items():
-        pr = last_two(p["ticker"], eq)
+        pr = last_two(p["ticker"], eq, sess)
         if pr and pr[0]:
             rets[k] = pr[1] / pr[0] - 1
 
@@ -150,7 +178,7 @@ def main():
             wcsv.writerow(["date", "regime", "flipped", "nav_base", "nav_regime_exit",
                            "nav_stop_only", "regime_exits", "stop_exits",
                            "nav_take_profit", "tp_exits"])
-        wcsv.writerow([today, regime, int(flipped), book["nav_base"],
+        wcsv.writerow([sess_iso, regime, int(flipped), book["nav_base"],
                        book["arms"]["REGIME_EXIT"]["nav"],
                        book["arms"]["STOP_ONLY"]["nav"],
                        ";".join(actions["REGIME_EXIT"]),

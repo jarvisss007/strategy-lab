@@ -29,6 +29,32 @@ and writes only its own two files. The frozen agents' record stays theirs.
 Run:  /opt/anaconda3/bin/python rotation_arm.py       (wired into refresh_all.sh)
 """
 from __future__ import annotations
+# ROT-001 / SESSION-001 (2026-09-07): NAV compounds once per SESSION, never per run. The estate's one
+# NYSE calendar is stock-radar/sessions.py, loaded by path (this repo is public and runs alone);
+# weekday-only fallback if unavailable. Bars are picked by DATE (series_t, epoch days), never by position.
+try:
+    import importlib.util as _iu
+    _sp = _iu.spec_from_file_location("_sessions", "/Users/anupampatil/stock-radar/sessions.py")
+    _SESS = _iu.module_from_spec(_sp); _sp.loader.exec_module(_SESS)
+except Exception:
+    _SESS = None
+def _settled_session():
+    import datetime as _dt
+    if _SESS: return _SESS.settled_session()
+    now = _dt.datetime.now(); d = now.date()
+    if d.weekday() >= 5 or (now.hour, now.minute) < (13, 5):
+        d -= _dt.timedelta(days=1)
+        while d.weekday() >= 5: d -= _dt.timedelta(days=1)
+    return d
+def _closes_for_session(e, sess):
+    """(prev_close, close) for the bar dated `sess` and the bar before it, by DATE; None if the
+    series has no bar for that session (radar not refreshed) — then nothing compounds."""
+    import datetime as _dt
+    ts = e.get("series_t", []) or []; cs = e.get("series_c", []) or []
+    bars = [(_dt.date(1970, 1, 1) + _dt.timedelta(days=int(t)), c) for t, c in zip(ts, cs) if c]
+    idx = [i for i, (d, _) in enumerate(bars) if d == sess]
+    if not idx or idx[0] < 1: return None
+    return (bars[idx[0] - 1][1], bars[idx[0]][1])
 
 import csv
 import datetime as dt
@@ -50,28 +76,37 @@ def key(p):
     return f"{p['strategy']}|{p['ticker']}|{p['entry_date']}"
 
 
-def last_two_closes():
+def last_two_closes(sess):
+    """Closes for session `sess` and the session before it, by date (ROT-001)."""
     d = json.load(open(RADAR))
     out = {}
     for e in d.get("equities", []):
-        c = [x for x in e.get("series_c", []) if x]
-        if len(c) >= 2 and e.get("ticker"):
-            out[e["ticker"]] = (c[-2], c[-1])
+        if e.get("ticker"):
+            pr = _closes_for_session(e, sess)
+            if pr: out[e["ticker"]] = pr
     return out
 
 
 def main():
     opens = json.load(open(STATE))["open"]
-    px = last_two_closes()
+    sess = _settled_session(); sess_iso = sess.isoformat()
+    px = last_two_closes(sess)
     today = dt.date.today().isoformat()
 
     book = {"start": today, "nav_base": 100.0, "nav_rot": 100.0,
             "weights": {}, "last_run": None}
     if os.path.exists(BOOK):
         book = json.load(open(BOOK))
-    if book.get("last_run") == today:
-        print("rotation_arm: already ran today — one row per session, refusing a second")
-        return
+    # ROT-001: the unit is the SESSION. One compounding per settled session; a weekend, a holiday
+    # or a second run on the same session compounds nothing and writes no row.
+    if book.get("last_session") == sess_iso:
+        print(f"rotation_arm: session {sess_iso} already compounded — refusing a second row"); return
+    if not book.get("last_session"):
+        # joining the session calendar: anchor without applying a return (the pre-09-08 NAV is
+        # Anupam's restatement, ROT-001 — this writer does not re-derive it)
+        book["last_session"] = sess_iso; book["last_run"] = today
+        json.dump(book, open(BOOK, "w"), indent=1)
+        print(f"rotation_arm: anchored to session {sess_iso} without compounding (ROT-001); rows resume at the next settled session"); return
 
     cur = {key(p): p for p in opens}
 
@@ -120,7 +155,7 @@ def main():
             del w[k]
 
     book["weights"] = w
-    book["last_run"] = today
+    book["last_run"] = today; book["last_session"] = sess_iso
     json.dump(book, open(BOOK, "w"), indent=1)
 
     new = not os.path.exists(LOG)
@@ -129,12 +164,12 @@ def main():
         if new:
             wcsv.writerow(["date", "nav_base", "nav_rot", "gap_pct", "n_open",
                            "n_culled", "n_boosted", "culled", "boosted"])
-        wcsv.writerow([today, book["nav_base"], book["nav_rot"],
+        wcsv.writerow([sess_iso, book["nav_base"], book["nav_rot"],
                        round(book["nav_rot"] - book["nav_base"], 4), len(w),
                        len(culled), len(boosted),
                        ";".join(k.split("|")[1] for k in culled),
                        ";".join(k.split("|")[1] for k in boosted)])
-    print(f"rotation_arm {today}: base {book['nav_base']:.2f} · overlay "
+    print(f"rotation_arm {sess_iso}: base {book['nav_base']:.2f} · overlay "
           f"{book['nav_rot']:.2f} · gap {book['nav_rot']-book['nav_base']:+.2f} · "
           f"culled {len(culled)}, boosted {len(boosted)} of {len(w)} open")
 
