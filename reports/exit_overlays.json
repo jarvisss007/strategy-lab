@@ -1,10 +1,10 @@
 {
  "start": "2026-08-18",
- "last_run": "2026-09-05",
+ "last_run": "2026-09-07",
  "last_regime": "calm-up",
  "arms": {
   "REGIME_EXIT": {
-   "nav": 81.3242,
+   "nav": 81.5643,
    "weights": {
     "TREND_RIDER|LRCX|2026-08-17": 1.0,
     "TREND_RIDER|SNDK|2026-08-17": 1.0,
@@ -126,11 +126,12 @@
     "REVERSAL_3|MO|2026-09-04": 1.0,
     "PULLBACK_50|SCHW|2026-09-04": 1.0,
     "REVERSAL_3|XOM|2026-09-04": 1.0,
-    "PULLBACK_50|XOM|2026-09-04": 1.0
+    "PULLBACK_50|XOM|2026-09-04": 1.0,
+    "RSI2_DIP|ES=F|2026-09-06": 1.0
    }
   },
   "STOP_ONLY": {
-   "nav": 82.0179,
+   "nav": 81.8711,
    "weights": {
     "TREND_RIDER|LRCX|2026-08-17": 0.0,
     "TREND_RIDER|SNDK|2026-08-17": 0.0,
@@ -252,11 +253,12 @@
     "REVERSAL_3|MO|2026-09-04": 1.0,
     "PULLBACK_50|SCHW|2026-09-04": 1.0,
     "REVERSAL_3|XOM|2026-09-04": 1.0,
-    "PULLBACK_50|XOM|2026-09-04": 1.0
+    "PULLBACK_50|XOM|2026-09-04": 1.0,
+    "RSI2_DIP|ES=F|2026-09-06": 1.0
    }
   },
   "TAKE_PROFIT": {
-   "nav": 86.1384,
+   "nav": 86.0759,
    "weights": {
     "TREND_RIDER|LRCX|2026-08-17": 1.0,
     "TREND_RIDER|SNDK|2026-08-17": 1.0,
@@ -378,9 +380,10 @@
     "REVERSAL_3|MO|2026-09-04": 1.0,
     "PULLBACK_50|SCHW|2026-09-04": 1.0,
     "REVERSAL_3|XOM|2026-09-04": 1.0,
-    "PULLBACK_50|XOM|2026-09-04": 1.0
+    "PULLBACK_50|XOM|2026-09-04": 1.0,
+    "RSI2_DIP|ES=F|2026-09-06": 1.0
    }
   }
  },
- "nav_base": 81.3242
+ "nav_base": 81.5643
 }
