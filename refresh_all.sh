@@ -53,12 +53,28 @@ for _r in asia-radar zero-dte-lab macro-branch stock-radar; do
     fi
   fi
 done
-/opt/anaconda3/bin/python /Users/anupampatil/asia-radar/collector.py >> /Users/anupampatil/strategy-lab/refresh.log 2>&1
+# TWO WRITERS, ONE BOOK (2026-09-08): asia-radar's collector and predictions run in GitHub Actions
+# (collect-score.yml, 14:20 PT and 01:10 PT). Running them here as well produced a permanent split
+# (local ahead 7 / behind 1, conflicts on today's brief, markets and pred files). The cloud is the
+# writer of record; this leg runs them only as a FALLBACK when origin carries no collect-score
+# commit dated today — and says which leg ran.
+_ASIA=/Users/anupampatil/asia-radar
+git -C "$_ASIA" fetch -q origin 2>/dev/null
+if git -C "$_ASIA" log origin/main --since="$(date '+%Y-%m-%d') 00:00" --format='%s' 2>/dev/null | grep -q "collect-score"; then
+  echo "asia: cloud collect-score already ran today — local collector/predictions skipped (two-writers rule)" >> /Users/anupampatil/strategy-lab/refresh.log
+  ASIA_LOCAL=0
+else
+  echo "asia: no cloud collect-score commit today — running the local fallback" >> /Users/anupampatil/strategy-lab/refresh.log
+  ASIA_LOCAL=1
+  /opt/anaconda3/bin/python /Users/anupampatil/asia-radar/collector.py >> /Users/anupampatil/strategy-lab/refresh.log 2>&1
+fi
 
 # Asia Radar prediction engine: cheap (one Yahoo call), runs on EVERY trigger —
 # it must fire after the 1 PM PT US close, which the once-a-day guard below
 # would skip. It no-ops unless a new final US close has appeared.
-/opt/anaconda3/bin/python /Users/anupampatil/asia-radar/predictions.py >> /Users/anupampatil/strategy-lab/refresh.log 2>&1
+if [ "${ASIA_LOCAL:-1}" = "1" ]; then
+  /opt/anaconda3/bin/python /Users/anupampatil/asia-radar/predictions.py >> /Users/anupampatil/strategy-lab/refresh.log 2>&1
+fi
 
 # Calibration Observatory census: rebuilt on EVERY trigger, immediately after the
 # Asia engine writes — the OBS-004 fix the council asked for (directive 2026-08-14,
