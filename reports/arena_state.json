@@ -260,7 +260,7 @@
    "entry_date": "2026-08-27",
    "entry_t": 20692,
    "entry_px": 29695.75,
-   "mtm": -0.00639,
+   "mtm": -0.00445,
    "days_left": 8,
    "regime": "calm-up"
   },
@@ -1352,7 +1352,7 @@
    "entry_date": "2026-09-04",
    "entry_t": 20700,
    "entry_px": 7722.0,
-   "mtm": -0.002,
+   "mtm": -0.00368,
    "days_left": 4,
    "regime": "calm-up"
   },
@@ -1460,8 +1460,20 @@
    "entry_date": "2026-09-06",
    "entry_t": 20702,
    "entry_px": 7722.0,
-   "mtm": -0.002,
+   "mtm": -0.00368,
    "days_left": 2,
+   "regime": "calm-up"
+  },
+  {
+   "strategy": "PULLBACK_50",
+   "ticker": "NQ=F",
+   "side": 1,
+   "hold": 5,
+   "entry_date": "2026-09-08",
+   "entry_t": 20704,
+   "entry_px": 29528.25,
+   "mtm": 0.00121,
+   "days_left": 5,
    "regime": "calm-up"
   }
  ]
