@@ -17,3 +17,75 @@ date · registry-clean? · drift? · zdte n/60 · crypto days/skill · insider e
 2026-08-29 · clean (6/6 families in discover.py's FAMILIES match REGISTRY.md; no unregistered family, no new config) · **NO DRIFT ATTRIBUTABLE TO NEW DATA — third consecutive week the attribution lands the same way.** (1) PIPELINE, the scheduling mismatch again, now confirmed as a STANDING weekly condition rather than an incident: the Monday fetch fired 08-24 06:20 PT and correctly returned data through Friday 08-21 — byte-for-byte the extent last week's manual Saturday refetch already reached. This run's first discover.py pass therefore reproduced the 08-22 block to two decimals on all 34 configs (verified row by row, not eyeballed). The wiring is not broken — fetch_data/fetch_ohlc/fetch_volume are all present in refresh_all.sh's Monday branch, the 08-08 fix holding — it is purely that a Monday fetch cannot contain the week it opens, and the sentinel runs Saturdays. Panels refetched here to 2026-08-28 (window start rolled 2011-08-22 → 2011-08-29, 147 tickers, SPCX still the lone failure) and discover.py re-run, so discoveries.csv holds TWO 2026-08-29 blocks — **use the second** (bench 1.26). (2) New-data effect isolated from window-roll effect by the 08-22 method (re-run every family on the refreshed front truncated back to the 08-21 end): **the 5 new sessions (08-24..08-28) moved every family's best-config net Sharpe by ≤0.02 and OOS by ≤0.05 — nothing.** Two category-level flips printed this week and BOTH are the rolled front, not the market: Price-action value-area fade dead → real-but-loses (best net −0.20 → +0.16, DSR 0.08 → 0.31, PBO 0.35 → 0.04) with the new sessions contributing 0.00 net / +0.01 OOS; and inside microstructure, high-volume-premium q0.1 H21 net −0.51 → +0.31 (a 0.82 swing) with the new sessions contributing −0.02. Both are the positional-rebalance re-phasing diagnosed 08-15. Note the direction: value-area fade has now printed dead (08-01, 08-08, 08-22) and real-but-loses (08-29) on the same frozen hypothesis, which is exactly what the 08-15 phase sweep predicted for a family whose net straddles zero (span −0.38..+0.14, median −0.06) — this run agreeing with the FROZEN registry row is phase luck, not confirmation, and the 08-15 withdrawal stands. Options-expiry unchanged in category, DSR 0.89 → 0.91, PBO 0.70 → 0.65, best config still post-opex-week. Turn-of-month t5 still real-but-loses (net 1.13 vs bench 1.26), so no MC drawdown run. Nothing crossed DSR 0.5 or 0.95. SUGGESTIONS still awaiting sign-off under rule 1, both now with three weeks of supporting evidence and neither actioned: (a) anchor `reb` to a fixed calendar epoch and report H-config Sharpes as a median across phases (08-15), (b) refresh panels inside the sentinel run or move the fetch to Friday post-close so the weekly re-validation consumes the week that just ended (08-22). · zdte 31/60 (+5), recorder healthy through SPY_2026-08-28.csv — over half way, ~6 weeks to the B-L density study at this rate · crypto 55 derived minute-days 07-05..08-28 (+7); the spec's `research/data/BTC-USD_*.csv` counter still reads 1 because rotate.py gzips (30 .csv.gz) — honest source is research/minutes/. learned_weights.json is **FOSSIL for the third straight week** (mtime 2026-08-11, built from 38 days ending 08-11; 17 accrued days unincorporated) — the 08-15 "resolved" was a one-off rebuild, not a working --backtest-every hook, and this is now the longest-standing unfixed instrumentation defect on the desk; its frozen figures: skill −0.031, edge_found=false, edge_z −3.67, hit 49.12% vs naive 49.98% against 60 bps costs · insider rolling feed 400 = the KEEP=400 cap, saturated and structurally unable to express accrual; deep-sample events.json 1,062, untouched since 2026-07-07, so the "double to 2,124" milestone stays unfireable as instrumented
 
 2026-09-05 · clean (6/6 families in discover.py's FAMILIES match REGISTRY.md; no unregistered family, no new config) · **NO DRIFT — and for the first time in five weeks no category flip printed at all: all six verdicts match the FROZEN 2026-07-11 table exactly** (overnight structural-but-uncostable · opex real-but-loses DSR 0.91 PBO 0.62 · turn-of-month t5 real-but-loses DSR 1.0 PBO 0.06 · microstructure real-but-loses, best illiquidity q0.2 DSR 0.14 · value-area fade real-but-loses DSR 0.18 · confluence dead). Nothing crossed DSR 0.5 or 0.95. Turn-of-month t5 net 1.17 vs bench 1.29 — still not a SURVIVOR, so no MC drawdown run. (1) PIPELINE: the Saturday-vs-Monday scheduling mismatch is a standing weekly condition for the fourth straight week — the Monday 08-31 06:26 fetch correctly returned through Friday 08-28, so as wired the sentinel would again have re-validated on a panel missing the week just ended. Panels were refetched FIRST this run (before any discover.py pass) rather than run-then-refetch-then-rerun, so **discoveries.csv holds exactly ONE 2026-09-05 block** — no "use the second" caveat this week. Panel now 2026-09-06..2026-09-04, 145 cols, window start rolled 2011-08-29 → 2011-09-06, SPCX still the lone fetch failure. (2) New-data effect isolated from window-roll effect by the 08-22 method (re-run every family on the refreshed panel truncated back to the 08-28 end): **the 5 new sessions (08-31..09-04) moved every config's net Sharpe by ≤0.02 and OOS by ≤0.05 — nothing; only SPY overnight moved at all (net −0.01, OOS −0.05).** Fourth consecutive week the attribution lands identically. Fourteen configs moved >0.2 week-over-week and every one of them is the rolled front re-phasing the positional `np.arange(len(score)) // H` grid diagnosed 08-15: high-volume-premium q0.2 H21 net +0.11 → +0.51 / OOS +0.12 → +0.80, confluence-fade q0.1 H21 net −0.17 → −0.64, value-area-fade best-config identity flipped q0.2 H21 → q0.1 H21 (DSR 0.31 → 0.18) — all with the new sessions contributing ≈0.00. Value-area fade agreeing with the frozen row this week is phase luck, not confirmation; the 08-15 withdrawal of the dead/real-but-loses call stands. SUGGESTIONS still awaiting sign-off under rule 1, neither actioned, now with four weeks of evidence: (a) anchor `reb` to a fixed calendar epoch and report H-config Sharpes as a median across phases (08-15), (b) refresh panels inside the sentinel run or move the fetch to Friday post-close (08-22) — the sentinel has now done (b) by hand four weeks running. · zdte 36/60 (+5), recorder healthy 2026-07-08..2026-09-04, 24 sessions to the B-L density gate, ~5 weeks at this rate (~mid-Oct) · crypto 62 derived minute-days 07-05..09-04 (+7); the spec's `research/data/BTC-USD_*.csv` counter still reads 1 because rotate.py gzips (30 .csv.gz) — honest source is research/minutes/. learned_weights.json **FOSSIL for the fourth straight week** (mtime 2026-08-11, built from 38 days ending 08-11; 24 accrued days unincorporated) — the longest-standing unfixed instrumentation defect on the desk; its frozen figures: skill −0.031, edge_found=false, edge_z −3.67, hit 49.12% vs naive 49.98%, gross −0.195 bps/trade against 60 bps costs · insider rolling feed 400 = the KEEP=400 cap (window 2026-08-26..09-04, ~10 days), saturated and structurally unable to express accrual; deep-sample events.json 1,062, untouched since 2026-07-07, so the "double to 2,124" milestone stays unfireable as instrumented
+
+---
+
+## 2026-09-08 — ROT-001 audit closed out, and the Arena turns out to be a MIXED-CALENDAR book
+
+**The council's OPEN item, done: every dated one-row-per-run file this lab owns, audited against
+`sessions.py`, reported clean or not.** Rows written since Friday's 2026-09-04 close, per book —
+the number the council asked for, where anything above one would mean double-counting:
+
+| book | rows | date col | last date | non-session rows | rows since 09-04 |
+|---|---|---|---|---|---|
+| `reports/rotation_log.csv` | 15 | date | 2026-09-04 | **0** | **0** |
+| `reports/exit_overlays_log.csv` | 14 | date | 2026-09-04 | **0** | **0** |
+| `daytype_log.csv` | 780 | date | 2026-09-04 | **0** | **0** |
+| `reports/arena_trades.csv` | 1,725 | entry/exit | 2026-09-04 | **1** (NQ=F, futures) | 0 |
+| `discoveries.csv` | 542 | run_date | 2026-09-05 | 519 | 35 |
+| `progress.csv` | 62 | date | 2026-09-08 | 19 | 4 |
+| `knowledge_base.csv`, `reports/SNDK_daytape.csv` | 9 / 20 | — | — | **0** | **0** |
+
+**ROT-001 is remediated and the remediation is visible rather than asserted.** Both NAV books now
+end at 2026-09-04 with **zero** non-session rows and **zero** rows written since Friday's close —
+no Labor-Day compounding, no weekend rows. The pre-fix series survive beside them as
+`rotation_log.pre-ROT-001.csv` and `exit_overlays_log.pre-ROT-001.csv`, each still carrying its 7
+non-session rows, and `reports/rot_restate_note.json` holds published-vs-corrected under the
+2026-09-08 ruling. **Nothing was silently overwritten**, which was the actual instruction.
+
+**`discoveries.csv` and `progress.csv` are flagged, and then cleared — but for a reason worth
+writing down.** 519 of 542 and 19 of 62 rows sit on non-sessions. Neither is a defect, because
+**neither book compounds**: `discoveries.csv` carries per-config Sharpe/DSR/PBO verdicts and
+`progress.csv` carries counters. The ROT-001 hazard is specifically *a return multiplied onto a
+running NAV on a day that did not exist*; a Sharpe recorded on a Saturday is merely a Saturday's
+recomputation of the same fixed history. **What is genuinely missing is that neither book DECLARES
+its unit** — the exemption I just applied is my judgement about their contents, and next month it
+will be someone else's judgement. That is the residual gap and it should be a one-line header.
+
+**And `progress.csv` shows the ROT-001 SHAPE without the ROT-001 harm, which is the clearest
+teaching case available:** its 2026-09-05, 09-06 and 09-07 rows are byte-identical
+(briefs 50, ledger_calls 121, ledger_scored 75, ..., discoveries 542). Three rows, one state,
+because nothing happened on a weekend and a holiday. **That is exactly what the rotation arm did —
+"today is a new day, so write a row" — and it was harmless here only because the column is a
+counter rather than a multiplier.** The defect is identical; only the datatype spared it.
+
+### THE NEW FINDING: the Arena is a mixed-calendar book, and a per-LAB calendar exemption cannot express that
+
+The sweep's session assertion exempts labs "whose unit is not the NYSE session ... by declaration,
+not by guesswork." The Arena would be declared NYSE-session — and it is, for 145 of its 147
+instruments. **But it also holds `ES=F` and `NQ=F`, which trade the globex calendar**, including
+Sunday evenings. Full audit of 3,573 date cells across `arena_trades.csv` and `arena_state.json`:
+
+- **2 non-session-dated cells. Both futures. Zero non-futures.**
+  `ES=F` open entry dated **2026-09-06 (Sunday)**; `NQ=F` exit dated **2026-08-23 (Sunday)**.
+
+So the equity book is spotless and the two exceptions are real bars on a real calendar. **The
+declaration granularity is what is wrong: a book holding instruments on different calendars cannot
+be exempt or compliant as a whole.** Declared per-lab, the Arena is either falsely flagged twice or
+falsely exempted 3,571 times. **Offered to the council: the session assertion should read a
+per-INSTRUMENT calendar, and a book should declare the set of calendars it spans rather than one
+unit.** This is Firm Brain §6 in the calendar: two readers of one book — the equity leg and the
+futures leg — must not be asked to agree on a single definition of "a day that exists."
+
+**Related, and not a date defect: `NQ=F` carries an open entry dated 2026-09-08 with `entry_px`
+29,528.25, taken during a live session.** `arena.py:486-492` computes `last_session` from **SPY's**
+series and correctly drops today's partial bar during RTH — but that value governs the *counters*
+only. Per-instrument entries key off each instrument's own series, so a futures bar that looks
+complete to its own tape opens a position the equity gate never sees. The gate is right about what
+it measures and is measuring the wrong population — **Firm Brain §10's shape: a guard whose trigger
+population and whose reading population are not the same set.** Reported, not altered: the
+fill-integrity gate is pre-registered and changing it is a ruling.
+
+**Arena freshness this run:** `OK arena · session 2026-09-04 +32/−49 · regime calm-up`. The last
+completed session is 2026-09-04 (09-05/06 weekend, 09-07 Labor Day, 09-08 live), and its rows are
+present in `arena_trades.csv`. Zero rows written for any date after it.
