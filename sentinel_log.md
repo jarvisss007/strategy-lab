@@ -89,3 +89,104 @@ fill-integrity gate is pre-registered and changing it is a ruling.
 **Arena freshness this run:** `OK arena · session 2026-09-04 +32/−49 · regime calm-up`. The last
 completed session is 2026-09-04 (09-05/06 weekend, 09-07 Labor Day, 09-08 live), and its rows are
 present in `arena_trades.csv`. Zero rows written for any date after it.
+
+---
+
+## 2026-09-09 — the ROT-001 fix landed in one file and not the other, and the audit the council ordered is what caught it
+
+**The council's 09-07 OPEN item was: "audit every one-row-per-run file the lab owns, not just these two…
+Report the audit even where it comes back clean." It did not come back clean.**
+
+### Rows written per date, since Friday 2026-09-04's close
+
+| book | rows since 09-04 | verdict |
+|---|---|---|
+| `rotation_log.csv` | **1** (09-08) | CLEAN — ROT-001 fix working |
+| `exit_overlays_log.csv` | **12** (all dated 09-08) | **DEFECT** |
+| `arena_trades.csv` | 40 (exit_date 09-08) | clean — unit is the trade, not the run |
+| `price_restatement_log.csv` | 0 | clean |
+| `SNDK_daytape.csv` | 0 | clean |
+| `universe_daytype.csv` | n/a (no date column) | not a per-run book |
+
+### The defect, and it is not a duplicate — it COMPOUNDS
+
+`exit_overlays_log.csv` carries **exactly one row per date for its entire history** — 08-18, 08-19, 08-20,
+08-21, 08-24, 08-25, 08-26, 08-27, 08-28, 08-31, 09-01, 09-02, 09-03, 09-04, every one of them a single row
+— **and then twelve rows dated 2026-09-08.** The unit is proven by fourteen consecutive sessions; twelve is
+not a design.
+
+They are not identical rows. **`nav_base` compounds down through them: 91.1118 (09-04) → 90.0835 → 89.0668 →
+88.0615 → 87.0676 → 86.0944 → 85.1321 → 84.1806 → 83.2397 → 82.3093 → 81.3893 → 80.4796 → 79.5801.**
+That is a recorded **−12.6% NAV move for a single session** in which the tape moved about −1.1%. Every
+statistic published off this book — the overlay NAVs, any regime-exit or stop-only comparison, any gap
+quoted against `nav_base` — is overstated by roughly twelve sessions of compounding.
+
+### Root cause, verified in the source rather than inferred
+
+Both files were given the same ROT-001 guard on 09-07. **Only one of them was finished.**
+
+- `rotation_arm.py:158` — on the **compounding** path: `book["last_run"] = today; book["last_session"] = sess_iso`
+- `exit_overlays.py:171` — on the **compounding** path: `book["last_run"], book["last_regime"] = today, regime`
+  — **`last_session` is never written.**
+
+`exit_overlays.py` writes `last_session` in exactly one place, line 104, inside the *first-anchoring* branch
+(`if not book.get("last_session")`) — and writes it twice on that same line, which is itself the fingerprint
+of a hurried edit. So the guard on line 101, `if book.get("last_session") == sess_iso`, **reads a variable
+that nothing on the live path ever updates.** It can never match after the initial anchoring, and every
+subsequent run on the same session compounds again. Twelve runs on 09-08, twelve rows.
+
+**This is Firm Brain §10 wearing a new costume, and a nastier one than the original.** §10 is "a rule
+enforced only where it cannot bind" — there, because the rule's writers and its trigger population were
+different sets. Here the guard is in the right file, on the right line, reading the right variable name, and
+is still structurally incapable of firing, because **its state is written on a branch the live path never
+takes.** It also reports as healthy: the file gains rows, the NAV moves, nothing errors, and the identical
+guard sitting in the sibling file demonstrably works. *Offered to the council as the transferable law:
+**a guard that tests a state variable must be checked against every path that is supposed to WRITE that
+variable, not merely against the path that reads it. Copying a guard between two files copies the read and
+can silently drop the write.*** The cheap machine check is a grep asymmetry: count `last_session` writes per
+file — `rotation_arm.py` has two, `exit_overlays.py` has one, and the missing one is on the hot path.
+
+### HALTED AND ESCALATED — nothing was fixed, nothing was restated
+
+Per **REG-PP-001** and the council's own 09-07 wording ("you found a defect in your own published statistic,
+so halt and escalate"), this agent did **not** patch `exit_overlays.py` and did **not** delete, dedupe or
+restate the twelve rows. They are published statistics; correcting them is a ruling for Anupam.
+**What is owed:** (1) the one-line writer fix, (2) a restatement of the 09-08 rows to a single settled-session
+row, published **beside** the defective series exactly as ROT-001's rotation restatement was — the
+`.pre-ROT-001.csv` snapshots are the precedent and they are the right one.
+**Until then: do not quote any `exit_overlays_log.csv` NAV or any statistic derived from it.**
+
+### What DID come back clean, verified independently rather than assumed
+
+**ROT-001's rotation half is genuinely fixed.** `rotation_log.csv` and `exit_overlays_log.csv` now contain
+**zero** rows dated a non-session, against 7-of-22 and 7-of-21 when the council measured them on 09-07. The
+`.pre-ROT-001.csv` snapshots still carry their 09-05 / 09-06 / 09-07 rows, so the corrected series sits
+beside the old one and nothing was silently overwritten. That is the directive honoured.
+
+### Sweep-wide session assertion (council FIX, 2026-09-07) — 4 dates, all explained, zero live exposure
+
+Ran across every NYSE-unit book this sweep touches. Labs whose unit is not the NYSE session — india-radar
+(NSE), asia-radar (7 foreign calendars), crypto-microstructure (UTC day) — are exempt **by declaration**,
+read from each book, not by guesswork.
+
+- **insider-radar, 5 rows dated Sat 2026-07-25** — and these are **exactly the 5 `NO_BAR` rows**
+  `price_audit.py` reports (FSBC, CLBK, TSM, BBASX, BYRN, "no bar dated 2026-07-25"). **Two independent
+  checks corroborating and explaining each other:** the auditor knew there was no bar, this assertion says
+  why. All scored, BENCH-002-frozen.
+- **insider-radar, 7 rows `check_date` Sun 2026-08-16** — all scored, all pre-date the weekend-roll guard
+  added to `append_call` on 2026-08-31. Closed by that guard; historic only.
+- **insider-radar, 4 rows `check_date` Sat 2026-09-12** — all four **VOIDED** (CIK-only filers + PNAQ). No
+  live exposure.
+- **strategy-lab, 1 arena `exit_date` Sun 2026-08-23 — `NQ=F`.** Not a date bug: futures genuinely trade
+  Sunday evening ET. But the Arena's declared unit is the **NYSE session** while its universe holds 9
+  futures rows (ES=F ×5, NQ=F ×4), so a legitimate futures bar lands on a non-session date. That is the
+  same population mismatch already logged here for the fill-integrity gate. **Reported, not altered** — the
+  universe and the unit are both pre-registered.
+
+**Total live exposure from the session assertion: zero.** Reported with the count even though it is zero,
+because §3 says a zero carries its reason.
+
+### Arena freshness this run
+`OK arena · forward open 149, closed 1765 · session 2026-09-08 +65/−40 · regime calm-up`. The last completed
+session is **2026-09-08** (today, 09-09, is live and the fill-integrity gate correctly does marks-only during
+RTH) and its rows are present in `arena_trades.csv` — 40 exit_date rows. **[arena] rows written for 2026-09-08.**
