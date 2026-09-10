@@ -159,6 +159,6 @@ if APPLY:
         json.dump(rot_book, open(os.path.join(REP, "rotation_book.json"), "w"), indent=1)
     ob["restated"] = f"ROT-001 replay through {END} (2026-09-10 repair of the re-compounded overlay book)"
     json.dump(ob, open(os.path.join(REP, "exit_overlays.json"), "w"), indent=1)
-    print("APPLIED: restated logs in place (originals kept as *.pre-ROT-001.csv); books re-based to 2026-09-04")
+    print(f"APPLIED: restated {'overlay' if ONLY_OVL else 'rotation + overlay'} log(s) in place (originals kept as *.pre-ROT-001.csv); book(s) re-based through {END}")
 else:
     print("dry run — pass --apply to write")
