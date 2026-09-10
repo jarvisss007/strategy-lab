@@ -101,7 +101,7 @@ def main():
     if book.get("last_session") == sess_iso:   # ROT-001: one compounding per settled session
         print(f"exit_overlays: session {sess_iso} already compounded — refusing a second row"); return
     if not book.get("last_session"):
-        book["last_session"] = sess_iso; book["last_run"] = today; book["last_session"] = sess_iso
+        book["last_session"] = sess_iso; book["last_run"] = today
         json.dump(book, open(BOOK, "w"), indent=1)
         print(f"exit_overlays: anchored to session {sess_iso} without compounding (ROT-001); rows resume at the next settled session"); return
 
@@ -169,6 +169,11 @@ def main():
             actions["STOP_ONLY"].append(cur[k]["ticker"])
 
     book["last_run"], book["last_regime"] = today, regime
+    # ROT-001 REGRESSION (2026-09-10, Claude's own defect): the 09-07 fix set last_session with a
+    # broad string replace that matched only the anchor block, not this tuple assignment, so a run
+    # compounded, appended a row, and never advanced last_session — every 30-minute refresh then
+    # compounded the SAME session again (12 rows for 09-08, 4 for 09-09). This is the line that ends it.
+    book["last_session"] = sess_iso
     json.dump(book, open(BOOK, "w"), indent=1)
 
     new = not os.path.exists(LOG)

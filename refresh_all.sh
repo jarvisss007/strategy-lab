@@ -53,21 +53,13 @@ for _r in asia-radar zero-dte-lab macro-branch stock-radar; do
     fi
   fi
 done
-# TWO WRITERS, ONE BOOK (2026-09-08): asia-radar's collector and predictions run in GitHub Actions
-# (collect-score.yml, 14:20 PT and 01:10 PT). Running them here as well produced a permanent split
-# (local ahead 7 / behind 1, conflicts on today's brief, markets and pred files). The cloud is the
-# writer of record; this leg runs them only as a FALLBACK when origin carries no collect-score
-# commit dated today — and says which leg ran.
-_ASIA=/Users/anupampatil/asia-radar
-git -C "$_ASIA" fetch -q origin 2>/dev/null
-if git -C "$_ASIA" log origin/main --since="$(date '+%Y-%m-%d') 00:00" --format='%s' 2>/dev/null | grep -q "collect-score"; then
-  echo "asia: cloud collect-score already ran today — local collector/predictions skipped (two-writers rule)" >> /Users/anupampatil/strategy-lab/refresh.log
-  ASIA_LOCAL=0
-else
-  echo "asia: no cloud collect-score commit today — running the local fallback" >> /Users/anupampatil/strategy-lab/refresh.log
-  ASIA_LOCAL=1
-  /opt/anaconda3/bin/python /Users/anupampatil/asia-radar/collector.py >> /Users/anupampatil/strategy-lab/refresh.log 2>&1
-fi
+# TWO WRITERS, ONE BOOK (2026-09-10, reversing the 09-08 call): the cloud collect-score slots fire
+# 2-4.75 HOURS late every day (01:10 PT lands ~05:45, 14:20 PT lands ~16:25) while this loop runs
+# every 30 minutes, so a "fallback when the cloud has not run today" pre-empted it every night from
+# midnight and the two legs split the same files. The Mac is asia's writer of record; the cloud
+# now uploads its run as a workflow ARTIFACT and never commits to main, so the legs cannot diverge.
+/opt/anaconda3/bin/python /Users/anupampatil/asia-radar/collector.py >> /Users/anupampatil/strategy-lab/refresh.log 2>&1
+ASIA_LOCAL=1
 
 # Asia Radar prediction engine: cheap (one Yahoo call), runs on EVERY trigger —
 # it must fire after the 1 PM PT US close, which the once-a-day guard below

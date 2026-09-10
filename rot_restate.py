@@ -24,7 +24,11 @@ HERE = os.path.dirname(os.path.abspath(__file__)); REP = os.path.join(HERE, "rep
 RADAR = "/Users/anupampatil/stock-radar/data/radar.json"
 _sp = _iu.spec_from_file_location("_sessions", "/Users/anupampatil/stock-radar/sessions.py"); S = _iu.module_from_spec(_sp); _sp.loader.exec_module(S)
 COST, CULL_AT, STOP, TP = 0.001, -0.02, -0.05, 0.10
-ROT_START, OVL_START, END = dt.date(2026, 8, 17), dt.date(2026, 8, 18), dt.date(2026, 9, 4)
+ROT_START, OVL_START = dt.date(2026, 8, 17), dt.date(2026, 8, 18)
+# --end ISO (default: the last settled session) and --only-overlays (2026-09-10 repair: the rotation
+# series was clean; only the overlay book was re-compounded, so only it is rebuilt)
+END = dt.date.fromisoformat(next((a.split("=",1)[1] for a in sys.argv if a.startswith("--end=")), S.settled_session().isoformat()))
+ONLY_OVL = "--only-overlays" in sys.argv
 APPLY = "--apply" in sys.argv
 
 def key(p): return f"{p['strategy']}|{p['ticker']}|{p['entry_date']}"
@@ -140,17 +144,21 @@ note = {"as_of": dt.date.today().isoformat(), "ruling": "ROT-001 (Anupam 2026-09
         "restated": {r[0]: {"nav_base": r[3], "nav_stop_only": r[5], "nav_take_profit": r[8]} for r in ovl_rows}}}
 json.dump(note, open(os.path.join(REP, "rot_restate_note.json"), "w"), indent=1)
 if APPLY:
-    for name, rows, hdr in (("rotation_log.csv", rot_rows, ["date","nav_base","nav_rot","gap_pct","n_open","n_culled","n_boosted","culled","boosted"]),
-                            ("exit_overlays_log.csv", ovl_rows, ["date","regime","flipped","nav_base","nav_regime_exit","nav_stop_only","regime_exits","stop_exits","nav_take_profit","tp_exits"])):
+    targets = [("rotation_log.csv", rot_rows, ["date","nav_base","nav_rot","gap_pct","n_open","n_culled","n_boosted","culled","boosted"]),
+               ("exit_overlays_log.csv", ovl_rows, ["date","regime","flipped","nav_base","nav_regime_exit","nav_stop_only","regime_exits","stop_exits","nav_take_profit","tp_exits"])]
+    if ONLY_OVL: targets = targets[1:]
+    for name, rows, hdr in targets:
         src = os.path.join(REP, name); keep = src.replace(".csv", ".pre-ROT-001.csv")
         if not os.path.exists(keep): shutil.copy(src, keep)
         tmp = src + ".tmp"
         with open(tmp, "w", newline="") as f:
             w = csv.writer(f); w.writerow(hdr); w.writerows(rows)
         os.replace(tmp, src)
-    rot_book["restated"] = "ROT-001 2026-09-08: re-based to the session-only replay at 2026-09-04"
-    json.dump(rot_book, open(os.path.join(REP, "rotation_book.json"), "w"), indent=1)
-    ob["restated"] = rot_book["restated"]; json.dump(ob, open(os.path.join(REP, "exit_overlays.json"), "w"), indent=1)
+    if not ONLY_OVL:
+        rot_book["restated"] = f"ROT-001: re-based to the session-only replay at {END}"
+        json.dump(rot_book, open(os.path.join(REP, "rotation_book.json"), "w"), indent=1)
+    ob["restated"] = f"ROT-001 replay through {END} (2026-09-10 repair of the re-compounded overlay book)"
+    json.dump(ob, open(os.path.join(REP, "exit_overlays.json"), "w"), indent=1)
     print("APPLIED: restated logs in place (originals kept as *.pre-ROT-001.csv); books re-based to 2026-09-04")
 else:
     print("dry run — pass --apply to write")
