@@ -140,7 +140,7 @@
    "entry_date": "2026-08-27",
    "entry_t": 20692,
    "entry_px": 29695.75,
-   "mtm": -0.02567,
+   "mtm": -0.02441,
    "days_left": 4,
    "regime": "calm-up"
   },
@@ -404,7 +404,7 @@
    "entry_date": "2026-09-08",
    "entry_t": 20704,
    "entry_px": 29528.25,
-   "mtm": -0.02014,
+   "mtm": -0.01887,
    "days_left": 1,
    "regime": "calm-up"
   },
@@ -1712,7 +1712,7 @@
    "entry_date": "2026-09-11",
    "entry_t": 20707,
    "entry_px": 7636.75,
-   "mtm": -0.00472,
+   "mtm": -0.00364,
    "days_left": 14,
    "regime": "calm-down"
   },
