@@ -1,5 +1,5 @@
 {
- "built": "2026-09-13 12:15 PDT",
+ "built": "2026-09-13 22:42 PDT",
  "gap_threshold": 0.04,
  "vol_threshold": 2.0,
  "event_study": {
@@ -6689,9 +6689,16 @@
    }
   }
  },
- "upcoming_universe": [],
- "upcoming_all_count": 68,
+ "upcoming_universe": [
+  {
+   "date": "2026-09-24",
+   "ticker": "COST",
+   "when": "time-after-hours"
+  }
+ ],
+ "upcoming_all_count": 113,
  "calendar_status": "ok",
- "calendar_days_ok": 6,
- "calendar_days_err": 4
+ "calendar_days_ok": 10,
+ "calendar_days_err": 0,
+ "calendar_days_failed": []
 }

@@ -30,6 +30,7 @@ except Exception:
 def _is_session(d):
     return _SESS.is_session(d) if _SESS else d.weekday() < 5
 import json, os, urllib.request
+import time as _time   # PP-005: retry backoff
 import datetime as dt
 import numpy as np
 import pandas as pd
@@ -103,36 +104,48 @@ def event_study(o, c, v):
 
 
 def upcoming(days=14):
-    cal, ok, err = [], 0, 0
+    """The coming sessions' reporters from the Nasdaq calendar, one request per session.
+
+    PP-005 (2026-09-13): the 12:15 PT build that day read 6 of 10 sessions and still wrote calendar_status "ok", so the
+    preprint registrar took "0 reporters in window" for a quiet week while COST (2026-09-24) sat inside the window. A
+    failed session is now retried twice, and the status says what was read: ok only when every session was read,
+    partial when some failed (their dates are listed), failed when none were."""
+    cal, ok, failed = [], 0, []
     today = dt.date.today()
     for k in range(days):
         d = today + dt.timedelta(days=k)
         if not _is_session(d):
             continue
-        try:
-            url = f"https://api.nasdaq.com/api/calendar/earnings?date={d}"
-            j = json.load(urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=15))
-            for r in (j.get("data") or {}).get("rows") or []:
-                cal.append({"date": str(d), "ticker": r.get("symbol"), "when": r.get("time", "")})
-            ok += 1
-        except Exception:
-            err += 1
-            continue
-    # honest status: an all-days-failed fetch is FAILED (unknown), never "zero reporters"
-    status = "ok" if ok > 0 else "failed"
-    return cal, status, ok, err
-
+        url = f"https://api.nasdaq.com/api/calendar/earnings?date={d}"
+        for attempt in range(3):
+            try:
+                j = json.load(urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=15))
+                for r in (j.get("data") or {}).get("rows") or []:
+                    cal.append({"date": str(d), "ticker": r.get("symbol"), "when": r.get("time", "")})
+                ok += 1
+                break
+            except Exception:
+                if attempt < 2:
+                    _time.sleep(3 * (attempt + 1))
+        else:
+            failed.append(str(d))
+    status = "failed" if ok == 0 else ("partial" if failed else "ok")
+    return cal, status, ok, failed
 
 def main():
     o, c, v = load()
     study = event_study(o, c, v)
-    cal, cal_status, cal_ok, cal_err = upcoming()
+    cal, cal_status, cal_ok, cal_failed = upcoming()
+    cal_err = len(cal_failed)
     uni = set(c.columns)
     ours = [r for r in cal if r["ticker"] in uni]
     out = {"built": dt.datetime.now().astimezone().strftime("%Y-%m-%d %H:%M %Z"),
            "gap_threshold": GAP, "vol_threshold": VOLX,
-           "event_study": study, "upcoming_universe": ours, "upcoming_all_count": len(cal), "calendar_status": cal_status, "calendar_days_ok": cal_ok, "calendar_days_err": cal_err}
-    json.dump(out, open(os.path.join(BASE, "reports", "earnings_radar.json"), "w"), indent=1)
+           "event_study": study, "upcoming_universe": ours, "upcoming_all_count": len(cal), "calendar_status": cal_status, "calendar_days_ok": cal_ok, "calendar_days_err": cal_err, "calendar_days_failed": cal_failed}
+    _rp = os.path.join(BASE, "reports", "earnings_radar.json")
+    with open(_rp + ".tmp", "w") as _fh:   # write beside, then replace: the registrar never reads half a report
+        json.dump(out, _fh, indent=1)
+    os.replace(_rp + ".tmp", _rp)
 
     print(f"=== Earnings Radar — event study on {len(study)} names (15y) ===\n")
     # aggregate PEAD read
