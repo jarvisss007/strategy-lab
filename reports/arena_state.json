@@ -140,7 +140,7 @@
    "entry_date": "2026-08-27",
    "entry_t": 20692,
    "entry_px": 29695.75,
-   "mtm": -0.02508,
+   "mtm": -0.02486,
    "days_left": 4,
    "regime": "calm-up"
   },
@@ -404,7 +404,7 @@
    "entry_date": "2026-09-08",
    "entry_t": 20704,
    "entry_px": 29528.25,
-   "mtm": -0.01954,
+   "mtm": -0.01931,
    "days_left": 1,
    "regime": "calm-up"
   },
