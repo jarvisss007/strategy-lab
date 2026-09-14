@@ -140,8 +140,8 @@
    "entry_date": "2026-08-27",
    "entry_t": 20692,
    "entry_px": 29695.75,
-   "mtm": -0.0124,
-   "days_left": 5,
+   "mtm": -0.02465,
+   "days_left": 4,
    "regime": "calm-up"
   },
   {
@@ -350,18 +350,6 @@
   },
   {
    "strategy": "PULLBACK_50",
-   "ticker": "ES=F",
-   "side": 1,
-   "hold": 5,
-   "entry_date": "2026-09-04",
-   "entry_t": 20700,
-   "entry_px": 7722.0,
-   "mtm": -0.01009,
-   "days_left": 1,
-   "regime": "calm-up"
-  },
-  {
-   "strategy": "PULLBACK_50",
    "ticker": "ABBV",
    "side": 1,
    "hold": 5,
@@ -416,8 +404,8 @@
    "entry_date": "2026-09-08",
    "entry_t": 20704,
    "entry_px": 29528.25,
-   "mtm": -0.00678,
-   "days_left": 2,
+   "mtm": -0.01911,
+   "days_left": 1,
    "regime": "calm-up"
   },
   {
@@ -562,18 +550,6 @@
    "entry_px": 85.79,
    "mtm": -0.00398,
    "days_left": 2,
-   "regime": "calm-up"
-  },
-  {
-   "strategy": "RSI2_DIP",
-   "ticker": "NQ=F",
-   "side": 1,
-   "hold": 3,
-   "entry_date": "2026-09-09",
-   "entry_t": 20705,
-   "entry_px": 29528.75,
-   "mtm": -0.0068,
-   "days_left": 1,
    "regime": "calm-up"
   },
   {
@@ -897,18 +873,6 @@
    "entry_t": 20705,
    "entry_px": 1028.78,
    "mtm": -0.00161,
-   "days_left": 1,
-   "regime": "calm-up"
-  },
-  {
-   "strategy": "REVERSAL_3",
-   "ticker": "NQ=F",
-   "side": 1,
-   "hold": 2,
-   "entry_date": "2026-09-10",
-   "entry_t": 20706,
-   "entry_px": 29425.0,
-   "mtm": -0.00329,
    "days_left": 1,
    "regime": "calm-up"
   },
@@ -1748,8 +1712,8 @@
    "entry_date": "2026-09-11",
    "entry_t": 20707,
    "entry_px": 7636.75,
-   "mtm": 0.00098,
-   "days_left": 15,
+   "mtm": -0.00344,
+   "days_left": 14,
    "regime": "calm-down"
   },
   {
