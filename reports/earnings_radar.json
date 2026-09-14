@@ -1,5 +1,5 @@
 {
- "built": "2026-09-14 01:28 PDT",
+ "built": "2026-09-14 06:11 PDT",
  "gap_threshold": 0.04,
  "vol_threshold": 2.0,
  "event_study": {
@@ -5970,7 +5970,7 @@
   },
   "COST": {
    "n_events": 8,
-   "avg_abs_gap": 4.79,
+   "avg_abs_gap": 4.8,
    "pct_gap_up": 37.5,
    "up": null,
    "down": {
@@ -6696,7 +6696,7 @@
    "when": "time-after-hours"
   }
  ],
- "upcoming_all_count": 113,
+ "upcoming_all_count": 115,
  "calendar_status": "ok",
  "calendar_days_ok": 10,
  "calendar_days_err": 0,
