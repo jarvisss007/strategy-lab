@@ -93,9 +93,18 @@ def main():
     snap = snapshot(prices)
     pat = pattern_test(prices)
     big = big_move_test(prices)
-    json.dump({"n_tickers": len(snap), "horizons": HORIZONS, "snapshot": snap,
-               "pattern": pat, "big_move": big},
-              open(os.path.join(BASE, "reports", "returns_matrix.json"), "w"), indent=1)
+    payload = {"n_tickers": len(snap), "horizons": HORIZONS, "snapshot": snap,
+               "pattern": pat, "big_move": big}
+    json.dump(payload, open(os.path.join(BASE, "reports", "returns_matrix.json"), "w"), indent=1)
+    # DATA-004 (2026-09-16): returns.html loads reports/returns_matrix.JS and reads
+    # window.RETURNS_DATA, but this writer only ever emitted the .JSON. The .js was a
+    # Jul 8 orphan nothing regenerated, so the Returns Matrix page served 69-day-old
+    # numbers every week while this script faithfully refreshed a file only
+    # build_hub.py read. The .js wrapper is not optional: the page is opened over
+    # file:// by double-click, where fetch() of a .json is blocked — same reason
+    # asia-radar writes markets.js beside markets.json. Emit both, always.
+    with open(os.path.join(BASE, "reports", "returns_matrix.js"), "w") as f:
+        f.write("window.RETURNS_DATA = " + json.dumps(payload, indent=1) + ";")
 
     print("=== Return autocorrelation, pooled over 15y & all names (non-overlapping) ===")
     print(f"{'horizon':>7s} {'n':>8s} {'corr':>8s} {'p-value':>9s} {'sign-hit':>8s}  read")
