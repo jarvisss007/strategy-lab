@@ -381,6 +381,7 @@ tr:hover td{background:var(--hover);}
     <th>P&amp;L</th><th>vs SPY</th><th>Outcome</th></tr></thead>
     <tbody id="posClosed"></tbody></table>
   <h3 style="margin-top:22px">By signal — which tag is actually working</h3>
+  <div class="none">Headline stratum only. A row carries several tags (a setup, a version, and <i>tech</i>), so the N column overlaps and does not sum to the closed count.</div>
   <table><thead><tr><th>Tag</th><th>N</th><th>Win rate</th><th>Avg P&amp;L</th></tr></thead>
     <tbody id="posTags"></tbody></table>
 </div>
@@ -490,7 +491,12 @@ function positions(){
         <div class="kv"><div class="k">Win rate</div><div class="v">${rep.overall.win_rate}%</div></div>
         <div class="kv"><div class="k">Avg P&amp;L</div><div class="v ${rep.overall.avg_pnl_pct>=0?'pos':'neg'}">${rep.overall.avg_pnl_pct>=0?'+':''}${rep.overall.avg_pnl_pct}%</div></div>
         <div class="kv"><div class="k">Beat SPY</div><div class="v">${rep.overall.beat_spy_rate!=null?rep.overall.beat_spy_rate+'%':'—'}</div></div>
-      </div><div class="none" style="margin-top:6px">${rep.overall.confidence==='trust'?'Enough sample to trust this.':'Directional only — under n=15, treat as a hypothesis, not a verdict.'}</div>`;
+      </div><div class="none" style="margin-top:6px">${rep.overall.entry_days!=null
+        ? (rep.overall.confidence==='trust'
+            ? `${rep.overall.entry_days} independent entry days — past the ${rep.overall.days_bar}-day bar.`
+            : `Headline stratum only (POS-011): ${rep.overall.n} rows on <b>${rep.overall.entry_days} independent entry days</b> — ${rep.overall.days_bar} days is the bar, so this is a hypothesis, not a verdict.`)
+        : (rep.overall.confidence==='trust'?'Enough sample to trust this.':'Directional only — treat as a hypothesis, not a verdict.')}</div>
+      ${rep.overall_quarantined?`<div class="none" style="margin-top:4px">Reported beside it, never pooled in (POS-005): the quarantined stratum — ${rep.overall_quarantined.n} rows on ${rep.overall_quarantined.entry_days} days, win ${rep.overall_quarantined.win_rate}%, avg ${rep.overall_quarantined.avg_pnl_pct>=0?'+':''}${rep.overall_quarantined.avg_pnl_pct}%, beat SPY ${rep.overall_quarantined.beat_spy_rate}% — resolved on the wrong horizon and scored as recorded.</div>`:''}`;
     }else{
       sumEl.innerHTML=`<div class="none">${rep.n_closed||0} closed position${rep.n_closed===1?'':'s'} — below the trust threshold (8), no verdict yet. This is expected and correct at this sample size.</div>`;
     }
@@ -908,7 +914,7 @@ function earnings(){
   const scored=L.filter(r=>r.outcome==='right'||r.outcome==='wrong');
   const hit=scored.length?Math.round(100*scored.filter(r=>r.outcome==='right').length/scored.length):null;
   document.getElementById('escore').innerHTML=scored.length
-    ? `Hit rate <b>${hit}%</b> over ${scored.length} scored · ${L.length-scored.length} pending. Compare this number against analysts/StockTrak over the same window before agreeing with anyone.`
+    ? `Hit rate <b>${hit}%</b> over ${scored.length} scored · ${L.filter(r=>!r.outcome).length} pending · ${L.filter(r=>r.outcome==='void').length} void (never counted). Compare this number against analysts/StockTrak over the same window before agreeing with anyone.`
     : `${L.length} call(s) pending, none scored yet — the hit rate that decides who to trust is still being earned.`;
   document.getElementById('eledger').innerHTML=L.map(r=>
     `<tr><td>${r.date}</td><td class="tick">${r.ticker}</td><td>${r.call}</td>
