@@ -1,0 +1,149 @@
+{
+ "generated": "2026-09-20T10:35:13",
+ "events_joined": 6469,
+ "prices_through": "2026-09-18",
+ "window": "open[T] -> close[T+5], excess vs SPY over identical dates",
+ "trigger": "|open[T]/close[T-1]-1| >= 4%",
+ "legs": {
+  "up": {
+   "n": 1311,
+   "weeks": 471,
+   "mean_per_week": 0.451,
+   "t_week": 1.4,
+   "median_event": 0.033,
+   "hit": 50.4,
+   "drop_best_week": 0.362,
+   "t_drop_best": 1.17
+  },
+  "down": {
+   "n": 1074,
+   "weeks": 416,
+   "mean_per_week": 0.221,
+   "t_week": 0.38,
+   "median_event": -0.908,
+   "hit": 44.9,
+   "drop_best_week": -0.236,
+   "t_drop_best": -0.67
+  },
+  "all_gaps": {
+   "n": 2385,
+   "weeks": 581,
+   "mean_per_week": 0.451,
+   "t_week": 1.09,
+   "median_event": -0.239,
+   "hit": 47.9,
+   "drop_best_week": 0.124,
+   "t_drop_best": 0.48
+  },
+  "no_gap": {
+   "n": 4084,
+   "weeks": 675,
+   "mean_per_week": -0.071,
+   "t_week": -0.35,
+   "median_event": -0.062,
+   "hit": 49.4,
+   "drop_best_week": -0.182,
+   "t_drop_best": -1.1
+  },
+  "unconditional": {
+   "n": 6469,
+   "weeks": 739,
+   "mean_per_week": -0.014,
+   "t_week": -0.08,
+   "median_event": -0.12,
+   "hit": 48.8,
+   "drop_best_week": -0.049,
+   "t_drop_best": -0.31
+  }
+ },
+ "gap_day_only": {
+  "up": {
+   "n": 1311,
+   "weeks": 471,
+   "mean_per_week": 0.229,
+   "t_week": 1.21,
+   "median_event": -0.263,
+   "hit": 47.5,
+   "drop_best_week": 0.17,
+   "t_drop_best": 0.94
+  },
+  "down": {
+   "n": 1074,
+   "weeks": 416,
+   "mean_per_week": 0.175,
+   "t_week": 0.82,
+   "median_event": -0.236,
+   "hit": 46.9,
+   "drop_best_week": 0.127,
+   "t_drop_best": 0.61
+  }
+ },
+ "eras": {
+  "2011-15": {
+   "up": {
+    "n": 207,
+    "weeks": 103,
+    "mean_per_week": 0.169,
+    "t_week": 0.28,
+    "median_event": -0.079,
+    "hit": 47.8,
+    "drop_best_week": -0.126,
+    "t_drop_best": -0.24
+   },
+   "down": {
+    "n": 176,
+    "weeks": 95,
+    "mean_per_week": -0.269,
+    "t_week": -0.49,
+    "median_event": -0.758,
+    "hit": 44.3,
+    "drop_best_week": -0.461,
+    "t_drop_best": -0.88
+   }
+  },
+  "2016-20": {
+   "up": {
+    "n": 385,
+    "weeks": 161,
+    "mean_per_week": 0.624,
+    "t_week": 1.22,
+    "median_event": 0.218,
+    "hit": 52.2,
+    "drop_best_week": 0.435,
+    "t_drop_best": 0.91
+   },
+   "down": {
+    "n": 271,
+    "weeks": 128,
+    "mean_per_week": 0.097,
+    "t_week": 0.15,
+    "median_event": -0.681,
+    "hit": 43.2,
+    "drop_best_week": -0.213,
+    "t_drop_best": -0.37
+   }
+  },
+  "2021-26": {
+   "up": {
+    "n": 719,
+    "weeks": 207,
+    "mean_per_week": 0.456,
+    "t_week": 0.84,
+    "median_event": 0.017,
+    "hit": 50.2,
+    "drop_best_week": 0.253,
+    "t_drop_best": 0.5
+   },
+   "down": {
+    "n": 627,
+    "weeks": 193,
+    "mean_per_week": 0.544,
+    "t_week": 0.48,
+    "median_event": -1.041,
+    "hit": 45.8,
+    "drop_best_week": -0.442,
+    "t_drop_best": -0.77
+   }
+  }
+ }
+}
