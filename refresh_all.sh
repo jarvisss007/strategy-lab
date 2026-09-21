@@ -46,9 +46,31 @@
 # threw stock-radar's branch pointer back a day on 2026-09-04. Diverged = log LOUD, leave for a hand.
 for _r in asia-radar zero-dte-lab macro-branch stock-radar; do
   _R="/Users/anupampatil/$_r"
-  git -C "$_R" fetch -q origin 2>/dev/null
-  if [ "$(git -C "$_R" rev-list --count HEAD..origin/main 2>/dev/null || echo 0)" -gt 0 ]; then
-    if [ -z "$(git -C "$_R" status --porcelain)" ] && git -C "$_R" merge --ff-only -q origin/main >> /Users/anupampatil/strategy-lab/refresh.log 2>&1; then :; else
+  # ONE-SIDED GUARDS (2026-09-21, resolver — ENV-003). Every leg below used to answer in the
+  # PERMISSIVE direction when git itself could not run, which is the estate's commonest silent
+  # failure (Firm Brain §3): `rev-list ... 2>/dev/null || echo 0` printed 0 and the block concluded
+  # "not behind origin — nothing to pull", and a failed `status --porcelain` returned empty so `-z`
+  # read a dirty tree as clean. Under ENV-001 both legs were guessing, not measuring. A guard that
+  # cannot tell "no" from "I could not ask" is not a guard. Each leg now checks its own rc and says
+  # SKIPPED out loud; nothing was measured lost while it was blind, which was luck, not design.
+  if ! _probe="$(git -C "$_R" rev-parse --git-dir 2>&1)"; then
+    echo "cloud-integrate: $_r SKIPPED — git cannot run here: ${_probe%%$'\n'*}" >> /Users/anupampatil/strategy-lab/refresh.log
+    continue
+  fi
+  if ! git -C "$_R" fetch -q origin >> /Users/anupampatil/strategy-lab/refresh.log 2>&1; then
+    echo "cloud-integrate: $_r SKIPPED — fetch origin failed; behind-ness is UNKNOWN, not zero" >> /Users/anupampatil/strategy-lab/refresh.log
+    continue
+  fi
+  if ! _behind="$(git -C "$_R" rev-list --count HEAD..origin/main 2>&1)"; then
+    echo "cloud-integrate: $_r SKIPPED — rev-list failed: ${_behind%%$'\n'*}" >> /Users/anupampatil/strategy-lab/refresh.log
+    continue
+  fi
+  if [ "$_behind" -gt 0 ]; then
+    if ! _dirty="$(git -C "$_R" status --porcelain 2>&1)"; then
+      echo "cloud-integrate: $_r SKIPPED — status failed; cleanliness is UNKNOWN, not clean" >> /Users/anupampatil/strategy-lab/refresh.log
+      continue
+    fi
+    if [ -z "$_dirty" ] && git -C "$_R" merge --ff-only -q origin/main >> /Users/anupampatil/strategy-lab/refresh.log 2>&1; then :; else
       echo "cloud-integrate: $_r is behind origin and not fast-forwardable (dirty or diverged) — left untouched" >> /Users/anupampatil/strategy-lab/refresh.log
     fi
   fi
@@ -82,7 +104,15 @@ fi
 # Placed here, above the once-a-day DONE_MARK guard, for the same reason
 # predictions.py is: the guard would skip every post-US-close firing. Cost is one
 # cheap local rebuild per trigger. The sweep's own 08:41 rebuild stays as a floor.
-/usr/bin/python3 /Users/anupampatil/command-center/calibration.py >> /Users/anupampatil/strategy-lab/refresh.log 2>&1
+# INTERPRETER (2026-09-21, resolver — ENV-002): this line read `/usr/bin/python3` and had done
+# since the hoist. On macOS that path is an Xcode SHIM, not an interpreter, so when ENV-001 switched
+# xcode-select to a full Xcode whose licence was never accepted (2026-09-17) it began exiting rc=69
+# WITHOUT RUNNING ANYTHING — 160 times in this log, once per 30-minute trigger, and the census
+# rebuild that closes OBS-004 has not executed since. The failure is silent by construction: the
+# line's rc is never read, the next step prints its own OK, and the census simply stops advancing.
+# The estate's interpreter is /opt/anaconda3/bin/python (global CLAUDE.md); it carries the packages
+# and depends on no Xcode licence. This was the only live automation still on the shim.
+/opt/anaconda3/bin/python /Users/anupampatil/command-center/calibration.py >> /Users/anupampatil/strategy-lab/refresh.log 2>&1
 
 # build_hub HOISTED 2026-08-31: it lived only inside the once-a-day arena block, so the
 # terminal was rebuilt at ~06:50 and then aged all day under a "DATA LIVE" badge —
