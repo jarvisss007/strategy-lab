@@ -1,4 +1,4 @@
-# Arena Roundtable — 2026-09-20
+# Arena Roundtable — 2026-09-21
 
 Tape: **calm-up** · session 2026-09-18 · 12 agents · opened 44, closed 82 this session · 161 open · 2236 forward closes all-time
 
@@ -16,7 +16,7 @@ Tape: **calm-up** · session 2026-09-18 · 12 agents · opened 44, closed 82 thi
 _Read n_events, not n: `n` counts rows, `d` counts the distinct entry DAYS behind them. Rows on one day share a regime and are one observation, not many (Firm Brain #4)._
 
 - **calm-up**: FRESH_HIGH +198 (n=441, d=114) · PANIC_LITE -7 (n=1860, d=144) · PULLBACK_50 -7 (n=186, d=37) · SHORT_EXT -16 (n=190, d=69) · DEEP_DIP -20 (n=112, d=67) · PANIC_BOUNCE -23 (n=929, d=125) · BOLL_SNAP -31 (n=360, d=118) · DOUBLE_DIP -35 (n=774, d=126) · REVERSAL_3 -41 (n=216, d=38) · RSI2_DIP -71 (n=428, d=39) · TREND_RIDER -405 (n=93, d=31)
-- **calm-down**: TREND_RIDER +344 (n=24, d=10) · BOLL_SNAP +281 (n=69, d=13) · PULLBACK_50 +155 (n=42, d=10) · PANIC_BOUNCE +136 (n=135, d=14) · PANIC_LITE +101 (n=241, d=15) · REVERSAL_3 +95 (n=86, d=8) · DOUBLE_DIP +90 (n=123, d=15) · FRESH_HIGH -193 (n=32, d=11) · RSI2_DIP -196 (n=151, d=10)
+- **calm-down**: TREND_RIDER +344 (n=24, d=10) · BOLL_SNAP +282 (n=69, d=13) · PULLBACK_50 +155 (n=42, d=10) · PANIC_BOUNCE +136 (n=135, d=14) · PANIC_LITE +101 (n=241, d=15) · REVERSAL_3 +95 (n=86, d=8) · DOUBLE_DIP +90 (n=123, d=15) · FRESH_HIGH -193 (n=32, d=11) · RSI2_DIP -196 (n=151, d=10)
 - **storm-up**: PANIC_LITE +174 (n=95, d=4) · PANIC_BOUNCE +142 (n=67, d=4) · DOUBLE_DIP +138 (n=51, d=4) · BOLL_SNAP -74 (n=21, d=4) · STORM_DIP -291 (n=87, d=4)
 - **storm-down**: DEEP_DIP +867 (n=27, d=15) · DOUBLE_DIP +393 (n=256, d=30) · BOLL_SNAP +384 (n=247, d=27) · STORM_DIP +348 (n=418, d=31) · PANIC_BOUNCE +189 (n=262, d=29) · PANIC_LITE +137 (n=567, d=34) · FRESH_HIGH -157 (n=34, d=18)
 
