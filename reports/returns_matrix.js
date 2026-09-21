@@ -1347,7 +1347,7 @@ window.RETURNS_DATA = {
    "horizon": 1,
    "n": 443215,
    "corr": -0.0127,
-   "pvalue": 3.632295584086808e-17,
+   "pvalue": 3.632432435410375e-17,
    "sign_hit": 48.3,
    "kind": "reversal"
   },
@@ -1355,15 +1355,15 @@ window.RETURNS_DATA = {
    "horizon": 2,
    "n": 221519,
    "corr": -0.0015,
-   "pvalue": 0.4881049806604266,
-   "sign_hit": 49.7,
+   "pvalue": 0.4881049262383008,
+   "sign_hit": 49.8,
    "kind": "reversal"
   },
   {
    "horizon": 5,
    "n": 88430,
    "corr": -0.0036,
-   "pvalue": 0.2882829858687933,
+   "pvalue": 0.28828158856767894,
    "sign_hit": 49.6,
    "kind": "reversal"
   },
@@ -1371,7 +1371,7 @@ window.RETURNS_DATA = {
    "horizon": 10,
    "n": 44128,
    "corr": 0.0305,
-   "pvalue": 1.5399337755942986e-10,
+   "pvalue": 1.5399692698039212e-10,
    "sign_hit": 50.7,
    "kind": "momentum"
   },
@@ -1379,7 +1379,7 @@ window.RETURNS_DATA = {
    "horizon": 21,
    "n": 20872,
    "corr": 0.0104,
-   "pvalue": 0.13438072211740149,
+   "pvalue": 0.1343805186838601,
    "sign_hit": 51.1,
    "kind": "momentum"
   },
@@ -1387,7 +1387,7 @@ window.RETURNS_DATA = {
    "horizon": 63,
    "n": 6779,
    "corr": -0.0067,
-   "pvalue": 0.5822361967413794,
+   "pvalue": 0.5822353694952357,
    "sign_hit": 53.5,
    "kind": "reversal"
   }
@@ -1396,7 +1396,7 @@ window.RETURNS_DATA = {
   "after_big_up_next1d": 0.122,
   "after_big_up_next5d": 0.652,
   "after_big_down_next1d": 0.197,
-  "after_big_down_next5d": 1.008,
+  "after_big_down_next5d": 1.009,
   "baseline_next1d": 0.108,
   "baseline_next5d": 0.535
  }
