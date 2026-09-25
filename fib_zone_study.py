@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# BOOK-001 (looked at 2026-09-25): a one-off research output with no concurrent reader, not a shared book - left as a plain write.
 """fib_zone_study.py — does WHERE a pullback turns (its Fibonacci depth) tell you anything?
 
 Anupam, 2026-09-19, after a trading-contest video in which the winner bought "the 61.8%" and

@@ -53,6 +53,7 @@ import csv
 import datetime as dt
 import json
 import os
+from atomicio import atomic_json, atomic_write_text   # BOOK-001: never truncate a book in place
 
 HOME = os.path.expanduser("~")
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -102,7 +103,7 @@ def main():
         print(f"exit_overlays: session {sess_iso} already compounded — refusing a second row"); return
     if not book.get("last_session"):
         book["last_session"] = sess_iso; book["last_run"] = today
-        json.dump(book, open(BOOK, "w"), indent=1)
+        atomic_json(BOOK, book, indent=1)
         print(f"exit_overlays: anchored to session {sess_iso} without compounding (ROT-001); rows resume at the next settled session"); return
 
     cur = {key(p): p for p in opens}
@@ -174,7 +175,7 @@ def main():
     # compounded, appended a row, and never advanced last_session — every 30-minute refresh then
     # compounded the SAME session again (12 rows for 09-08, 4 for 09-09). This is the line that ends it.
     book["last_session"] = sess_iso
-    json.dump(book, open(BOOK, "w"), indent=1)
+    atomic_json(BOOK, book, indent=1)
 
     new = not os.path.exists(LOG)
     with open(LOG, "a", newline="") as f:

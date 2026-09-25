@@ -25,6 +25,7 @@ import numpy as np
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import overfit
+from atomicio import atomic_json, atomic_write_text   # BOOK-001: never truncate a book in place
 
 BASE = os.path.dirname(os.path.abspath(__file__))
 A = json.load(open(f"{BASE}/reports/arena.json"))
@@ -88,7 +89,7 @@ for j, k in enumerate(rules):
 
 out = {"n_trials": len(rules), "sessions": M.shape[0], "gate": rep,
        "gate_size_weighted": rep_sum, "sparsity_audit": sparse, "per_rule": per}
-json.dump(out, open(f"{BASE}/reports/arena_gate.json", "w"), indent=1, default=str)
+atomic_json(f"{BASE}/reports/arena_gate.json", out, indent=1, default=str)
 
 L = ["# ARENA → DEFLATION GATE", "",
      f"_{M.shape[0]} sessions × {len(rules)} rules · {len(blot)} backtest trades · "

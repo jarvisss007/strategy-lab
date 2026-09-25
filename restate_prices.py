@@ -44,6 +44,7 @@ import csv
 import datetime as dt
 import json
 import os
+from atomicio import atomic_json, atomic_write_text   # BOOK-001: never truncate a book in place
 
 HOME = os.path.expanduser("~")
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -174,7 +175,7 @@ def write(rows, state, changes):
         w.writeheader()
         for r in rows:
             w.writerow({c: r.get(c, "") for c in COLS})
-    json.dump(state, open(STATE, "w"), indent=1)
+    atomic_json(STATE, state, indent=1)
 
     stamp = dt.datetime.now().strftime("%Y-%m-%d %H:%M PT")
     cols = ["restated_at", "scope", "strategy", "ticker", "entry_date", "exit_date",

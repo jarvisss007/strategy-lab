@@ -33,6 +33,7 @@ Run: /opt/anaconda3/bin/python arena.py            (after stock-radar collector)
 """
 import csv, json, math, os
 from datetime import date, timedelta
+from atomicio import atomic_json, atomic_write_text   # BOOK-001: never truncate a book in place
 
 HOME = os.path.expanduser("~")
 LAB = os.path.join(HOME, "strategy-lab")
@@ -450,7 +451,7 @@ def main():
             held.add((s, e["ticker"])); count[s] = count.get(s, 0) + 1
 
     os.makedirs(REPORTS, exist_ok=True)
-    json.dump({"open": still_open}, open(STATE_F, "w"), indent=1)
+    atomic_json(STATE_F, {"open": still_open}, indent=1)
     # The *_tape columns carry what the tape says a row's prices should have been,
     # beside the numbers it was actually scored on. BENCH-002 (ruled 2026-08-12):
     # a closed row keeps the number it was scored with, and a correction may be
@@ -757,7 +758,7 @@ def main():
         t["net"] = round(t["net"], 5)
         if t["excess"] is not None:
             t["excess"] = round(t["excess"], 5)
-    json.dump(out, open(os.path.join(REPORTS, "arena.json"), "w"))
+    atomic_json(os.path.join(REPORTS, "arena.json"), out)
     print("OK arena: backtest " + ", ".join(f"{k}:{backtest[k]['n']}" for k in STRATS)
           + f" · forward open {len(still_open)}, closed {len(fwd_trades)}"
           + f" · session {tempo['session']} +{tempo['opened_today']}/−{tempo['closed_today']}"

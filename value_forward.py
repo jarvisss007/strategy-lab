@@ -36,6 +36,7 @@ COLS = ["opened", "ticker", "entry_px", "shares", "spy_at_entry", "review_after"
 
 sys.path.insert(0, HERE)
 from family9_gate import fscore                     # one definition of the quality floor
+from atomicio import atomic_json, atomic_write_text   # BOOK-001: never truncate a book in place
 
 
 def quarter_ends(upto):
@@ -195,7 +196,7 @@ def main():
              "next_formation": next((q.isoformat() for q in quarter_ends(dt.date(2035,1,1)) if q >= max(today, FIRST_FORMATION)), None),
              "rule": "FAMILY 9 frozen: own-history valuation pctile <= 20 (>=20 prior quarters) AND Piotroski F >= 6; $2,000 units; exit at pctile > 50 or 6 months; excess vs SPY"}
     os.makedirs(os.path.dirname(STATE), exist_ok=True)
-    json.dump(state, open(STATE, "w"), indent=1)
+    atomic_json(STATE, state, indent=1)
     print(f"value_forward {today}: book {state['open_n']} open / {state['closed_n']} closed"
           + (f" · FORMED {len(formed)}: {', '.join(formed)}" if formed else "")
           + (f" · EXITED {len(exited)}" if exited else "")

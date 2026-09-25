@@ -60,6 +60,7 @@ import csv
 import datetime as dt
 import json
 import os
+from atomicio import atomic_json, atomic_write_text   # BOOK-001: never truncate a book in place
 
 HOME = os.path.expanduser("~")
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -105,7 +106,7 @@ def main():
         # joining the session calendar: anchor without applying a return (the pre-09-08 NAV is
         # Anupam's restatement, ROT-001 — this writer does not re-derive it)
         book["last_session"] = sess_iso; book["last_run"] = today
-        json.dump(book, open(BOOK, "w"), indent=1)
+        atomic_json(BOOK, book, indent=1)
         print(f"rotation_arm: anchored to session {sess_iso} without compounding (ROT-001); rows resume at the next settled session"); return
 
     cur = {key(p): p for p in opens}
@@ -156,7 +157,7 @@ def main():
 
     book["weights"] = w
     book["last_run"] = today; book["last_session"] = sess_iso
-    json.dump(book, open(BOOK, "w"), indent=1)
+    atomic_json(BOOK, book, indent=1)
 
     new = not os.path.exists(LOG)
     with open(LOG, "a", newline="") as f:
