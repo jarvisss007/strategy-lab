@@ -1,5 +1,5 @@
 {
- "built": "2026-09-21 06:34 PDT",
+ "built": "2026-09-27 17:24 PDT",
  "gap_threshold": 0.04,
  "vol_threshold": 2.0,
  "event_study": {
@@ -6691,11 +6691,6 @@
  },
  "upcoming_universe": [
   {
-   "date": "2026-09-24",
-   "ticker": "COST",
-   "when": "time-after-hours"
-  },
-  {
    "date": "2026-09-30",
    "ticker": "MU",
    "when": "time-after-hours"
@@ -6704,6 +6699,16 @@
    "date": "2026-10-01",
    "ticker": "NKE",
    "when": "time-after-hours"
+  },
+  {
+   "date": "2026-10-08",
+   "ticker": "PEP",
+   "when": "time-pre-market"
+  },
+  {
+   "date": "2026-10-08",
+   "ticker": "PKE",
+   "when": "time-not-supplied"
   }
  ],
  "upcoming_all_count": 116,

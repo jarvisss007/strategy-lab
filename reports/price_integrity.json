@@ -1,11 +1,11 @@
 {
- "checked": 5042,
- "unverifiable": 5,
+ "checked": 0,
+ "unverifiable": 5047,
  "mismatched": 0,
  "tolerance_pct": 2.0,
- "disclosed_divergences": 16,
+ "disclosed_divergences": 3,
  "zero_hold_mispriced": 0,
  "zero_hold_rows": [],
  "rows": [],
- "generated": "2026-09-26 17:34 PT"
+ "generated": "2026-09-27 16:57 PT"
 }
