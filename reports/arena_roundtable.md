@@ -37,6 +37,24 @@ Entry DAYS, not trades — same-day entries share one regime and are one observa
 - SHORT_EXT: **9** entry days
 - STORM_DIP: **1** entry days
 
+## One vote per entry day: council S17 / S18 / S20 (forward book)
+
+_Rows that share an entry date share one tape (Firm Brain #4). S17: each entry day's mean counts once, however many rows it opened. S20: the share of entry days that made money, beside the row hit rate. S18: forward exits priced on a copied or zero-volume bar (open = close = the prior close, or no volume: a carry-forward print, Firm Brain #18)._
+
+- DEEP_DIP: per-entry-day mean +471 bps over 21 entry days (row mean +774, n=45) · win rate per entry day 57% (row hit 69%)
+- PANIC_BOUNCE: per-entry-day mean +115 bps over 37 entry days (row mean +59, n=312) · win rate per entry day 60% (row hit 53%)
+- PANIC_LITE: per-entry-day mean +36 bps over 40 entry days (row mean +12, n=590) · win rate per entry day 50% (row hit 47%)
+- DOUBLE_DIP: per-entry-day mean +76 bps over 35 entry days (row mean +92, n=244) · win rate per entry day 49% (row hit 52%)
+- STORM_DIP: per-entry-day mean +1217 bps over 1 entry day - one event, no inference (row mean +1217, n=40) · win rate per entry day 100% (row hit 90%)
+- FRESH_HIGH: per-entry-day mean -181 bps over 18 entry days (row mean -119, n=46) · win rate per entry day 44% (row hit 39%)
+- SHORT_EXT: per-entry-day mean +156 bps over 9 entry days (row mean +326, n=20) · win rate per entry day 56% (row hit 60%)
+- TREND_RIDER: per-entry-day mean -120 bps over 23 entry days (row mean -158, n=62) · win rate per entry day 39% (row hit 44%)
+- RSI2_DIP: per-entry-day mean +22 bps over 42 entry days (row mean -6, n=453) · win rate per entry day 43% (row hit 44%)
+- REVERSAL_3: per-entry-day mean +34 bps over 40 entry days (row mean +17, n=284) · win rate per entry day 45% (row hit 48%)
+- BOLL_SNAP: per-entry-day mean +45 bps over 34 entry days (row mean +284, n=161) · win rate per entry day 56% (row hit 60%)
+- PULLBACK_50: per-entry-day mean +51 bps over 39 entry days (row mean +65, n=185) · win rate per entry day 59% (row hit 51%)
+- Exits on copied/zero-volume bars: **0** of 2394 forward exits tested; 48 exit(s) have no bar in data/open, close and volume.csv to test, counted untested, not clean
+
 ## Notes to the desk
 
 - DEEP_DIP to the desk: my weather is calm-down (+898 bps, n=12); keep me on a short leash in calm-up (+46). Status: UNPROVEN — FAILED the deflation gate 2026-08-08 (DSR 0.233, PBO 0.474).

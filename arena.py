@@ -179,8 +179,8 @@ def stats(trades):
             ev.setdefault(day, []).append(tr["net"])
     k = len(ev)
     tc = None
+    em = [sum(v) / len(v) for v in ev.values()]          # one mean per entry day (S17 / S20 read these too)
     if k > 1:
-        em = [sum(v) / len(v) for v in ev.values()]
         m2 = sum(em) / k
         s2 = math.sqrt(sum((x - m2) ** 2 for x in em) / (k - 1))
         if s2 > 0:
@@ -189,7 +189,40 @@ def stats(trades):
             "hit_pct": round(100 * sum(1 for r in rs if r > 0) / n, 1),
             "avg_excess_bps": round(sum(ex) / len(ex) * 1e4, 1) if ex else None,
             "t_stat": round(t, 2), "total_pct": round(sum(rs) * 100, 1),
-            "n_events": k, "t_clustered": tc}
+            "n_events": k, "t_clustered": tc,
+            # ARENA-007 (council S17 / S20, 2026-09-28): one vote per entry day. ADDED beside n and avg_bps; nothing
+            # published is restated (BENCH-002), and neither number ranks, gates or retires anything.
+            "event_mean_bps": round(sum(em) / k * 1e4, 1) if k else None,
+            "event_hit_pct": round(100 * sum(1 for x in em if x > 0) / k, 1) if k else None}
+
+
+def copied_bar_exits(trades):
+    """S18 (ARENA-007): forward exits priced on a bar with no trading behind it - zero volume, or open = close = the
+    prior close (the feed carried the last print forward, Firm Brain #18). Tested on strategy-lab's own open / close /
+    volume panel; an exit whose bar the panel lacks is counted as UNTESTED, never as clean."""
+    def wide(name):
+        p_ = os.path.join(LAB, "data", name)
+        return {r["date"]: r for r in csv.DictReader(open(p_))} if os.path.exists(p_) else {}
+    O, C, V = wide("open.csv"), wide("close.csv"), wide("volume.csv")
+    days = sorted(C)
+    pos = {d: i for i, d in enumerate(days)}
+    checked, copied, untested = 0, [], 0
+    for t in trades:
+        d, tk = t.get("exit_date"), t.get("ticker")
+        try:
+            o, c, v = float(O[d][tk]), float(C[d][tk]), float(V[d][tk])
+        except (KeyError, TypeError, ValueError):
+            untested += 1
+            continue
+        checked += 1
+        prev = C[days[pos[d] - 1]].get(tk) if pos.get(d) else None
+        try:
+            carried = prev not in (None, "") and o == c == float(prev)
+        except ValueError:
+            carried = False
+        if v == 0 or carried:
+            copied.append(f"{t.get('strategy')} {tk} {d}")
+    return checked, copied, untested
 
 
 # The gate was RUN on 2026-08-08 (arena_gate.py) and the whole slate failed it:
@@ -713,6 +746,27 @@ def main():
             for _k, _v in sorted(_ed.items(), key=lambda kv: -len(kv[1])):
                 f.write(f"- {_k}: **{len(_v)}** entry days"
                         + (" — **test LIVE (>=15)**\n" if len(_v) >= 15 else "\n"))
+        # ARENA-007 (council S17 / S18 / S20, directed three sessions running from 2026-09-15; built 2026-09-28). Counts
+        # published from the forward book; they change no bar, rank nothing and are not a gate.
+        f.write("\n## One vote per entry day: council S17 / S18 / S20 (forward book)\n\n")
+        f.write("_Rows that share an entry date share one tape (Firm Brain #4). S17: each entry day's mean counts once, "
+                "however many rows it opened. S20: the share of entry days that made money, beside the row hit rate. "
+                "S18: forward exits priced on a copied or zero-volume bar (open = close = the prior close, or no "
+                "volume: a carry-forward print, Firm Brain #18)._\n\n")
+        for _k in STRATS:
+            _s = fwd_stats.get(_k) or {}
+            if not _s.get("n_events"):
+                continue
+            _over = ("over 1 entry day - one event, no inference" if _s["n_events"] == 1
+                     else f"over {_s['n_events']} entry days")
+            f.write(f"- {_k}: per-entry-day mean {_s['event_mean_bps']:+.0f} bps {_over} "
+                    f"(row mean {_s['avg_bps']:+.0f}, n={_s['n']}) · win rate per entry day "
+                    f"{_s['event_hit_pct']:.0f}% (row hit {_s['hit_pct']:.0f}%)\n")
+        _chk, _cop, _unt = copied_bar_exits(fwd_trades)
+        f.write(f"- Exits on copied/zero-volume bars: **{len(_cop)}** of {_chk} forward exits tested"
+                + (f" ({', '.join(_cop[:6])})" if _cop else "")
+                + (f"; {_unt} exit(s) have no bar in data/open, close and volume.csv to test, counted untested, "
+                   "not clean" if _unt else "") + "\n")
         f.write("\n## Notes to the desk\n\n")
         for n_ in notes:
             f.write(f"- {n_}\n")
