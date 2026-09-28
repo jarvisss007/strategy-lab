@@ -110,12 +110,20 @@ def main():
            "n_tickers": meta["n_tickers"], "spy_buyhold_sharpe": round(bh, 3),
            "cost_bps": int(S.COST * 1e4), "results": rows}
     out = _finite(out)  # standard JSON has no Infinity/NaN — replace with null
-    json.dump(out, open(os.path.join(BASE, "reports", "data.json"), "w"), indent=1)
+    write_dashboard_data(out)
     write_kb(rows, meta)
     write_report(out)
     print(f"\nSPY buy&hold Sharpe (same window): {bh:.2f}")
-    print("report -> reports/report.md   dashboard data -> reports/data.json")
+    print("report -> reports/report.md   dashboard data -> reports/data.json + reports/data.js")
 
+
+
+def write_dashboard_data(out):
+    """reports/data.json for readers of JSON, and reports/data.js for index.html: a page opened from disk (file://) may not
+    fetch() its own files, so the dashboard loads the data as a script (CARD-009, 2026-09-27). Both written atomically (BOOK-001)."""
+    import atomicio
+    atomicio.atomic_json(os.path.join(BASE, "reports", "data.json"), out, indent=1)
+    atomicio.atomic_write_text(os.path.join(BASE, "reports", "data.js"), "window.STRATEGY_LAB_DATA = " + json.dumps(out) + ";\n")
 
 def write_kb(rows, meta):
     path = os.path.join(BASE, "knowledge_base.csv")

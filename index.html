@@ -63,9 +63,9 @@
 
 <footer id="foot"></footer>
 
-<script src="reports/data.json" type="application/json" id="dataScript"></script>
+<script src="reports/data.js"></script>
 <script>
-fetch('reports/data.json').then(r=>r.json()).then(D=>{
+const render = D => {
   const bench = D.spy_buyhold_sharpe;
   document.getElementById('bench').innerHTML = `SPY buy&hold Sharpe: <b>${bench}</b>`;
   document.getElementById('win').innerHTML = `${D.n_tickers} tickers · ${D.cost_bps} bps cost`;
@@ -99,6 +99,13 @@ fetch('reports/data.json').then(r=>r.json()).then(D=>{
   document.getElementById('foot').innerHTML =
     'Gate: backtest-overfitting (Deflated Sharpe + PBO/CSCV, Bailey & López de Prado) · data: Yahoo daily, free · '+
     'A research survey, not investment advice. Survivors are forward-test candidates, nothing more.';
+};
+// Opened from disk (file://) a page may not fetch() its own files, so the data ships as a script: reports/data.js,
+// written beside data.json by lab.py (CARD-009, 2026-09-27). The fetch stays only as a fallback for a server that
+// has the JSON alone. A failure says so - an empty table and a dead writer look identical (Firm Brain 3).
+if (window.STRATEGY_LAB_DATA) render(window.STRATEGY_LAB_DATA);
+else fetch('reports/data.json').then(r => r.json()).then(render).catch(e => {
+  document.getElementById('rows').innerHTML = `<tr><td colspan="9" class="bad">The strategy data did not load (${e}). reports/data.js is missing: run lab.py, or open this page through the desk server.</td></tr>`;
 });
 </script>
 <!-- home pill: back to the ANUPAM MARKETS command center. history.back() when arrived
