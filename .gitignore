@@ -12,3 +12,7 @@ refresh.log
 .arena_done_*
 hub_data.js
 archive/
+
+# BOOK-001 atomic writes: the beside-file (prices.csv.tmp.<pid>) that a crash between write and os.replace could leave
+# behind must never be swept into a commit - stock-radar, command-center and zero-dte-lab already ignore it.
+*.tmp.*
