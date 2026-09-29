@@ -1,10 +1,11 @@
 {
- "built": "2026-09-28 06:08 PDT",
+ "built": "2026-09-29 08:26 PDT",
  "range": "15y",
  "n_tickers": 148,
- "n_dates": 3775,
- "start": "2011-09-26",
- "end": "2026-09-25",
+ "n_dates": 3773,
+ "start": "2011-09-29",
+ "end": "2026-09-28",
+ "settled_session": "2026-09-28",
  "tickers": [
   "SPY",
   "MSFT",
