@@ -16,3 +16,9 @@ archive/
 # BOOK-001 atomic writes: the beside-file (prices.csv.tmp.<pid>) that a crash between write and os.replace could leave
 # behind must never be swept into a commit - stock-radar, command-center and zero-dte-lab already ignore it.
 *.tmp.*
+
+# EARN-004 (2026-09-29): the incremental EDGAR 8-K fetch takes the feed's lock beside it (BOOK-001) and keeps its last-run stamp
+# beside it too. Both are operational state, not data: the lock is empty by design and the stamp changes on every run, so
+# neither may be swept into a commit by the session-end sweep.
+*.lock
+data/edgar/earnings_8k_run.json
