@@ -29,8 +29,9 @@ for the earnings screens. A stale sole source is worse than a noisy proxy: it fa
     prints; this stamp is how a monitor tells "SEC was asked after the close and had nothing" from "nobody asked".
 
 Exit: 0 = every ticker answered, nothing needs a human · 1 = REFUSED, nothing written (SEC unreachable, throttled, or a
-book missing) — the launchd job retries it · 2 = the feed is updated but a human should look (a ticker failed, a held print
-vanished or changed, or a CIK moved). Scheduled by ~/Library/LaunchAgents/com.anupam.edgar-8k.plist, daily 18:10 PT.
+book missing) · 2 = the feed is updated but a human should look (a ticker failed, a held print vanished or changed, or a CIK
+moved). Scheduled by ~/Library/LaunchAgents/com.anupam.edgar-8k.plist, daily 18:10 PT; that job retries ANY non-zero exit, up
+to 3 attempts 10 minutes apart (a transient miss clears itself, a vanished print stays loud), and launchd records the last.
 Run: /opt/anaconda3/bin/python fetch_earnings_8k.py            # the incremental update
      /opt/anaconda3/bin/python fetch_earnings_8k.py --selftest # offline checks of the merge rules, writes nothing
 """
