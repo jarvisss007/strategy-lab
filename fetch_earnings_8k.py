@@ -96,7 +96,8 @@ def get(url):
                 time.sleep(30)
         except Exception as e:               # noqa: BLE001 - retried, then re-raised as the ticker's failure
             last = e
-        time.sleep(1.5 * (k + 1))
+        if k < MAX_TRIES - 1:
+            time.sleep(1.5 * (k + 1))
     raise last
 
 
