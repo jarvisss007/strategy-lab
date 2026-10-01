@@ -1,1 +1,7 @@
 opened,ticker,entry_px,shares,spy_at_entry,review_after,exited,exit_px,spy_at_exit,net_pct,excess_pct,exit_reason,note
+2026-09-30,LIN,474.65,4.2136,762.63,2026-12-31,,,,,,,"formation 2026-09-30 (filled 2026-09-30, last settled close); rule frozen D<=20 F>=6 H=6m"
+2026-09-30,MOH,189.10,10.5764,762.63,2026-12-31,,,,,,,"formation 2026-09-30 (filled 2026-09-30, last settled close); rule frozen D<=20 F>=6 H=6m"
+2026-09-30,NKE,35.40,56.4972,762.63,2026-12-31,,,,,,,"formation 2026-09-30 (filled 2026-09-30, last settled close); rule frozen D<=20 F>=6 H=6m"
+2026-09-30,PEP,126.72,15.7828,762.63,2026-12-31,,,,,,,"formation 2026-09-30 (filled 2026-09-30, last settled close); rule frozen D<=20 F>=6 H=6m"
+2026-09-30,TXT,76.20,26.2467,762.63,2026-12-31,,,,,,,"formation 2026-09-30 (filled 2026-09-30, last settled close); rule frozen D<=20 F>=6 H=6m"
+2026-09-30,UNH,367.08,5.4484,762.63,2026-12-31,,,,,,,"formation 2026-09-30 (filled 2026-09-30, last settled close); rule frozen D<=20 F>=6 H=6m"

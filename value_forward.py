@@ -21,7 +21,7 @@ Files: reports/value_book.csv (the record), reports/value_state.json (marks for 
 Run:  /opt/anaconda3/bin/python value_forward.py            # mark; form if a quarter-end is due
       /opt/anaconda3/bin/python value_forward.py --dry      # show today's candidates, write nothing
 """
-import csv, json, os, sys, datetime as dt
+import csv, io, json, os, sys, datetime as dt
 import warnings; warnings.filterwarnings("ignore")
 import numpy as np, pandas as pd
 
@@ -166,9 +166,10 @@ def main():
                          "exit_reason": "", "note": f"formation {q.isoformat()} (filled {last_day}, last settled close); rule frozen D<=20 F>=6 H=6m"})
             formed.append(tk)
         os.makedirs(os.path.dirname(BOOK), exist_ok=True)
-        with open(BOOK, "w", newline="") as f:
-            w = csv.DictWriter(f, fieldnames=COLS); w.writeheader()
-            for r in rows: w.writerow({c: r.get(c, "") for c in COLS})
+        buf = io.StringIO()                              # BOOK-001: write beside and replace, never truncate in place
+        w = csv.DictWriter(buf, fieldnames=COLS); w.writeheader()
+        for r in rows: w.writerow({c: r.get(c, "") for c in COLS})
+        atomic_write_text(BOOK, buf.getvalue())
 
     # An empty book must EXIST. Until 2026-08-30 the file was written only inside the
     # formation branch, so with zero positions formed (next formation 2026-09-30) it
