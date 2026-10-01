@@ -52,6 +52,30 @@ The evening response itself was not captured, because this script printed no sta
     data/edgar/earnings_8k_corrections.json, a tracked append-only record with the old value, the new value and the evidence.
     The run stamp carries corrections_on_file and this run's stamp_corrected.
 
+EARN-004 follow-up (2026-10-01) — A REGISTRANT SUCCESSION SPLITS ONE ISSUER'S HISTORY (class (d) input correction; prereg-reviewer
+APPROVE WITH CHANGES). cik_map.json maps each ticker to ONE registrant, and the feed's "cik" is the registrant the daily job polls,
+not the lineage of every print. When a company reorganises under a holding company (SEC Rule 12g-3, Form 8-K12B) the successor gets a
+new CIK and the predecessor's 8-K Item 2.02 prints stay under the old one: XOM maps to ExxonMobil Holdings Corp (CIK 2115436,
+successor registrant since 2026-07-01) and held 1 print, while Exxon Mobil Corp (CIK 34088) holds 118 by the same page rule (82
+dated 2011 or later) with no date in common. Under EARN-002 that one issuer could never clear S1.
+  * cik_map.json is NOT changed (stock-radar/listing_dates.py and others expect one CIK string per ticker). data/edgar/
+    cik_predecessors.json lists, per ADOPTED ticker, the successor it was reviewed against, its predecessor CIKs, the reason and the
+    sha256 of the exact set of prints that was reviewed; keys starting with "_" are notes (verified, not adopted). One loader,
+    load_predecessors(), serves this script and the resolver's check; an entry whose successor is no longer cik_map.json's CIK for
+    the ticker is refused, so a later cik_map change invalidates it.
+  * `--adopt-predecessors TICKER --note "why"` INSERTS the predecessors' prints (the same rule as a full backfill) into the ticker's
+    events in date order. It names its tickers explicitly (a ticker not in cik_predecessors.json is refused; there is no "all"), is
+    human-invoked and never part of the daily pass (which keeps polling only the successor), and refuses unless the set SEC serves
+    serialises to the pinned sha256. It never rewrites or drops a held print (a date the ticker already holds is skipped). Its OWN
+    invariant (the daily one is positional and cannot hold across an insertion) asserts: same tickers and ciks, every held print
+    identical, the new dates exactly the predecessor's dates minus the held ones, ascending and unique, each carrying only {date,
+    accepted}, the inserted set hashing to the pin, every other ticker untouched. The insertion is appended to
+    earnings_8k_corrections.json (kind "predecessor", every inserted date and the set's sha256) after the feed is written.
+    Re-running it inserts nothing and records nothing.
+  * `--unadopt-predecessors TICKER --note "why"` is the way back: it removes exactly the dates the latest "predecessor" record lists,
+    only if those events still hash to what was inserted, and records a "predecessor_reversed" entry. The feed is one JSON line, so
+    a git diff cannot show an insertion; the record is the audit trail, and this run, not `git revert`, is the reversal.
+
 Exit: 0 = every ticker answered, nothing needs a human · 1 = REFUSED, nothing written (SEC unreachable, throttled, or a
 book missing) · 2 = the feed is updated but a human should look (a ticker failed, a held print vanished or changed, a CIK
 moved, or a new print is DEFERRED). Scheduled by ~/Library/LaunchAgents/com.anupam.edgar-8k.plist, daily 18:10 PT; that job
@@ -59,6 +83,8 @@ retries ANY non-zero exit, up to 3 attempts 10 minutes apart (a transient miss c
 and launchd records the last.
 Run: /opt/anaconda3/bin/python fetch_earnings_8k.py            # the incremental update
      /opt/anaconda3/bin/python fetch_earnings_8k.py --correct-stamps MU:2026-09-30 --note "why"   # a disclosed one-time fix
+     /opt/anaconda3/bin/python fetch_earnings_8k.py --adopt-predecessors XOM --note "why"   # a disclosed one-time succession backfill
+     /opt/anaconda3/bin/python fetch_earnings_8k.py --unadopt-predecessors XOM --note "why" # its reversal
      /opt/anaconda3/bin/python fetch_earnings_8k.py --selftest # offline checks of the merge and stamp rules, writes nothing
 """
 import argparse
@@ -84,6 +110,7 @@ CIK_MAP = f"{BASE}/data/edgar/cik_map.json"
 FEED = f"{BASE}/data/edgar/earnings_8k.json"
 RUN = f"{BASE}/data/edgar/earnings_8k_run.json"
 CORR = f"{BASE}/data/edgar/earnings_8k_corrections.json"
+PRED = f"{BASE}/data/edgar/cik_predecessors.json"
 MIN_GAP_S = 0.12        # 8.3 requests a second at most: under SEC's 10/s ceiling with room for the round trip
 MAX_TRIES = 3
 BACKFILL_FROM = "2010-01-01"   # older submission pages are skipped for a NEW ticker, as the original build did
@@ -378,6 +405,143 @@ def correct_stamps(feed, specs, fetch, fetch_text):
     return entries
 
 
+def load_predecessors(cik_map):
+    """{ticker: {"successor", "predecessors", "pinned_sha256", "reason"}} from data/edgar/cik_predecessors.json: the ONE loader for this
+    script and the resolver's check. Keys starting with "_" are notes (verified, not adopted), never tickers. A malformed or STALE entry
+    raises: the successor named must still be cik_map.json's CIK for the ticker, the predecessors are 10-digit CIKs other than it, the
+    pin is a sha256 and a reason is given. A wrong predecessor would put another company's prints into this ticker's history."""
+    if not os.path.exists(PRED):
+        return {}
+    out = {}
+    for tk, v in json.load(open(PRED)).items():
+        if tk.startswith("_"):
+            continue
+        ok = (isinstance(v, dict) and tk in cik_map and v.get("successor") == cik_map[tk]
+              and isinstance(v.get("predecessors"), list) and v["predecessors"]
+              and all(isinstance(p, str) and re.fullmatch(r"\d{10}", p) and p != cik_map[tk] for p in v["predecessors"])
+              and isinstance(v.get("pinned_sha256"), str) and re.fullmatch(r"[0-9a-f]{64}", v["pinned_sha256"])
+              and isinstance(v.get("reason"), str) and v["reason"].strip())
+        if not ok:
+            raise ValueError(f"cik_predecessors.json: {tk} is malformed or stale (needs its successor to equal cik_map.json's CIK, a list of "
+                             f"10-digit predecessor CIKs other than it, a sha256 pin and a reason)")
+        out[tk] = {k: v[k] for k in ("successor", "predecessors", "pinned_sha256", "reason")}
+    return out
+
+
+def inserted_sha(events):
+    """The pin: sha256 of json.dumps (default format) of the inserted events, ascending by date."""
+    return hashlib.sha256(json.dumps(events).encode()).hexdigest()
+
+
+def adopt_predecessors(feed, preds, tickers, fetch, fetch_text, today):
+    """Insert each named ticker's predecessor registrants' 8-K Item 2.02 prints (the same rule as a full backfill: recent plus the
+    submission pages filed in 2010 or later) into its events, ascending by date. A date the ticker already holds is skipped, so a held
+    print is never touched and a second run finds nothing to insert. A print newer than FRESH_DAYS is checked against its filing
+    header. Raises ValueError, writing nothing, when a ticker is not listed, the feed's cik is not the reviewed successor, a print
+    cannot be verified, or the set SEC serves does not hash to the pin. -> entries (kind "predecessor") for the corrections record."""
+    entries = []
+    cutoff = (today - dt.timedelta(days=FRESH_DAYS)).isoformat()
+    for tk in tickers:
+        if tk not in preds:
+            raise ValueError(f"{tk} is not listed in cik_predecessors.json - refusing (adoption names its tickers; there is no 'all')")
+        p = preds[tk]
+        v = feed.get(tk)
+        if v is None:
+            raise ValueError(f"{tk} is not in the feed")
+        if v["cik"] != p["successor"]:
+            raise ValueError(f"{tk}: the feed's cik {v['cik']} is not the reviewed successor {p['successor']}")
+        held_dates = {e["date"] for e in v["events"]}
+        got, names = {}, []
+        for c in p["predecessors"]:
+            d = fetch(f"https://data.sec.gov/submissions/CIK{c}.json")
+            names.append(d.get("name"))
+            rows = pull(d["filings"]["recent"])
+            for f in d["filings"].get("files", []):
+                if f["filingTo"] >= BACKFILL_FROM:
+                    rows += pull(fetch(f"https://data.sec.gov/submissions/{f['name']}"))
+            fresh = [r for r in dedupe(rows) if r["date"] not in held_dates and r["date"] not in got]
+            store, fixes, deferred, seen = verify_new(c, fresh, lambda r: r["date"] >= cutoff, fetch_text)
+            if deferred:
+                raise ValueError(f"{tk}: predecessor {c} print {deferred[0][0]} cannot be verified ({deferred[0][1]}: {deferred[0][2]}) - nothing is written")
+            for e in store:
+                got[e["date"]] = e
+        store = [got[d] for d in sorted(got)]
+        if not store:
+            continue                                   # already adopted: nothing to insert, nothing to record
+        sha = inserted_sha(store)
+        if sha != p["pinned_sha256"]:
+            raise ValueError(f"{tk}: the {len(store)} predecessor prints SEC serves now hash to {sha}, not the reviewed {p['pinned_sha256']} - nothing is written")
+        held_before = len(v["events"])
+        v["events"] = sorted(v["events"] + store, key=lambda e: e["date"])           # held events stay the very same objects
+        entries.append({"kind": "predecessor", "ticker": tk, "successor": p["successor"], "predecessor_ciks": p["predecessors"],
+                        "predecessor_names": names, "inserted": len(store), "inserted_2011_or_later": sum(1 for e in store if e["date"] >= "2011-01-01"),
+                        "first": store[0]["date"], "last": store[-1]["date"], "inserted_dates": [e["date"] for e in store],
+                        "inserted_sha256": sha, "held_before": held_before, "held_after": len(v["events"]), "evidence": p["reason"]})
+    return entries
+
+
+def assert_adopted(before, after, entries):
+    """The adoption invariant (the daily one is positional and cannot hold across an insertion). For every ticker adopted: the cik is
+    unchanged, no inserted date was already held or is repeated, the new dates are exactly held plus inserted, ascending and unique,
+    every held print is identical, each inserted print carries only {date, accepted} and the inserted set hashes to its record. Every
+    other ticker is untouched, and the set of tickers is unchanged."""
+    if set(before) != set(after):
+        raise AssertionError("INVARIANT BROKEN: the set of tickers changed during a succession backfill - nothing is written")
+    listed = {e["ticker"]: e for e in entries}
+    for tk, v in before.items():
+        w = after[tk]
+        if w["cik"] != v["cik"]:
+            raise AssertionError(f"INVARIANT BROKEN: {tk}'s cik changed - nothing is written")
+        if tk not in listed:
+            if w["events"] != v["events"]:
+                raise AssertionError(f"INVARIANT BROKEN: {tk} was not adopted but its prints changed - nothing is written")
+            continue
+        ins = listed[tk]["inserted_dates"]
+        held = [e["date"] for e in v["events"]]
+        if len(set(ins)) != len(ins) or set(ins) & set(held):
+            raise AssertionError(f"INVARIANT BROKEN: {tk}: an inserted date was already held or repeated - nothing is written")
+        if [e["date"] for e in w["events"]] != sorted(held + ins):
+            raise AssertionError(f"INVARIANT BROKEN: {tk}'s dates are not exactly held plus inserted, ascending and unique - nothing is written")
+        by_date = {e["date"]: e for e in w["events"]}
+        if any(by_date[e["date"]] != e for e in v["events"]):
+            raise AssertionError(f"INVARIANT BROKEN: a print held for {tk} changed - nothing is written")
+        new = [by_date[d] for d in ins]
+        if any(set(e) != {"date", "accepted"} for e in new) or inserted_sha(new) != listed[tk]["inserted_sha256"]:
+            raise AssertionError(f"INVARIANT BROKEN: {tk}'s inserted prints are not the recorded set - nothing is written")
+
+
+def unadopt_predecessors(feed, tk, doc):
+    """Reverse the LATEST recorded adoption for tk: remove exactly the dates that record lists, and only if those events still hash to
+    what was inserted. doc is the parsed corrections record. -> the entry (kind "predecessor_reversed"). Raises ValueError otherwise."""
+    recs = [r for r in doc.get("corrections", []) if r.get("ticker") == tk and r.get("kind") in ("predecessor", "predecessor_reversed")]
+    if not recs or recs[-1]["kind"] != "predecessor":
+        raise ValueError(f"{tk}: there is no adoption on record to reverse (or its latest record is already a reversal)")
+    rec = recs[-1]
+    v = feed.get(tk)
+    if v is None:
+        raise ValueError(f"{tk} is not in the feed")
+    dates = set(rec["inserted_dates"])
+    gone = [e for e in v["events"] if e["date"] in dates]
+    if len(gone) != len(dates) or inserted_sha(gone) != rec["inserted_sha256"]:
+        raise ValueError(f"{tk}: the prints the adoption inserted are not all present and unchanged any more - refusing to guess")
+    v["events"] = [e for e in v["events"] if e["date"] not in dates]
+    return {"kind": "predecessor_reversed", "ticker": tk, "removed": len(gone), "removed_dates": sorted(dates),
+            "removed_sha256": rec["inserted_sha256"], "reverses_record_at": rec.get("at"), "held_after": len(v["events"]),
+            "evidence": f"removes exactly the {len(gone)} dates the adoption recorded at {rec.get('at')}"}
+
+
+def assert_only_removed(before, after, rec):
+    """A reversal removes exactly the recorded dates from one ticker and changes nothing else."""
+    gone = set(rec["removed_dates"])
+    if set(before) != set(after):
+        raise AssertionError("INVARIANT BROKEN: the set of tickers changed during a reversal - nothing is written")
+    for tk, v in before.items():
+        w = after[tk]
+        want = [e for e in v["events"] if e["date"] not in gone] if tk == rec["ticker"] else v["events"]
+        if w["cik"] != v["cik"] or w["events"] != want:
+            raise AssertionError(f"INVARIANT BROKEN: {tk} changed beyond the recorded dates during a reversal - nothing is written")
+
+
 # ---------------------------------------------------------------- the corrections record
 def corrections_on_file():
     try:
@@ -407,10 +571,17 @@ def main(argv):
     ap.add_argument("--selftest", action="store_true", help="offline checks, writes nothing")
     ap.add_argument("--correct-stamps", metavar="TICKER:DATE[,TICKER:DATE]",
                     help="one-time, disclosed correction of held ET-as-UTC stamps (needs --note)")
+    ap.add_argument("--adopt-predecessors", metavar="TICKER[,TICKER]",
+                    help="one-time, disclosed insertion of the NAMED tickers' predecessor registrants' prints, as listed and pinned in "
+                         "cik_predecessors.json (needs --note)")
+    ap.add_argument("--unadopt-predecessors", metavar="TICKER", help="reverse the latest recorded adoption for one ticker (needs --note)")
     ap.add_argument("--note", default="", help="why: written to earnings_8k_corrections.json with the correction")
     args = ap.parse_args(argv)
     if args.selftest:
         return 0 if selftest() else 1
+    if (args.correct_stamps or args.adopt_predecessors or args.unadopt_predecessors) and not args.note.strip():
+        print("REFUSED: a correction must carry --note \"why\": it is written to earnings_8k_corrections.json and is never silent")
+        return 1
     specs = []
     if args.correct_stamps:
         try:
@@ -419,9 +590,10 @@ def main(argv):
         except AssertionError:
             print("REFUSED: --correct-stamps wants TICKER:DATE[,TICKER:DATE]")
             return 1
-        if not args.note.strip():
-            print("REFUSED: a correction must carry --note \"why\": it is written to earnings_8k_corrections.json and is never silent")
-            return 1
+    adopt = [t.strip() for t in (args.adopt_predecessors or "").split(",") if t.strip()]
+    if args.adopt_predecessors is not None and not adopt:
+        print("REFUSED: --adopt-predecessors wants TICKER[,TICKER]; there is no 'all'")
+        return 1
     if not os.path.exists(CIK_MAP):
         print(f"REFUSED: {CIK_MAP} is missing - nothing to fetch for; nothing written")
         return 1
@@ -432,15 +604,27 @@ def main(argv):
     try:
         if specs:
             asked = copy.deepcopy(feed)
-            explicit = correct_stamps(feed, specs, get, get_text)
+            explicit += correct_stamps(feed, specs, get, get_text)
             assert_only_stamps_changed(asked, feed, specs)
+        if adopt:
+            asked = copy.deepcopy(feed)
+            got = adopt_predecessors(feed, load_predecessors(cik_map), adopt, get, get_text, dt.date.today())
+            assert_adopted(asked, feed, got)
+            explicit += got
+            if not got:
+                print(f"  --adopt-predecessors {','.join(adopt)}: every predecessor print is already held, so nothing is inserted and nothing is recorded")
+        if args.unadopt_predecessors:
+            asked = copy.deepcopy(feed)
+            rec = unadopt_predecessors(feed, args.unadopt_predecessors.strip(), json.load(open(CORR)) if os.path.exists(CORR) else {})
+            assert_only_removed(asked, feed, rec)
+            explicit.append(rec)
     except (ValueError, AssertionError) as e:
         print(f"REFUSED: {e}. Nothing written.")
         return 1
     except Refused as e:
         print(f"REFUSED: {e}. Nothing written.")
         return 1
-    before = copy.deepcopy(feed)                       # AFTER an explicit correction: the invariant guards the daily pass that follows
+    before = copy.deepcopy(feed)                       # AFTER an explicit stage: the daily invariant guards only the pass that follows
     n0, newest0 = stats(feed)
     try:
         feed, rep = update(feed, cik_map, get, get_text, dt.date.today())
@@ -469,7 +653,7 @@ def main(argv):
                for f in rep["stamp_corrected"]]
     ledger_failed = None
     try:
-        append_corrections(ledger)
+        append_corrections(ledger)                     # AFTER the feed write (Brain section 2): a record never claims what was not written
     except Exception as e:                             # noqa: BLE001 - the feed is already written: say so LOUD, never swallow
         ledger_failed = f"{type(e).__name__}: {e}"
     run = {"finished_at": at, "attempted": rep["attempted"], "answered": rep["answered"], "failed": rep["failed"],
@@ -490,7 +674,14 @@ def main(argv):
         print(f"  stamp {tk} {d}: {verdict} - {detail}")
     attention = 0
     for e in explicit:
-        print(f"  CORRECTED (explicit, noted) {e['ticker']} {e['date']}: {e['was']} -> {e['now']}  [{e['evidence']}]")
+        if e["kind"] == "predecessor":
+            print(f"  ADOPTED (explicit, noted) {e['ticker']}: {e['inserted']} print(s) ({e['inserted_2011_or_later']} dated 2011 or later) from "
+                  f"{', '.join(str(n) for n in e['predecessor_names'])} (CIK {', '.join(str(int(c)) for c in e['predecessor_ciks'])}), "
+                  f"{e['first']}..{e['last']}; {e['held_before']} -> {e['held_after']} held; set sha256 {e['inserted_sha256']}")
+        elif e["kind"] == "predecessor_reversed":
+            print(f"  REVERSED (explicit, noted) {e['ticker']}: removed {e['removed']} print(s); {e['held_after']} held; {e['evidence']}")
+        else:
+            print(f"  CORRECTED (explicit, noted) {e['ticker']} {e['date']}: {e['was']} -> {e['now']}  [{e['evidence']}]")
     for f in rep["stamp_corrected"]:
         print(f"  NOTE STAMP NORMALISED {f['ticker']} {f['date']}: {f['detail']}; stored {f['stored']} (recorded in earnings_8k_corrections.json)")
     for tk in rep["backfilled"]:
@@ -522,6 +713,7 @@ def main(argv):
 
 # ---------------------------------------------------------------- selftest (offline)
 def selftest():
+    global PRED
     bad = []
 
     def check(cond, msg):
@@ -700,7 +892,99 @@ def selftest():
             correct_stamps(copy.deepcopy(feed_x), [("MU", "2026-09-30")], lambda u, p=pages_x: p[u], hdr_x); check(False, f"correct_stamps must refuse when {name}")
         except ValueError:
             pass
-    # 15. the throttle keeps under SEC's 10 requests a second; the feed's format is json.dumps defaults
+    # 15. succession adoption (class (d), reviewed): explicit tickers only, the reviewed set pinned by sha256, insert-only, reversible
+    succ_pages = {"https://data.sec.gov/submissions/CIK0000000034.json": {"name": "OLD CO", "filings": {"recent": block([
+                      R("2026-05-01", acc="P-1"), R("2026-02-02", acc="P-2"), R("2026-07-31", t="05:00:00", acc="P-3")]), "files": [
+                      {"name": "old-pred.json", "filingTo": "2015-01-01"}, {"name": "ancient-pred.json", "filingTo": "2009-12-31"}]}},
+                  "https://data.sec.gov/submissions/old-pred.json": block([R("2012-01-05", acc="P-4"), R("2011-04-01", acc="P-5")])}
+    exp_ins = [E("2011-04-01"), E("2012-01-05"), E("2026-02-02"), E("2026-05-01")]      # the reviewed set; 2026-07-31 is held by the successor
+    preds = {"XOM": {"successor": "0000000099", "predecessors": ["0000000034"], "pinned_sha256": inserted_sha(exp_ins), "reason": "why"}}
+    sf = {"XOM": {"cik": "0000000099", "events": [E("2026-07-31", "10:31:39")]}, "OTHER": {"cik": "0000000077", "events": [E("2026-01-01")]}}
+    sbefore = copy.deepcopy(sf)
+    spage = lambda u: succ_pages[u]
+    nohdr = lambda u: (_ for _ in ()).throw(AssertionError("no header needed: every predecessor print is older than FRESH_DAYS"))
+    sent = adopt_predecessors(sf, preds, ["XOM"], spage, nohdr, TODAY)
+    assert_adopted(sbefore, sf, sent)
+    check([e["date"] for e in sf["XOM"]["events"]] == ["2011-04-01", "2012-01-05", "2026-02-02", "2026-05-01", "2026-07-31"], "predecessor prints inserted in date order")
+    check(sf["XOM"]["events"][-1] == E("2026-07-31", "10:31:39"), "a date the successor already holds keeps the HELD print")
+    check(len(sent) == 1 and sent[0]["kind"] == "predecessor" and sent[0]["inserted"] == 4 and sent[0]["inserted_dates"] == [e["date"] for e in exp_ins]
+          and sent[0]["inserted_sha256"] == inserted_sha(exp_ins) and sent[0]["held_before"] == 1 and sent[0]["held_after"] == 5 and sent[0]["evidence"] == "why"
+          and sent[0]["predecessor_names"] == ["OLD CO"], "the insertion is described for the corrections record, every date listed, with the set's sha256")
+    check(sf["OTHER"] == sbefore["OTHER"], "no other ticker moves")
+    check(adopt_predecessors(sf, preds, ["XOM"], spage, nohdr, TODAY) == [], "adopting twice inserts nothing and records nothing")
+    sg = copy.deepcopy(sbefore)
+    for name, bad_preds, tks, feed_x in (("the pin differs", {"XOM": dict(preds["XOM"], pinned_sha256="0" * 64)}, ["XOM"], sg),
+                                        ("the ticker is not listed", preds, ["GOOG"], sg),
+                                        ("the feed's cik is not the reviewed successor", {"XOM": dict(preds["XOM"], successor="0000000055")}, ["XOM"], sg),
+                                        ("the ticker is not in the feed", preds, ["XOM"], {})):
+        try:
+            adopt_predecessors(feed_x, bad_preds, tks, spage, nohdr, TODAY); check(False, f"adoption must refuse when {name}")
+        except ValueError:
+            pass
+    check(sg == sbefore, "a refused adoption leaves the feed exactly as it was")
+    fresh = {"https://data.sec.gov/submissions/CIK0000000034.json": {"filings": {"recent": block([R("2026-09-29", acc="P-9")]), "files": []}}}
+    try:
+        adopt_predecessors({"XOM": {"cik": "0000000099", "events": []}}, preds, ["XOM"], lambda u: fresh[u], dead, TODAY)
+        check(False, "a fresh predecessor print that cannot be verified must refuse the adoption")
+    except ValueError:
+        pass
+    # ... the adoption invariant catches every way an insertion can go wrong
+    for name, mutate in (("a held print rewritten", lambda f: f["XOM"]["events"][-1].update(accepted="x")), ("a held print dropped", lambda f: f["XOM"]["events"].pop()),
+                         ("another ticker touched", lambda f: f["OTHER"]["events"].pop()), ("dates out of order", lambda f: f["XOM"]["events"].reverse()),
+                         ("an inserted print tampered with", lambda f: f["XOM"]["events"][0].update(accepted="2011-04-01T00:00:00")),
+                         ("an extra key on an inserted print", lambda f: f["XOM"]["events"][0].update(_acc="P-5")),
+                         ("an unlisted print inserted", lambda f: f["XOM"]["events"].insert(1, E("2011-05-05"))), ("a ticker removed", lambda f: f.pop("OTHER")),
+                         ("the cik changed", lambda f: f["XOM"].update(cik="0000000034"))):
+        f4 = copy.deepcopy(sf); mutate(f4)
+        try:
+            assert_adopted(sbefore, f4, sent); check(False, f"the adoption invariant missed {name}")
+        except AssertionError:
+            pass
+    # ... reversal: exactly the recorded dates, only if unchanged, and only once
+    doc = {"corrections": [dict(sent[0], at="2026-10-01T00:30:00-07:00")]}
+    sf_rev = copy.deepcopy(sf)
+    rrec = unadopt_predecessors(sf_rev, "XOM", doc)
+    assert_only_removed(sf, sf_rev, rrec)
+    check(sf_rev == sbefore and rrec["kind"] == "predecessor_reversed" and rrec["removed"] == 4 and rrec["reverses_record_at"] == "2026-10-01T00:30:00-07:00",
+          "the reversal restores the pre-adoption feed exactly and says which record it reverses")
+    altered = copy.deepcopy(sf); altered["XOM"]["events"][0]["accepted"] = "x"
+    for name, f_x, d_x in (("an inserted print changed since", altered, doc), ("there is no record", copy.deepcopy(sf), {"corrections": []}),
+                           ("the latest record is already a reversal", copy.deepcopy(sf_rev), {"corrections": doc["corrections"] + [dict(rrec, at="2026-10-01T00:40:00-07:00")]})):
+        try:
+            unadopt_predecessors(f_x, "XOM", d_x); check(False, f"the reversal must refuse when {name}")
+        except ValueError:
+            pass
+    for name, mutate in (("one extra print removed", lambda f: f["XOM"]["events"].pop()), ("another ticker touched", lambda f: f["OTHER"]["events"].clear()),
+                         ("a recorded date left in", lambda f: f["XOM"]["events"].insert(0, E("2011-04-01")))):
+        f5 = copy.deepcopy(sf_rev); mutate(f5)
+        try:
+            assert_only_removed(sf, f5, rrec); check(False, f"the reversal invariant missed {name}")
+        except AssertionError:
+            pass
+    # ... the loader: notes are skipped, a stale or malformed entry is refused
+    import tempfile
+    real_pred, tmpd = PRED, tempfile.mkdtemp()
+    try:
+        PRED = os.path.join(tmpd, "cik_predecessors.json")
+        good = {"XOM": {"successor": "0000000099", "predecessors": ["0000000034"], "pinned_sha256": "a" * 64, "reason": "why"}, "_verified_not_adopted": {"GOOG": {}}}
+        open(PRED, "w").write(json.dumps(good))
+        check(list(load_predecessors({"XOM": "0000000099"})) == ["XOM"], "the loader returns adopted tickers and skips _notes")
+        for name, mut, cmap in (("the successor is no longer cik_map's", lambda g: None, {"XOM": "0000000055"}),
+                                ("a predecessor equals the successor", lambda g: g["XOM"].update(predecessors=["0000000099"]), {"XOM": "0000000099"}),
+                                ("a predecessor is not 10 digits", lambda g: g["XOM"].update(predecessors=["34"]), {"XOM": "0000000099"}),
+                                ("the pin is not a sha256", lambda g: g["XOM"].update(pinned_sha256="abc"), {"XOM": "0000000099"}),
+                                ("no reason", lambda g: g["XOM"].update(reason=" "), {"XOM": "0000000099"}),
+                                ("the ticker is not in cik_map", lambda g: None, {})):
+            g = copy.deepcopy(good); mut(g); open(PRED, "w").write(json.dumps(g))
+            try:
+                load_predecessors(cmap); check(False, f"the loader must refuse when {name}")
+            except ValueError:
+                pass
+        os.remove(PRED)
+        check(load_predecessors({}) == {}, "no cik_predecessors.json means nothing adopted")
+    finally:
+        PRED = real_pred
+    # 16. the throttle keeps under SEC's 10 requests a second; the feed's format is json.dumps defaults
     check(MIN_GAP_S >= 0.1, "request spacing is at least 0.1s (<= 10/s)")
     check(json.dumps({"a": [1]}) == '{"a": [1]}', "json.dumps default format is the feed's format")
     print("fetch_earnings_8k selftest: " + ("PASS" if not bad else "FAIL"))

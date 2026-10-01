@@ -1,0 +1,72 @@
+{
+ "XOM": {
+  "successor": "0002115436",
+  "predecessors": [
+   "0000034088"
+  ],
+  "pinned_sha256": "cc098a7fbd5c0352ce454b42e3ada40a665783188b55206b5e9edd6ba28554b6",
+  "reason": "XOM: ExxonMobil Holdings Corp (CIK 0002115436) became successor registrant of Exxon Mobil Corp (CIK 0000034088) common stock under Rule 12g-3(a) on 2026-07-01 (8-K12B, accession 0001193125-26-291990; one-for-one exchange, same directors and officers, same ticker). cik_map.json maps XOM to the successor only, so the feed held 1 print against 118 Item 2.02 8-Ks filed by the predecessor (2005-10-27 to 2026-05-01; 82 dated 2011 or later; no date in common; every predecessor stamp agrees with its own filing header). On 2026-10-01 those 118 were inserted; the held print, every other ticker and cik_map.json are unchanged. No S1-S6 screen result, earnings plan, [earnings] ledger row or earnings brief named XOM; its one successor print is a single row in the pooled run-up study output (reports/preprint_runup_study_2026-09-30.json), which is not restated. The 8-K12B cover cites the predecessor's Commission File Number 001-02256; EDGAR indexes the successor's own filings, including the 2026-07-31 print, under 001-43384.",
+  "verified": "2026-09-30 against SEC's submissions JSON, SEC's company_tickers.json and the 8-K12B itself; the 118 predecessor stamps were checked against their filing headers"
+ },
+ "_verified_not_adopted": {
+  "why": "The same scan found these four. They are verified and deliberately NOT adopted. Each needs its own gate before it can be adopted: (1) a Rule 12g-3 successor of the same issuer, one-for-one, same ticker; (2) a continuous price column across the succession date; (3) the full page-rule output, no cut chosen by anyone; (4) a collision never rewrites a held print; (5) no S1-S6 verdict, plan, ledger row or forecast already seen on the name's short history; (6) the same insert-only mechanism, with its own record, commit and check. XOM went first because it was blocked at S1 (1 print), its next print is on the clock (about 2026-10-30) and no verdict had been seen on it. GOOG, AVGO and MRVL already sit above the S1 floor, so adopting them would change S2-S6 values rather than unblock anything, and the agent must never union predecessor prints for any name in its own scratch code: that would be the same correction done silently and unevenly.",
+  "GOOG": {
+   "successor": "0001652044",
+   "held_prints": 45,
+   "held_range": "2015-10-22..2026-07-22",
+   "predecessors": [
+    "0001288776"
+   ],
+   "predecessor_prints_by_the_page_rule": 34,
+   "of_which_2011_or_later": 20,
+   "predecessor_range": "2007-07-19..2015-10-22",
+   "shared_dates": [
+    "2015-10-22"
+   ],
+   "evidence": "8-K12B 2015-10-02, accession 0001193125-15-336577: Alphabet Inc. became the successor issuer to Google Inc. in a holding company reorganization"
+  },
+  "AVGO": {
+   "successor": "0001730168",
+   "held_prints": 34,
+   "held_range": "2018-06-07..2026-09-02",
+   "predecessors": [
+    "0001649338",
+    "0001441634"
+   ],
+   "predecessor_prints_by_the_page_rule": {
+    "0001649338 Broadcom Pte. Ltd. (formerly Broadcom Ltd)": 10,
+    "0001441634 Avago Technologies Ltd": 26
+   },
+   "of_which_2011_or_later": {
+    "0001649338": 10,
+    "0001441634": 19
+   },
+   "predecessor_range": "2009-09-03..2018-03-15",
+   "evidence": "8-K12B 2018-04-04, accession 0001193125-18-107559: Broadcom Inc. (Delaware) is the successor issuer to Broadcom Limited (Singapore); the Avago to Broadcom Limited link needs its own 8-K12B evidence"
+  },
+  "MRVL": {
+   "successor": "0001835632",
+   "held_prints": 24,
+   "held_range": "2021-06-07..2026-08-27",
+   "predecessors": [
+    "0001058057"
+   ],
+   "predecessor_prints_by_the_page_rule": 57,
+   "of_which_2011_or_later": 46,
+   "predecessor_range": "2008-11-03..2021-03-03",
+   "evidence": "8-K12B 2021-04-20, accession 0001193125-21-122938: Marvell Technology, Inc. is the successor issuer to Marvell Technology Group and to Inphi under Rule 12g-3(c), so the Inphi merger is part of the same transaction and needs its own gate (2)"
+  },
+  "LIN": {
+   "successor": "0001707925",
+   "held_prints": 31,
+   "held_range": "2019-05-10..2026-07-31",
+   "predecessors": [
+    "0000884905"
+   ],
+   "predecessor_prints_by_the_page_rule": 56,
+   "of_which_2011_or_later": 32,
+   "predecessor_range": "2005-01-26..2018-11-09",
+   "evidence": "8-K12B 2018-11-02: Linde plc succeeded Praxair in a merger of equals and the ticker changed from PX to LIN. A definition question, not a correction: not proposed."
+  }
+ }
+}
