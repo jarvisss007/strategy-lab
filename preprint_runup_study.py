@@ -40,6 +40,11 @@ announcements. The 2026-09-17 file read post 5 at -0.037 (t -0.31) on 6,442 anno
 line. Not changed: 4 prints in 15 years accepted on an early-close day after the 13:00 ET bell, which the old rule filed right by
 accident and the flat 16:00 test now files one session early (named in the report's provenance; keeping them after-close moves no
 figure above by more than 0.007).
+
+CAVEAT to the correction above, found the same night: the stamp is UTC for every print the collector fetched days after its filing,
+but the one print it fetched on its filing evening (MU, 2026-09-30) is held as 16:02:22, an ET wall-clock value, while SEC now lists
+it at 20:02:22Z. Such a stamp is filed mid-session here (the old rule filed it after-close by luck). It is in neither study's join
+yet; the feed never rewrites a held print, so the fix belongs to the collector (fetch_earnings_8k.py), not to these studies.
 """
 import csv, datetime as dt, hashlib, json, math, os, statistics as st
 from bisect import bisect_left
