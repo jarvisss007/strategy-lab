@@ -600,6 +600,7 @@ def main(argv):
     atomicio.hold_book(FEED)                           # BOOK-001: the lock FIRST, then the read
     cik_map = json.load(open(CIK_MAP))
     feed = json.load(open(FEED)) if os.path.exists(FEED) else {}
+    n0, newest0 = stats(feed)                          # the feed as this run FOUND it, before any explicit stage: the printed delta is the whole change
     explicit = []
     try:
         if specs:
@@ -625,7 +626,6 @@ def main(argv):
         print(f"REFUSED: {e}. Nothing written.")
         return 1
     before = copy.deepcopy(feed)                       # AFTER an explicit stage: the daily invariant guards only the pass that follows
-    n0, newest0 = stats(feed)
     try:
         feed, rep = update(feed, cik_map, get, get_text, dt.date.today())
         assert_nothing_moved(before, feed)
