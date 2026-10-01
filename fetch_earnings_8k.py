@@ -186,7 +186,7 @@ def check_stamp(cik, r, fetch_text):
     except Exception as e:                 # noqa: BLE001 - reported as DEFERRED, never swallowed
         return "unverifiable", None, f"{type(e).__name__}: {e}"
     if r["accepted"] == utc:
-        return "ok", utc, ""
+        return "ok", utc, f"JSON {r['accepted']} = header {et_wall} ET = {utc} UTC"
     if r["accepted"] == et_wall:
         return "corrected", utc, (f"SEC's JSON served the New York wall-clock {r['accepted']} as if it were UTC; the filing "
                                   f"header says {et_wall} ET = {utc} UTC")
@@ -200,14 +200,17 @@ def clean(r):
 
 def verify_new(cik, prints, must, fetch_text):
     """prints: new prints ascending by date. must(r): does this print need its header checked?
-    -> (to_store, fixes, deferred). Stops at the FIRST print that cannot be verified and defers it and every later one: the feed
-    only ever takes prints newer than its newest, so writing a later print past a deferred one would lose it for good."""
-    store, fixes, deferred = [], [], []
+    -> (to_store, fixes, deferred, seen). seen lists (date, verdict, evidence) for every print whose header was read, so the log
+    records what SEC's JSON served against the filing's own header each time, not only when they disagree. Stops at the FIRST
+    print that cannot be verified and defers it and every later one: the feed only ever takes prints newer than its newest, so
+    writing a later print past a deferred one would lose it for good."""
+    store, fixes, deferred, seen = [], [], [], []
     for i, r in enumerate(prints):
         if not must(r):
             store.append(clean(r))
             continue
         verdict, stamp, detail = check_stamp(cik, r, fetch_text)
+        seen.append((r["date"], verdict, detail))
         if verdict in ("ok", "corrected"):
             store.append({"date": r["date"], "accepted": stamp})
             if verdict == "corrected":
@@ -218,7 +221,7 @@ def verify_new(cik, prints, must, fetch_text):
             deferred.append((p["date"], verdict if p is r else "behind a print that cannot be verified",
                              detail if p is r else f"{r['date']} must be written first"))
         break
-    return store, fixes, deferred
+    return store, fixes, deferred, seen
 
 
 # ---------------------------------------------------------------- the merge rules (pure; tested offline)
@@ -269,7 +272,7 @@ def update(feed, cik_map, fetch, fetch_text, today):
     never aborts the pass."""
     rep = {"attempted": len(cik_map), "answered": 0, "failed": [], "new": {}, "backfilled": [], "vanished": [],
            "changed": [], "cik_moved": [], "not_in_cik_map": sorted(set(feed) - set(cik_map)), "sec_newest_filing": "",
-           "stamp_corrected": [], "deferred": []}
+           "stamp_corrected": [], "deferred": [], "checked": []}
     cutoff = (today - dt.timedelta(days=FRESH_DAYS)).isoformat()
     for tk, c in sorted(cik_map.items()):
         held = feed.get(tk)
@@ -289,7 +292,7 @@ def update(feed, cik_map, fetch, fetch_text, today):
                         rows += pull(fetch(f"https://data.sec.gov/submissions/{f['name']}"))
                 new, vanished, changed = dedupe(rows), [], []
                 must = lambda r: r["date"] >= cutoff   # only the prints SEC may not have settled yet
-            new, fixes, deferred = verify_new(c, new, must, fetch_text)
+            new, fixes, deferred, seen = verify_new(c, new, must, fetch_text)
         except Refused:
             raise
         except Exception as e:                         # noqa: BLE001 - one ticker's failure is reported, not fatal
@@ -312,6 +315,7 @@ def update(feed, cik_map, fetch, fetch_text, today):
         rep["changed"] += [(tk, e["date"], e["accepted"]) for e in changed]
         rep["stamp_corrected"] += [dict(f, ticker=tk) for f in fixes]
         rep["deferred"] += [(tk,) + x for x in deferred]
+        rep["checked"] += [(tk,) + x for x in seen]
     return feed, rep
 
 
@@ -472,6 +476,7 @@ def main(argv):
            "sec_newest_filing": rep["sec_newest_filing"], "new_prints": n_new, "tickers_with_new": len(rep["new"]),
            "backfilled": rep["backfilled"], "vanished": rep["vanished"], "changed": rep["changed"],
            "cik_moved": rep["cik_moved"], "deferred": rep["deferred"], "stamp_corrected": rep["stamp_corrected"],
+           "stamps_checked": rep["checked"],
            "corrections_this_run": explicit, "corrections_on_file": corrections_on_file(),
            "prints_before": n0, "prints_total": n1, "newest_print": newest1, "feed_sha256": sha}
     atomicio.atomic_write_text(RUN, json.dumps(run, indent=1) + "\n")
@@ -480,7 +485,9 @@ def main(argv):
           f"{n0} -> {n1} prints, newest {newest0} -> {newest1}"
           + ("" if (n_new or explicit) else " · nothing new: the feed is unchanged and was not rewritten"))
     for tk, ds in sorted(rep["new"].items()):
-        print(f"  new  {tk}: {', '.join(ds)}  (each stamp checked against the filing's own header)")
+        print(f"  new  {tk}: {', '.join(ds)}")
+    for tk, d, verdict, detail in rep["checked"]:
+        print(f"  stamp {tk} {d}: {verdict} - {detail}")
     attention = 0
     for e in explicit:
         print(f"  CORRECTED (explicit, noted) {e['ticker']} {e['date']}: {e['was']} -> {e['now']}  [{e['evidence']}]")
@@ -591,7 +598,7 @@ def selftest():
             if url.endswith(f"/{k}.hdr.sgml"):
                 return v
         raise KeyError(url)
-    store, fixes, deferred = verify_new("0000000001", seq, lambda r: True, ft)
+    store, fixes, deferred, seen = verify_new("0000000001", seq, lambda r: True, ft)
     check([s["date"] for s in store] == ["2026-09-28"] and [d[0] for d in deferred] == ["2026-09-29", "2026-09-30"],
           "the first unverifiable print and every later one are deferred")
     # 9. update(): held ticker incremental, new ticker backfilled through its older pages, empty-held ticker incremental, failure isolated
@@ -624,6 +631,8 @@ def selftest():
     check(len(hdr_calls) == 2, "headers fetched only for the two incremental prints; the backfilled prints are all older than FRESH_DAYS")
     check(rep["answered"] == 3 and rep["attempted"] == 4 and rep["failed"] == ["DEAD (ConnectionError)"], "a failing ticker is recorded, not fatal")
     check(rep["sec_newest_filing"] == "2026-09-24" and not rep["stamp_corrected"] and not rep["deferred"], "newest filing date recorded; nothing corrected or deferred")
+    check(sorted((c[0], c[1], c[2]) for c in rep["checked"]) == [("AAA", "2026-09-24", "ok"), ("EMPTY", "2026-09-10", "ok")]
+          and all("= header" in c[3] for c in rep["checked"]), "every checked print is logged with what the JSON served against the header, even when they agree")
     # 10. THE SAME-EVENING PATH: SEC's JSON serves the New York digits with a Z for MU's print; the header says otherwise
     mu_hdr = lambda url: hdr("20260930160222") if "26-000018" in url else hdr("20260624160201")
     evening = {"https://data.sec.gov/submissions/CIK0000723125.json": {"filings": {"recent": block([
