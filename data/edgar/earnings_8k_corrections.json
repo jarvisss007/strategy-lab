@@ -1,0 +1,17 @@
+{
+ "purpose": "Every one-time correction to data/edgar/earnings_8k.json, in the order made, and every acceptance stamp normalised at write time (a new print whose JSON stamp disagreed with the filing's own header). The daily pass never rewrites a held print; a correction is made only by an explicit, noted run of fetch_earnings_8k.py. Append-only: an entry is never edited or removed.",
+ "corrections": [
+  {
+   "kind": "stamp",
+   "ticker": "MU",
+   "date": "2026-09-30",
+   "accession": "0000723125-26-000018",
+   "was": "2026-09-30T16:02:22",
+   "now": "2026-09-30T20:02:22",
+   "evidence": "filing header <ACCEPTANCE-DATETIME> 2026-09-30T16:02:22 New York = 2026-09-30T20:02:22 UTC; SEC's JSON serves 2026-09-30T20:02:22",
+   "at": "2026-09-30T23:57:17-07:00",
+   "note": "MU 2026-09-30: the 18:10 PDT run of 2026-09-30 stored SEC's submissions-JSON acceptanceDateTime as 16:02:22, the New York wall-clock time of the filing (on the filing's own evening the JSON carried it with a trailing Z). The filing's own header says 16:02:22 ET = 20:02:22 UTC and SEC's JSON now serves 20:02:22Z. One-time correction of the held stamp. Nothing had scored on this print: no plan, ledger row, forecast or study join reads it.",
+   "feed_sha256_after": "21aa3426443195f6a23b59b949d541c45e72202c0ace473da3f3f0a1eef91889"
+  }
+ ]
+}
