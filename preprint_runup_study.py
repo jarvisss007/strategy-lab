@@ -45,6 +45,7 @@ CAVEAT to the correction above, found the same night: the stamp is UTC for every
 but the one print it fetched on its filing evening (MU, 2026-09-30) is held as 16:02:22, an ET wall-clock value, while SEC now lists
 it at 20:02:22Z. Such a stamp is filed mid-session here (the old rule filed it after-close by luck). It is in neither study's join
 yet; the feed never rewrites a held print, so the fix belongs to the collector (fetch_earnings_8k.py), not to these studies.
+CORRECTED 2026-10-01 (EARN-008, strategy-lab 31302de): the feed now holds MU 2026-09-30 at 20:02:22 UTC, and every new print is checked against its filing header, so the caveat above is obsolete.
 """
 import csv, datetime as dt, hashlib, json, math, os, statistics as st
 from bisect import bisect_left
