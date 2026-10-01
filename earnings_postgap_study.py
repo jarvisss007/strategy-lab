@@ -28,15 +28,56 @@ far too small to argue with. Claude expects the conditional legs to land near ze
 with the gap-day open->close contributing most of whatever is left, and expects the
 DOWN-gap leg (the desk's favourite, 5 of its 9 rows) to be the weaker of the two once
 measured against SPY rather than against zero.
+
+CORRECTION 2026-09-30 (EARN-006). print_session() read the clock off SEC's acceptance stamp as if it were New York time. The
+stamp is UTC, so a print accepted between 16:00 UTC and the bell (12:00-16:00 ET in summer, 11:00-16:00 ET in winter) was filed as
+after-close and landed one session late. On the 2026-09-30 feed 84 such mid-session prints since 2011 move one session earlier
+(82 of them join this study and the run-up study, and 18 of those change leg). It now converts the stamp to America/New_York
+(zoneinfo, DST-correct) before comparing. The corrected run is reports/earnings_postgap_study_2026-09-30.json;
+reports/earnings_postgap_study.json (2026-09-20) is kept unchanged. On today's panel (open/close through 2026-09-25),
+uncorrected -> corrected, excess vs SPY per announcement week (week-clustered t): up-gap +0.452 (1.40) -> +0.464 (1.45), down-gap
++0.221 (0.38) -> +0.175 (0.30), all prints -0.014 (-0.09) -> -0.023 (-0.14), on 6,466 -> 6,467 prints; the 09-20 file read up-gap
++0.451 (1.40) and down-gap +0.221 (0.38) on 6,469. Two figures quoted above came from the run-up study on the 2026-09-17 panel and
+no longer reproduce: "the 6,442-print set" is 6,390 prints on today's panel (the 15-year panel's start rolled forward), and
+"-0.04%/week at t=-0.31" reads -0.03 (t -0.21) under the old stamp rule and -0.01 (t -0.12) under the corrected one. Not changed:
+(1) 4 prints in 15 years accepted on an early-close day after the 13:00 ET bell, which the old rule filed right by accident and the
+flat 16:00 test now files one session early (named in the report's provenance; keeping them after-close moves no leg by more than
+0.002); (2) the 196 prints accepted 09:30-16:00 ET (194 in this join) keep their own session, so this study's open[T] entry
+precedes them; dropping them entirely gives up-gap +0.431 (t 1.32) and down-gap +0.204 (t 0.35).
 """
-import csv, datetime as dt, json, math, os, statistics as st
+import csv, datetime as dt, hashlib, json, math, os, statistics as st
 from bisect import bisect_left
+from zoneinfo import ZoneInfo
 
 BASE = os.path.dirname(os.path.abspath(__file__))
-OUT = f"{BASE}/reports/earnings_postgap_study.json"
+# EARN-006 (2026-09-30): each run writes a DATED file beside the old one, created exclusively (a re-run never overwrites).
+# reports/earnings_postgap_study.json (the 2026-09-20 run, whose print_session read SEC's UTC stamp as New York time) is
+# kept byte-for-byte as the record of what that rule produced (BENCH-002).
+OUT = f"{BASE}/reports/earnings_postgap_study_{dt.date.today().isoformat()}.json"
 START = "2011-01-01"
 THRESH = 0.04
 HOLD = 5
+NY = ZoneInfo("America/New_York")    # EARN-006: calendar-correct EST/EDT, never a fixed UTC offset
+UTC = dt.timezone.utc
+PRINT_SESSION_RULE = ("SEC acceptance stamp (UTC) converted to America/New_York (zoneinfo, DST-correct), then: before 16:00 ET -> "
+                      "that session, else the next session (EARN-006, 2026-09-30)")
+# EARN-006 residual, disclosed and NOT corrected: prints accepted on an early-close day AFTER the 13:00 ET bell but before 16:00 ET.
+# The old UTC rule filed them right by accident; the flat 16:00 ET test files them one session early (no historical early-close
+# table exists in the estate; sessions.EARLY_CLOSES holds 2026-27 only).
+EARLY_CLOSE_PRINTS = (("ABBV", "2024-07-03T18:07:48"), ("ABBV", "2025-07-03T17:07:55"),
+                      ("NKE", "2018-07-03T18:31:40"), ("TSLA", "2017-07-03T19:21:19"))
+
+
+def sha256_of(path):
+    return hashlib.sha256(open(path, "rb").read()).hexdigest() if os.path.exists(path) else None
+
+
+def provenance(corrects, panel_files, panel_dates):
+    """What this run read and what it supersedes, so the vintage it was measured on can be pinned (EARN-006)."""
+    return {"feed_sha256": sha256_of(f"{BASE}/data/edgar/earnings_8k.json"),
+            "panel_files": panel_files, "panel_first_date": panel_dates[0], "panel_last_date": panel_dates[-1],
+            "corrects": corrects, "corrects_sha256": sha256_of(f"{BASE}/{corrects}"),
+            "early_close_prints_filed_one_session_early": [{"ticker": t, "accepted_utc": a} for t, a in EARLY_CLOSE_PRINTS]}
 
 
 def load(fn):
@@ -52,8 +93,10 @@ def load(fn):
 
 def print_session(accepted, dates):
     """First session index on which the announcement could be traded (same rule as the
-    run-up study, so the two are joinable event-for-event)."""
-    d, hhmm = accepted[:10], accepted[11:16]
+    run-up study, so the two are joinable event-for-event). `accepted` is SEC's acceptance stamp
+    and it is UTC: it is converted to New York time before the date or the clock is read (EARN-006)."""
+    et = dt.datetime.fromisoformat(accepted[:19]).replace(tzinfo=UTC).astimezone(NY)   # EARN-006: UTC stamp -> New York clock and date
+    d, hhmm = et.strftime("%Y-%m-%d"), et.strftime("%H:%M")
     i = bisect_left(dates, d)
     if i >= len(dates):
         return None
@@ -141,13 +184,16 @@ def main():
 
     rep = {"generated": dt.datetime.now().isoformat(timespec="seconds"),
            "events_joined": seen, "prices_through": dates[-1],
+           "print_session_rule": PRINT_SESSION_RULE,
+           "provenance": provenance("reports/earnings_postgap_study.json", ["data/open.csv", "data/close.csv"], dates),
            "window": "open[T] -> close[T+5], excess vs SPY over identical dates",
            "trigger": f"|open[T]/close[T-1]-1| >= {THRESH:.0%}",
            "legs": {k: summarise(v) for k, v in legs.items()},
            "gap_day_only": {k: summarise(v) for k, v in gapday.items()},
            "eras": {e: {s: summarise(v) for s, v in d.items()} for e, d in eras.items()}}
     os.makedirs(f"{BASE}/reports", exist_ok=True)
-    json.dump(rep, open(OUT, "w"), indent=1)
+    with open(OUT, "x") as fh:          # EARN-006: exclusive create - never overwrites an existing output (BENCH-002)
+        json.dump(rep, fh, indent=1)
     print(json.dumps(rep, indent=1))
 
 

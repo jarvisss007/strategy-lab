@@ -25,13 +25,53 @@ announcement window itself (T-1 to T+1), not in the weeks before; pre-announceme
 weak and unstable across eras; and a run-up long is also a long on the market during reporting
 season, which is why the excess is measured against SPY on the same dates. Claude expects the
 run-up windows to read near zero and the event window to carry whatever premium exists.
+
+CORRECTION 2026-09-30 (EARN-006). print_session() read the clock off SEC's acceptance stamp as if it were New York time. The
+stamp is UTC, so a print accepted between 16:00 UTC and the bell (12:00-16:00 ET in summer, 11:00-16:00 ET in winter) was filed as
+after-close and landed one session late, which put the announcement day's own move inside its run-up windows. On the 2026-09-30
+feed 84 such mid-session prints since 2011 move one session earlier (82 of them join this study and the post-gap study). It now
+converts the stamp to America/New_York (zoneinfo, DST-correct) before comparing. The corrected run is
+reports/preprint_runup_study_2026-09-30.json; reports/preprint_runup_study.json (2026-09-17) is kept unchanged, and its hand-added
+`verdict` block (the demeaned run-up figures; no committed script produces it) is not restated. On today's panel, uncorrected ->
+corrected, excess vs SPY per announcement week (week-clustered t): run-up 20 +1.148 (4.92) -> +1.150 (4.92); run-up 10 +0.855
+(5.24) -> +0.860 (5.30); event +0.599 (3.64) -> +0.566 (3.47); post 5 -0.026 (-0.21) -> -0.014 (-0.12); on 6,391 -> 6,390
+announcements. The 2026-09-17 file read post 5 at -0.037 (t -0.31) on 6,442 announcements: the rest of that gap is the panel (its
+15-year start rolled forward and dropped 53 Oct-2011 events), not the rule. No reading changes sign or crosses a significance
+line. Not changed: 4 prints in 15 years accepted on an early-close day after the 13:00 ET bell, which the old rule filed right by
+accident and the flat 16:00 test now files one session early (named in the report's provenance; keeping them after-close moves no
+figure above by more than 0.007).
 """
-import csv, datetime as dt, json, math, os, statistics as st
+import csv, datetime as dt, hashlib, json, math, os, statistics as st
 from bisect import bisect_left
+from zoneinfo import ZoneInfo
 
 BASE = os.path.dirname(os.path.abspath(__file__))
-OUT = f"{BASE}/reports/preprint_runup_study.json"
+# EARN-006 (2026-09-30): each run writes a DATED file beside the old one, created exclusively (a re-run never overwrites).
+# reports/preprint_runup_study.json (the 2026-09-17 run, whose print_session read SEC's UTC stamp as New York time) is
+# kept byte-for-byte as the record of what that rule produced (BENCH-002).
+OUT = f"{BASE}/reports/preprint_runup_study_{dt.date.today().isoformat()}.json"
 START = "2011-01-01"
+NY = ZoneInfo("America/New_York")    # EARN-006: calendar-correct EST/EDT, never a fixed UTC offset
+UTC = dt.timezone.utc
+PRINT_SESSION_RULE = ("SEC acceptance stamp (UTC) converted to America/New_York (zoneinfo, DST-correct), then: before 16:00 ET -> "
+                      "that session, else the next session (EARN-006, 2026-09-30)")
+# EARN-006 residual, disclosed and NOT corrected: prints accepted on an early-close day AFTER the 13:00 ET bell but before 16:00 ET.
+# The old UTC rule filed them right by accident; the flat 16:00 ET test files them one session early (no historical early-close
+# table exists in the estate; sessions.EARLY_CLOSES holds 2026-27 only).
+EARLY_CLOSE_PRINTS = (("ABBV", "2024-07-03T18:07:48"), ("ABBV", "2025-07-03T17:07:55"),
+                      ("NKE", "2018-07-03T18:31:40"), ("TSLA", "2017-07-03T19:21:19"))
+
+
+def sha256_of(path):
+    return hashlib.sha256(open(path, "rb").read()).hexdigest() if os.path.exists(path) else None
+
+
+def provenance(corrects, panel_files, panel_dates):
+    """What this run read and what it supersedes, so the vintage it was measured on can be pinned (EARN-006)."""
+    return {"feed_sha256": sha256_of(f"{BASE}/data/edgar/earnings_8k.json"),
+            "panel_files": panel_files, "panel_first_date": panel_dates[0], "panel_last_date": panel_dates[-1],
+            "corrects": corrects, "corrects_sha256": sha256_of(f"{BASE}/{corrects}"),
+            "early_close_prints_filed_one_session_early": [{"ticker": t, "accepted_utc": a} for t, a in EARLY_CLOSE_PRINTS]}
 
 def load_prices():
     rows = list(csv.DictReader(open(f"{BASE}/data/prices.csv")))
@@ -44,8 +84,10 @@ def load_prices():
     return dates, px
 
 def print_session(accepted, dates):
-    """First session index on which the announcement could be traded."""
-    d, hhmm = accepted[:10], accepted[11:16]
+    """First session index on which the announcement could be traded. `accepted` is SEC's acceptance stamp
+    and it is UTC: it is converted to New York time before the date or the clock is read (EARN-006)."""
+    et = dt.datetime.fromisoformat(accepted[:19]).replace(tzinfo=UTC).astimezone(NY)   # EARN-006: UTC stamp -> New York clock and date
+    d, hhmm = et.strftime("%Y-%m-%d"), et.strftime("%H:%M")
     i = bisect_left(dates, d)
     if i >= len(dates):
         return None
@@ -106,7 +148,10 @@ def main():
                     t_drop_best=round(t_of(rest), 2) if t_of(rest) is not None else None)
 
     report = {"generated": dt.datetime.now().isoformat(timespec="seconds"), "events": len(events),
-              "prices_through": dates[-1], "windows": {}, "eras": {}, "note": __doc__.split("THE PRIOR")[1].strip()}
+              "prices_through": dates[-1], "windows": {}, "eras": {},
+              "print_session_rule": PRINT_SESSION_RULE,
+              "provenance": provenance("reports/preprint_runup_study.json", ["data/prices.csv"], dates),
+              "note": __doc__.split("THE PRIOR")[1].split("CORRECTION 2026-09-30")[0].strip()}
     print(f"{'window':<10}{'events':>7}{'weeks':>7}{'mean/wk':>9}{'t(wk)':>7}{'median':>8}{'hit%':>6}{'drop best wk':>14}{'t':>6}")
     for k in WIN:
         s = summarise(events, k); report["windows"][k] = s
@@ -120,7 +165,8 @@ def main():
             s = summarise(ev, k); report["eras"][era][k] = s
             line += f"  {k} {s['mean_per_week']:+.2f} (t {s['t_week']:+.2f}, n {s['n']})"
         print(line)
-    json.dump({**report, "rows": events}, open(OUT, "w"), indent=0)
+    with open(OUT, "x") as fh:          # EARN-006: exclusive create - never overwrites an existing output (BENCH-002)
+        json.dump({**report, "rows": events}, fh, indent=0)
     print(f"\nwritten {os.path.relpath(OUT, BASE)} · prices through {dates[-1]}")
 
 if __name__ == "__main__":
