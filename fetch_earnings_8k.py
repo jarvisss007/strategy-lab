@@ -75,6 +75,9 @@ dated 2011 or later) with no date in common. Under EARN-002 that one issuer coul
   * `--unadopt-predecessors TICKER --note "why"` is the way back: it removes exactly the dates the latest "predecessor" record lists,
     only if those events still hash to what was inserted, and records a "predecessor_reversed" entry. The feed is one JSON line, so
     a git diff cannot show an insertion; the record is the audit trail, and this run, not `git revert`, is the reversal.
+  * `--predecessor-label` is READ-ONLY (EARN-009, stock-radar/agent/EARNINGS_AGENT.md): it prints the ONE line the earnings agent puts in every
+    brief, naming each ticker whose count in this feed includes prints filed by an adopted predecessor registrant (`XOM 118 of 119 (EXXON
+    MOBIL CORP)`), computed by replaying the append-only record against the feed as it stands. It carries no verdict and gates nothing.
 
 Exit: 0 = every ticker answered, nothing needs a human · 1 = REFUSED, nothing written (SEC unreachable, throttled, or a
 book missing) · 2 = the feed is updated but a human should look (a ticker failed, a held print vanished or changed, a CIK
@@ -85,6 +88,7 @@ Run: /opt/anaconda3/bin/python fetch_earnings_8k.py            # the incremental
      /opt/anaconda3/bin/python fetch_earnings_8k.py --correct-stamps MU:2026-09-30 --note "why"   # a disclosed one-time fix
      /opt/anaconda3/bin/python fetch_earnings_8k.py --adopt-predecessors XOM --note "why"   # a disclosed one-time succession backfill
      /opt/anaconda3/bin/python fetch_earnings_8k.py --unadopt-predecessors XOM --note "why" # its reversal
+     /opt/anaconda3/bin/python fetch_earnings_8k.py --predecessor-label   # the EARN-009 line, read-only
      /opt/anaconda3/bin/python fetch_earnings_8k.py --selftest # offline checks of the merge and stamp rules, writes nothing
 """
 import argparse
@@ -433,6 +437,37 @@ def inserted_sha(events):
     return hashlib.sha256(json.dumps(events).encode()).hexdigest()
 
 
+# The EARN-009 line. It must not contain the word EDGAR: the EARN-002 resolver check passes any brief that names EDGAR beside S1-S6, and this
+# line is a disclosure that must not make that check vacuous (the EARN-005 line is built the same way).
+LABEL_MARK = "EARN-009 counts include predecessor-registrant prints (8-K Item 2.02 prints in earnings_8k.json):"
+
+
+def predecessor_label(feed, doc):
+    """The EARN-009 line. Replays the append-only corrections record in order: a "predecessor" entry makes its inserted dates and registrant
+    names active for the ticker, a "predecessor_reversed" entry takes the latest active adoption away again. A ticker is listed with
+    k = how many of its CURRENT prints are dates an active adoption inserted and n = its current prints, so the line states what the feed
+    holds now, not what a record once said; a ticker with k == 0 is not listed. -> MARK + "<TICKER> <k> of <n> (<NAME>[; <NAME>]), ..." or
+    MARK + " none"."""
+    active = {}
+    for r in (doc or {}).get("corrections", []):
+        tk = r.get("ticker")
+        if r.get("kind") == "predecessor":
+            active.setdefault(tk, []).append(r)
+        elif r.get("kind") == "predecessor_reversed" and active.get(tk):
+            active[tk].pop()
+    parts = []
+    for tk in sorted(active):
+        if tk not in feed:
+            continue
+        dates = {d for r in active[tk] for d in r["inserted_dates"]}
+        k = sum(1 for e in feed[tk]["events"] if e["date"] in dates)
+        if not k:
+            continue
+        names = list(dict.fromkeys(re.sub(r"[()]", "", str(n)).strip() for r in active[tk] for n in r["predecessor_names"]))
+        parts.append(f"{tk} {k} of {len(feed[tk]['events'])} ({'; '.join(names)})")
+    return f"{LABEL_MARK} {', '.join(parts) or 'none'}"
+
+
 def adopt_predecessors(feed, preds, tickers, fetch, fetch_text, today):
     """Insert each named ticker's predecessor registrants' 8-K Item 2.02 prints (the same rule as a full backfill: recent plus the
     submission pages filed in 2010 or later) into its events, ascending by date. A date the ticker already holds is skipped, so a held
@@ -575,10 +610,22 @@ def main(argv):
                     help="one-time, disclosed insertion of the NAMED tickers' predecessor registrants' prints, as listed and pinned in "
                          "cik_predecessors.json (needs --note)")
     ap.add_argument("--unadopt-predecessors", metavar="TICKER", help="reverse the latest recorded adoption for one ticker (needs --note)")
+    ap.add_argument("--predecessor-label", action="store_true",
+                    help="read-only: print the EARN-009 line (which tickers' counts include a predecessor registrant's prints)")
     ap.add_argument("--note", default="", help="why: written to earnings_8k_corrections.json with the correction")
     args = ap.parse_args(argv)
     if args.selftest:
         return 0 if selftest() else 1
+    if args.predecessor_label:
+        try:
+            lfeed = json.load(open(FEED))
+            ldoc = json.load(open(CORR))               # a MISSING record is an error, never `none`: the feed may hold predecessor prints it would have named
+            line = predecessor_label(lfeed, ldoc)
+        except (OSError, ValueError, AttributeError, KeyError, TypeError) as e:
+            print(f"the EARN-009 line cannot be computed: {type(e).__name__}: {e}", file=sys.stderr)
+            return 1
+        print(line)
+        return 0
     if (args.correct_stamps or args.adopt_predecessors or args.unadopt_predecessors) and not args.note.strip():
         print("REFUSED: a correction must carry --note \"why\": it is written to earnings_8k_corrections.json and is never silent")
         return 1
@@ -713,7 +760,7 @@ def main(argv):
 
 # ---------------------------------------------------------------- selftest (offline)
 def selftest():
-    global PRED
+    global PRED, FEED, CORR
     bad = []
 
     def check(cond, msg):
@@ -984,6 +1031,50 @@ def selftest():
         check(load_predecessors({}) == {}, "no cik_predecessors.json means nothing adopted")
     finally:
         PRED = real_pred
+    # 15b. the EARN-009 label: replays the record against the feed as it stands
+    lf = {"XOM": {"cik": "0000000099", "events": [E("2011-04-01"), E("2012-01-05"), E("2026-07-31")]},
+          "GOOG": {"cik": "0000000098", "events": [E("2010-01-01"), E("2026-02-02")]}, "NONE": {"cik": "0000000097", "events": []}}
+    rx = {"kind": "predecessor", "ticker": "XOM", "inserted_dates": ["2011-04-01", "2012-01-05"], "predecessor_names": ["EXXON MOBIL CORP"]}
+    rg = {"kind": "predecessor", "ticker": "GOOG", "inserted_dates": ["2010-01-01"], "predecessor_names": ["GOOGLE INC. (old)", "Other Co"]}
+    check(predecessor_label(lf, {"corrections": []}) == LABEL_MARK + " none", "no adoption on record: the line says none")
+    check(predecessor_label(lf, {"corrections": [rg, rx]}) == LABEL_MARK + " GOOG 1 of 2 (GOOGLE INC. old; Other Co), XOM 2 of 3 (EXXON MOBIL CORP)",
+          "tickers sorted, k of n counted from the feed as it stands, registrant names listed, parentheses stripped from names")
+    check(predecessor_label(lf, {"corrections": [rx, {"kind": "predecessor_reversed", "ticker": "XOM", "removed_dates": rx["inserted_dates"]}]}) == LABEL_MARK + " none",
+          "a reversed adoption is not listed")
+    check(predecessor_label(lf, {"corrections": [rx, {"kind": "predecessor_reversed", "ticker": "XOM"}, rx]}) == LABEL_MARK + " XOM 2 of 3 (EXXON MOBIL CORP)",
+          "adopted, reversed, adopted again: listed once")
+    lf2 = copy.deepcopy(lf); lf2["XOM"]["events"] = [E("2026-07-31")]
+    check(predecessor_label(lf2, {"corrections": [rx]}) == LABEL_MARK + " none", "dates the record lists that the feed no longer holds are not counted (k == 0 is not listed)")
+    check(predecessor_label({}, {"corrections": [rx]}) == LABEL_MARK + " none" and "EDGAR" not in LABEL_MARK,
+          "a ticker absent from the feed is not listed, and the marker never contains the word EDGAR")
+    check(predecessor_label(lf, {"corrections": [{"kind": "stamp", "ticker": "XOM"}, {"kind": "stamp_at_write", "ticker": "XOM"}]}) == LABEL_MARK + " none",
+          "stamp corrections are not adoptions")
+    # ... the command: prints the whole line and exits 0; a missing or unreadable record or feed is an ERROR (exit 1, nothing on stdout), never `none`
+    import contextlib, io, tempfile as _tf
+    real_paths, ld = (FEED, CORR), _tf.mkdtemp()
+    try:
+        FEED, CORR = os.path.join(ld, "feed.json"), os.path.join(ld, "corr.json")
+        json.dump(lf, open(FEED, "w"))
+        json.dump({"corrections": [rx]}, open(CORR, "w"))
+
+        def label_cli():
+            o, e = io.StringIO(), io.StringIO()
+            with contextlib.redirect_stdout(o), contextlib.redirect_stderr(e):
+                rc = main(["--predecessor-label"])
+            return rc, o.getvalue(), e.getvalue()
+        rc, o, e = label_cli()
+        check(rc == 0 and o == LABEL_MARK + " XOM 2 of 3 (EXXON MOBIL CORP)\n" and not e, "--predecessor-label prints the whole line and exits 0")
+        os.remove(CORR)
+        rc, o, e = label_cli()
+        check(rc == 1 and not o and "cannot be computed" in e, "a MISSING record is an error (exit 1, nothing on stdout), never `none`")
+        open(CORR, "w").write("[1]")
+        check(label_cli()[0] == 1, "a record that is not an object is an error")
+        open(CORR, "w").write("{not json")
+        check(label_cli()[0] == 1, "an unreadable record is an error")
+        json.dump({"corrections": [rx]}, open(CORR, "w")); os.remove(FEED)
+        check(label_cli()[0] == 1, "a missing feed is an error")
+    finally:
+        FEED, CORR = real_paths
     # 16. the throttle keeps under SEC's 10 requests a second; the feed's format is json.dumps defaults
     check(MIN_GAP_S >= 0.1, "request spacing is at least 0.1s (<= 10/s)")
     check(json.dumps({"a": [1]}) == '{"a": [1]}', "json.dumps default format is the feed's format")
