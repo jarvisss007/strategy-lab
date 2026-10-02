@@ -166,6 +166,63 @@
    "at": "2026-10-01T18:10:30-07:00",
    "note": "normalised at write time: the new print's JSON stamp was the filing header's New York wall-clock",
    "feed_sha256_after": "2ec3827011857080e9b4ae163d3b475c256431a69bd7acc5670a241839ada9e3"
+  },
+  {
+   "kind": "predecessor",
+   "ticker": "GOOG",
+   "successor": "0001652044",
+   "predecessor_ciks": [
+    "0001288776"
+   ],
+   "predecessor_names": [
+    "GOOGLE INC."
+   ],
+   "inserted": 33,
+   "inserted_2011_or_later": 19,
+   "first": "2007-07-19",
+   "last": "2015-07-16",
+   "inserted_dates": [
+    "2007-07-19",
+    "2007-10-18",
+    "2008-01-31",
+    "2008-04-17",
+    "2008-07-17",
+    "2008-10-16",
+    "2009-01-22",
+    "2009-04-16",
+    "2009-07-16",
+    "2009-10-15",
+    "2010-01-21",
+    "2010-04-15",
+    "2010-07-15",
+    "2010-10-14",
+    "2011-01-20",
+    "2011-04-14",
+    "2011-07-14",
+    "2011-10-13",
+    "2012-01-19",
+    "2012-04-12",
+    "2012-07-19",
+    "2012-10-18",
+    "2013-01-22",
+    "2013-04-18",
+    "2013-07-18",
+    "2013-10-17",
+    "2014-01-30",
+    "2014-04-16",
+    "2014-07-17",
+    "2014-10-16",
+    "2015-01-29",
+    "2015-04-23",
+    "2015-07-16"
+   ],
+   "inserted_sha256": "8c9477d0a80650c6cec5f23fd10642a763535abac3598c9376a34b662d9c6134",
+   "held_before": 45,
+   "held_after": 78,
+   "evidence": "GOOG: Alphabet Inc. (CIK 0001652044) is the successor issuer of Google Inc. (CIK 0001288776) under Rule 12g-3(a) since 2015-10-02 (8-K12B, accession 0001193125-15-336577): a holding-company reorganisation in which each share of each class of Google stock converted into an equivalent corresponding Alphabet share, GOOG and GOOGL traded on without interruption, and Alphabet held the same assets, businesses and operations. cik_map.json maps GOOG to the successor only, so the feed holds 45 prints (2015-10-22..2026-07-22) against 34 Item 2.02 8-Ks filed by the predecessor by the page rule (2007-07-19..2015-10-22; 20 dated 2011 or later; 12 earlier prints, 2004-2007, sit on submission pages older than 2010 that the page rule does not read and are not part of the set). One date is on both lists, 2015-10-22: a single combined Form 8-K filed by Alphabet and Google as co-registrants (the 8-K and its EX-99.1 are byte-identical), accepted twice, the Google-CIK copy at 2015-10-22T20:09:58Z = 16:09:58 ET (accession 0001288776-15-000044) and the Alphabet-CIK copy at 20:29:57Z = 16:29:57 ET (accession 0001652044-15-000003). The held Alphabet print stays and the earlier copy is not inserted (a held print is never rewritten); both are after the 16:00 ET close, so the session is the same. The reviewed set is the other 33 predecessor prints (19 dated 2011 or later), insert-only, 45 -> 78 prints; the pin is the sha256 of their json.dumps. Every one of the 34 predecessor stamps (the 33 and the collided one) equals its own filing header (New York wall-clock -> UTC); none needs normalising. What the set carries and the adoption keeps: 2012-10-18 is the only mid-session print in it (12:30:00 ET) and stays (a cut would be a class (c) question); the ticker GOOG was the Class A share until April 2014 (now GOOGL) and the price column splices there without a break (+0.48%), which is not a class (c) question either; 17 of the 33 predate strategy-lab/data/close.csv (14 before 2011, 3 in 2011), so 16 join to prices. Count of S1 gap triggers only (the prereg-reviewer's count; no returns, no S2-S6 figure computed by anyone): up 15 / down 12 held, up 19 / down 13 with the set, so no floor is crossed and the up-gap leg sits at exactly 15 held. Gate (5): no S1-S6 verdict, earnings plan, [earnings] ledger row or earnings-brief screening has been made on GOOG's 8-K history (the July 2026 pre-screen briefs carry radar-proxy base-rate commentary only); the other mentions are one 2026-08-08 [fundamentals-pilot] ledger row (due 2026-11-04, untouched by this adoption), GOOG's 45 rows in the pooled run-up study output reports/preprint_runup_study_2026-09-30.json (not restated) and two incidental forecast rows. Reviewed by the prereg-reviewer before it is made (class (d), approve with changes); decided under the standing delegation recorded on register row EARN-009 (council/issues.json), given in reply to six other decisions, not an option shown on this row. 0 trials: an input count, not a rule.",
+   "at": "2026-10-01T20:28:05-07:00",
+   "note": "EARN-009 item 3, GOOG gate (prereg-reviewer class (d), approve with changes). Alphabet Inc. is the Rule 12g-3(a) successor of Google Inc. (8-K12B 2015-10-02, accession 0001193125-15-336577). Inserts the predecessor's 33 Item 2.02 prints not already held (19 dated 2011 or later; GOOG 45 -> 78); the 2015-10-22 date stays Alphabet's held print (one combined 8-K accepted twice: Google-CIK 20:09:58Z, Alphabet-CIK 20:29:57Z) and is not rewritten. cik_map.json unchanged. 0 trials: an input count, not a rule. Way back: --unadopt-predecessors GOOG.",
+   "feed_sha256_after": "164e97607d12e5a8f0ccbb8c525fb89f5c93bb9a2d3dd3863f270fcb1f55393f"
   }
  ]
 }
