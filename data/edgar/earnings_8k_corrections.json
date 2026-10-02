@@ -154,6 +154,18 @@
    "at": "2026-10-01T00:17:28-07:00",
    "note": "XOM: ExxonMobil Holdings Corp (CIK 2115436) is the successor registrant of Exxon Mobil Corp (CIK 34088) under Rule 12g-3(a) since 2026-07-01 (8-K12B 0001193125-26-291990); the feed held 1 print against the predecessor's 118 8-K Item 2.02 prints (82 dated 2011 or later), so XOM could not clear S1 under EARN-002. Class (d) input correction, reviewed before it was made; the reviewed set is pinned by sha256 and inserted only; the held print, every other ticker and cik_map.json are unchanged. Reversal: --unadopt-predecessors XOM.",
    "feed_sha256_after": "098ae63cad8d9852b531060dd6cac2c4a1206fcdba7744657dc8a61672b09b56"
+  },
+  {
+   "kind": "stamp_at_write",
+   "ticker": "NKE",
+   "date": "2026-10-01",
+   "accession": "0000320187-26-000184",
+   "was": "2026-10-01T16:15:15",
+   "now": "2026-10-01T20:15:15",
+   "evidence": "SEC's JSON served the New York wall-clock 2026-10-01T16:15:15 as if it were UTC; the filing header says 2026-10-01T16:15:15 ET = 2026-10-01T20:15:15 UTC",
+   "at": "2026-10-01T18:10:30-07:00",
+   "note": "normalised at write time: the new print's JSON stamp was the filing header's New York wall-clock",
+   "feed_sha256_after": "2ec3827011857080e9b4ae163d3b475c256431a69bd7acc5670a241839ada9e3"
   }
  ]
 }
