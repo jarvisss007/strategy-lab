@@ -66,7 +66,13 @@ dated 2011 or later) with no date in common. Under EARN-002 that one issuer coul
   * `--adopt-predecessors TICKER --note "why"` INSERTS the predecessors' prints (the same rule as a full backfill) into the ticker's
     events in date order. It names its tickers explicitly (a ticker not in cik_predecessors.json is refused; there is no "all"), is
     human-invoked and never part of the daily pass (which keeps polling only the successor), and refuses unless the set SEC serves
-    serialises to the pinned sha256. It never rewrites or drops a held print (a date the ticker already holds is skipped). Its OWN
+    serialises to the pinned sha256. EVERY adopted print is checked against its own filing header, not only fresh ones: for some
+    registrants SEC's submissions JSON serves the New York wall-clock digits with a Z on EVERY filing, years after the fact (Broadcom Pte.
+    Ltd. and Avago Technologies, 36 of 36 prints, found 2026-10-01; unlike MU's one-evening quirk, SEC never settled these), so the
+    header's UTC is stored and each normalisation is listed (with its accession) in the record's stamps_normalised; any other disagreement
+    refuses. It also refuses, writing nothing, an adoption whose prints the daily pass would call VANISHED or CHANGED against the successor's own SEC
+    window every night (AVGO: Broadcom Inc.'s window opens 2018-02-06, Broadcom Pte.'s last print is 2018-03-15); it exempts nothing from the pass.
+    It never rewrites or drops a held print (a date the ticker already holds is skipped). Its OWN
     invariant (the daily one is positional and cannot hold across an insertion) asserts: same tickers and ciks, every held print
     identical, the new dates exactly the predecessor's dates minus the held ones, ascending and unique, each carrying only {date,
     accepted}, the inserted set hashing to the pin, every other ticker untouched. The insertion is appended to
@@ -468,14 +474,16 @@ def predecessor_label(feed, doc):
     return f"{LABEL_MARK} {', '.join(parts) or 'none'}"
 
 
-def adopt_predecessors(feed, preds, tickers, fetch, fetch_text, today):
+def adopt_predecessors(feed, preds, tickers, fetch, fetch_text):
     """Insert each named ticker's predecessor registrants' 8-K Item 2.02 prints (the same rule as a full backfill: recent plus the
     submission pages filed in 2010 or later) into its events, ascending by date. A date the ticker already holds is skipped, so a held
-    print is never touched and a second run finds nothing to insert. A print newer than FRESH_DAYS is checked against its filing
-    header. Raises ValueError, writing nothing, when a ticker is not listed, the feed's cik is not the reviewed successor, a print
-    cannot be verified, or the set SEC serves does not hash to the pin. -> entries (kind "predecessor") for the corrections record."""
+    print is never touched and a second run finds nothing to insert. EVERY print it would add is checked against its filing header
+    (New York wall-clock -> UTC); a JSON stamp that is the header's New York digits is stored as the header's UTC and listed in the
+    entry's stamps_normalised (date, accession, the JSON's stamp, the stored one). Raises ValueError, writing nothing, when a ticker is not
+    listed, the feed's cik is not the reviewed successor, a print cannot be verified, the set SEC serves does not hash to the pin, or the daily
+    pass would call an adopted print VANISHED or CHANGED against the successor's own SEC window (refusal only). -> entries (kind
+    "predecessor") for the corrections record."""
     entries = []
-    cutoff = (today - dt.timedelta(days=FRESH_DAYS)).isoformat()
     for tk in tickers:
         if tk not in preds:
             raise ValueError(f"{tk} is not listed in cik_predecessors.json - refusing (adoption names its tickers; there is no 'all')")
@@ -486,7 +494,7 @@ def adopt_predecessors(feed, preds, tickers, fetch, fetch_text, today):
         if v["cik"] != p["successor"]:
             raise ValueError(f"{tk}: the feed's cik {v['cik']} is not the reviewed successor {p['successor']}")
         held_dates = {e["date"] for e in v["events"]}
-        got, names = {}, []
+        got, names, normalised = {}, [], []
         for c in p["predecessors"]:
             d = fetch(f"https://data.sec.gov/submissions/CIK{c}.json")
             names.append(d.get("name"))
@@ -495,23 +503,37 @@ def adopt_predecessors(feed, preds, tickers, fetch, fetch_text, today):
                 if f["filingTo"] >= BACKFILL_FROM:
                     rows += pull(fetch(f"https://data.sec.gov/submissions/{f['name']}"))
             fresh = [r for r in dedupe(rows) if r["date"] not in held_dates and r["date"] not in got]
-            store, fixes, deferred, seen = verify_new(c, fresh, lambda r: r["date"] >= cutoff, fetch_text)
+            store, fixes, deferred, seen = verify_new(c, fresh, lambda r: True, fetch_text)
             if deferred:
                 raise ValueError(f"{tk}: predecessor {c} print {deferred[0][0]} cannot be verified ({deferred[0][1]}: {deferred[0][2]}) - nothing is written")
             for e in store:
                 got[e["date"]] = e
+            normalised += [{"date": f["date"], "accession": f["accession"], "json_stamp": f["json_stamp"], "stored": f["stored"]} for f in fixes]
         store = [got[d] for d in sorted(got)]
         if not store:
             continue                                   # already adopted: nothing to insert, nothing to record
         sha = inserted_sha(store)
         if sha != p["pinned_sha256"]:
             raise ValueError(f"{tk}: the {len(store)} predecessor prints SEC serves now hash to {sha}, not the reviewed {p['pinned_sha256']} - nothing is written")
+        # REFUSAL ONLY. main() runs the daily pass right after an adoption, and the daily pass reads the successor's CURRENT window: an adopted
+        # print inside it that the successor's own list does not carry would be called VANISHED (or CHANGED) every night (exit 2, and the feed-current
+        # check red) until the window rolls past it. AVGO would trip this: Broadcom Inc.'s window opens 2018-02-06 and Broadcom Pte.'s last print is
+        # 2018-03-15. XOM and GOOG do not: their successors' windows open after the last predecessor print. Nothing is exempted from the daily pass here.
+        inserted_dates = {e["date"] for e in store}
+        _, gone, moved = merge_incremental(sorted(v["events"] + store, key=lambda e: e["date"]),
+                                           fetch(f"https://data.sec.gov/submissions/CIK{p['successor']}.json")["filings"]["recent"])
+        flagged = sorted(e["date"] for e in gone + moved if e["date"] in inserted_dates)
+        if flagged:
+            raise ValueError(f"{tk}: the daily pass would call {len(flagged)} of these predecessor prints VANISHED or CHANGED against the successor's own "
+                             f"SEC window every night ({', '.join(flagged[:4])}{'...' if len(flagged) > 4 else ''}); they are refused until a separate review "
+                             f"decides how the pass should treat adopted dates - nothing is written")
         held_before = len(v["events"])
         v["events"] = sorted(v["events"] + store, key=lambda e: e["date"])           # held events stay the very same objects
         entries.append({"kind": "predecessor", "ticker": tk, "successor": p["successor"], "predecessor_ciks": p["predecessors"],
                         "predecessor_names": names, "inserted": len(store), "inserted_2011_or_later": sum(1 for e in store if e["date"] >= "2011-01-01"),
                         "first": store[0]["date"], "last": store[-1]["date"], "inserted_dates": [e["date"] for e in store],
-                        "inserted_sha256": sha, "held_before": held_before, "held_after": len(v["events"]), "evidence": p["reason"]})
+                        "inserted_sha256": sha, "stamps_normalised": sorted(normalised, key=lambda f: f["date"]),
+                        "held_before": held_before, "held_after": len(v["events"]), "evidence": p["reason"]})
     return entries
 
 
@@ -656,7 +678,7 @@ def main(argv):
             assert_only_stamps_changed(asked, feed, specs)
         if adopt:
             asked = copy.deepcopy(feed)
-            got = adopt_predecessors(feed, load_predecessors(cik_map), adopt, get, get_text, dt.date.today())
+            got = adopt_predecessors(feed, load_predecessors(cik_map), adopt, get, get_text)
             assert_adopted(asked, feed, got)
             explicit += got
             if not got:
@@ -724,7 +746,8 @@ def main(argv):
         if e["kind"] == "predecessor":
             print(f"  ADOPTED (explicit, noted) {e['ticker']}: {e['inserted']} print(s) ({e['inserted_2011_or_later']} dated 2011 or later) from "
                   f"{', '.join(str(n) for n in e['predecessor_names'])} (CIK {', '.join(str(int(c)) for c in e['predecessor_ciks'])}), "
-                  f"{e['first']}..{e['last']}; {e['held_before']} -> {e['held_after']} held; set sha256 {e['inserted_sha256']}")
+                  f"{e['first']}..{e['last']}; {e['held_before']} -> {e['held_after']} held; "
+                  f"{len(e['stamps_normalised'])} stamp(s) normalised to the header's UTC; set sha256 {e['inserted_sha256']}")
         elif e["kind"] == "predecessor_reversed":
             print(f"  REVERSED (explicit, noted) {e['ticker']}: removed {e['removed']} print(s); {e['held_after']} held; {e['evidence']}")
         else:
@@ -943,14 +966,21 @@ def selftest():
     succ_pages = {"https://data.sec.gov/submissions/CIK0000000034.json": {"name": "OLD CO", "filings": {"recent": block([
                       R("2026-05-01", acc="P-1"), R("2026-02-02", acc="P-2"), R("2026-07-31", t="05:00:00", acc="P-3")]), "files": [
                       {"name": "old-pred.json", "filingTo": "2015-01-01"}, {"name": "ancient-pred.json", "filingTo": "2009-12-31"}]}},
-                  "https://data.sec.gov/submissions/old-pred.json": block([R("2012-01-05", acc="P-4"), R("2011-04-01", acc="P-5")])}
+                  "https://data.sec.gov/submissions/old-pred.json": block([R("2012-01-05", acc="P-4"), R("2011-04-01", acc="P-5")]),
+                  "https://data.sec.gov/submissions/CIK0000000099.json": {"filings": {"recent": block([R("2026-07-31", t="10:31:39", acc="S-1")]), "files": []}}}
     exp_ins = [E("2011-04-01"), E("2012-01-05"), E("2026-02-02"), E("2026-05-01")]      # the reviewed set; 2026-07-31 is held by the successor
     preds = {"XOM": {"successor": "0000000099", "predecessors": ["0000000034"], "pinned_sha256": inserted_sha(exp_ins), "reason": "why"}}
     sf = {"XOM": {"cik": "0000000099", "events": [E("2026-07-31", "10:31:39")]}, "OTHER": {"cik": "0000000077", "events": [E("2026-01-01")]}}
     sbefore = copy.deepcopy(sf)
     spage = lambda u: succ_pages[u]
-    nohdr = lambda u: (_ for _ in ()).throw(AssertionError("no header needed: every predecessor print is older than FRESH_DAYS"))
-    sent = adopt_predecessors(sf, preds, ["XOM"], spage, nohdr, TODAY)
+    pstamp = {"P-1": "2026-05-01T20:17:37", "P-2": "2026-02-02T20:17:37", "P-4": "2012-01-05T20:17:37", "P-5": "2011-04-01T20:17:37", "P-3": "2026-07-31T05:00:00"}
+
+    def phdr(url):                                      # the filing's own header for a predecessor accession: New York digits of its true UTC stamp
+        for acc, utc in pstamp.items():
+            if url.endswith(f"/{acc}.hdr.sgml"):
+                return hdr(re.sub(r"\D", "", to_et_wall(utc)))
+        raise KeyError(url)
+    sent = adopt_predecessors(sf, preds, ["XOM"], spage, phdr)
     assert_adopted(sbefore, sf, sent)
     check([e["date"] for e in sf["XOM"]["events"]] == ["2011-04-01", "2012-01-05", "2026-02-02", "2026-05-01", "2026-07-31"], "predecessor prints inserted in date order")
     check(sf["XOM"]["events"][-1] == E("2026-07-31", "10:31:39"), "a date the successor already holds keeps the HELD print")
@@ -958,21 +988,56 @@ def selftest():
           and sent[0]["inserted_sha256"] == inserted_sha(exp_ins) and sent[0]["held_before"] == 1 and sent[0]["held_after"] == 5 and sent[0]["evidence"] == "why"
           and sent[0]["predecessor_names"] == ["OLD CO"], "the insertion is described for the corrections record, every date listed, with the set's sha256")
     check(sf["OTHER"] == sbefore["OTHER"], "no other ticker moves")
-    check(adopt_predecessors(sf, preds, ["XOM"], spage, nohdr, TODAY) == [], "adopting twice inserts nothing and records nothing")
+    check(sent[0]["stamps_normalised"] == [], "a registrant whose JSON stamps agree with the headers normalises nothing")
+    check(adopt_predecessors(sf, preds, ["XOM"], spage, phdr) == [], "adopting twice inserts nothing and records nothing")
     sg = copy.deepcopy(sbefore)
     for name, bad_preds, tks, feed_x in (("the pin differs", {"XOM": dict(preds["XOM"], pinned_sha256="0" * 64)}, ["XOM"], sg),
                                         ("the ticker is not listed", preds, ["GOOG"], sg),
                                         ("the feed's cik is not the reviewed successor", {"XOM": dict(preds["XOM"], successor="0000000055")}, ["XOM"], sg),
                                         ("the ticker is not in the feed", preds, ["XOM"], {})):
         try:
-            adopt_predecessors(feed_x, bad_preds, tks, spage, nohdr, TODAY); check(False, f"adoption must refuse when {name}")
+            adopt_predecessors(feed_x, bad_preds, tks, spage, phdr); check(False, f"adoption must refuse when {name}")
         except ValueError:
             pass
     check(sg == sbefore, "a refused adoption leaves the feed exactly as it was")
-    fresh = {"https://data.sec.gov/submissions/CIK0000000034.json": {"filings": {"recent": block([R("2026-09-29", acc="P-9")]), "files": []}}}
+    old_only = {"https://data.sec.gov/submissions/CIK0000000034.json": {"filings": {"recent": block([R("2012-03-01", acc="P-8")]), "files": []}}}
     try:
-        adopt_predecessors({"XOM": {"cik": "0000000099", "events": []}}, preds, ["XOM"], lambda u: fresh[u], dead, TODAY)
-        check(False, "a fresh predecessor print that cannot be verified must refuse the adoption")
+        adopt_predecessors({"XOM": {"cik": "0000000099", "events": []}}, preds, ["XOM"], lambda u: old_only[u], dead)
+        check(False, "an OLD predecessor print that cannot be verified must refuse the adoption too (nothing is exempt)")
+    except ValueError:
+        pass
+    # ... the permanent-quirk case: the JSON serves the New York digits with a Z for EVERY old print; the header's UTC is stored and listed
+    dorm = {"https://data.sec.gov/submissions/CIK0000000034.json": {"name": "QUIRK CO", "filings": {"recent": block([
+                R("2012-01-05", t="15:17:37", acc="P-4"), R("2011-04-01", t="16:17:37", acc="P-5")]), "files": []}},
+            "https://data.sec.gov/submissions/CIK0000000098.json": {"filings": {"recent": block([R("2018-06-07", acc="S-9")]), "files": []}}}
+    dexp = [E("2011-04-01"), E("2012-01-05")]                                           # what a correct (UTC) feed would hold
+    dpred = {"AVG": {"successor": "0000000098", "predecessors": ["0000000034"], "pinned_sha256": inserted_sha(dexp), "reason": "why"}}
+    df = {"AVG": {"cik": "0000000098", "events": [E("2018-06-07")]}}
+    dbefore = copy.deepcopy(df)
+    dent = adopt_predecessors(df, dpred, ["AVG"], lambda u: dorm[u], phdr)
+    assert_adopted(dbefore, df, dent)
+    check([e for e in df["AVG"]["events"][:2]] == dexp and [n["date"] for n in dent[0]["stamps_normalised"]] == ["2011-04-01", "2012-01-05"]
+          and dent[0]["stamps_normalised"][0] == {"date": "2011-04-01", "accession": "P-5", "json_stamp": "2011-04-01T16:17:37", "stored": "2011-04-01T20:17:37"},
+          "a registrant whose JSON serves New-York-digits stamps has them stored as the header's UTC and every one listed")
+    # ... the refusal-only guard: a predecessor print inside the successor's own SEC window that the successor does not list would be VANISHED every night
+    win = dict(dorm, **{"https://data.sec.gov/submissions/CIK0000000098.json": {"filings": {"recent": block([R("2018-06-07", acc="S-9"), R("2012-01-01", i="9.01")]), "files": []}}})
+    gf = copy.deepcopy(dbefore)
+    try:
+        adopt_predecessors(gf, dpred, ["AVG"], lambda u: win[u], phdr); check(False, "a predecessor print inside the successor's window that it does not list must refuse the adoption")
+    except ValueError as e:
+        check("VANISHED" in str(e) and "2012-01-05" in str(e) and gf == dbefore, "refused with the dates named, and the feed is exactly as it was")
+    chg = dict(dorm, **{"https://data.sec.gov/submissions/CIK0000000098.json": {"filings": {"recent": block([R("2012-01-05", t="09:00:00", acc="S-8"), R("2012-01-01", i="9.01")]), "files": []}}})
+    try:
+        adopt_predecessors(copy.deepcopy(dbefore), dpred, ["AVG"], lambda u: chg[u], phdr); check(False, "a predecessor date the successor lists with another stamp must refuse the adoption")
+    except ValueError as e:
+        check("VANISHED" in str(e) or "CHANGED" in str(e), "refused: the successor lists that date with another stamp")
+    unrel = dict(dorm, **{"https://data.sec.gov/submissions/CIK0000000098.json": {"filings": {"recent": block([R("2018-06-07", t="09:00:00", acc="S-9"), R("2018-01-01", i="9.01")]), "files": []}}})
+    check(adopt_predecessors(copy.deepcopy(dbefore), dpred, ["AVG"], lambda u: unrel[u], phdr)[0]["inserted"] == 2,
+          "the guard judges only ADOPTED dates: an unrelated held print the successor lists with another stamp does not block the adoption")
+    try:
+        adopt_predecessors(copy.deepcopy(dbefore), {"AVG": dict(dpred["AVG"], pinned_sha256=inserted_sha([E("2011-04-01", "16:17:37"), E("2012-01-05", "15:17:37")]))},
+                           ["AVG"], lambda u: dorm[u], phdr)
+        check(False, "a pin taken over the un-normalised JSON stamps must refuse: the normalised set is what is reviewed")
     except ValueError:
         pass
     # ... the adoption invariant catches every way an insertion can go wrong
