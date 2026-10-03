@@ -48,7 +48,7 @@ The evening response itself was not captured, because this script printed no sta
     stamp whose New York digits are what the JSON serves is the same print, and the next night's normal JSON matches exactly.
     A held stamp that is the New York digits themselves (the defect this fixes) is still CHANGED, loudly.
     [NARROWED by EARN-011 below: against a JSON that serves the TRUE stamp, that held stamp now looks like SEC's double conversion
-    and is found by the header sample (a mixed registrant's prints first), not by the CHANGED test.]
+    and can be found only by the header sample (always, when its registrant is mixed), not by the CHANGED test.]
   * ONE-TIME CORRECTIONS ARE EXPLICIT AND NEVER SILENT: `--correct-stamps TICKER:DATE --note "why"` rewrites a held stamp
     only when it equals the filing header's New York digits AND SEC's JSON now serves the header's UTC for that exact
     filing; the daily pass never rewrites. Every correction (and every stamp normalised at write time) is appended to
@@ -93,30 +93,39 @@ CHANGED only when SEC really lists it differently", was defeated by a change of 
 The 18:10 PT run of 2026-10-02 flagged 1,131 held prints CHANGED and exited 2 on all three attempts; none of them had changed.
   * WHAT SEC SERVES (measured 2026-10-03 against the filings' own headers: 1,748 prints, none unreadable). For a registrant SEC has switched,
     EVERY acceptanceDateTime in its submissions JSON is the true UTC stamp read as New York wall-clock and converted to UTC again: held + 4h
-    while New York is on daylight time, + 5h on standard time (1,192 prints at +4h, 556 at +5h; "the UTC digits read as New York time" and
-    "plus the New York offset" agree on every one, 103 of them within three days of a changeover). The held stamp equals the header's UTC on
-    all 1,748. It is per registrant (68 of the 133 judged, 65 still serve the true stamp; 47 had switched when the 10-02 run read them, 21 more
-    by the next day), never per request and never mixed inside a registrant's recent block, and it is not about a print's age: TSLA's print was
-    served true when the 10-02 run took it and shifted by the next day. 969 of the 1,748 are after-close prints whose shifted stamp falls on
-    the NEXT UTC calendar day, which is the session the earnings desk grades.
+    while New York is on daylight time, + 5h on standard time (1,192 of the 1,748 at +4h, 556 at +5h). "The UTC digits read as New York time"
+    and "plus the New York offset" agree on every one of the 1,743 in SEC's live window, 103 of them within three days of a changeover. The held
+    stamp equals the header's UTC on all 1,748. It is per registrant (68 of the 133 judged, 65 still serve the true stamp; 47 had switched when
+    the 10-02 run read them, 21 more by the next day), never per request and never mixed inside a registrant's recent block, and it is not about
+    a print's age: TSLA's print was served true when the 10-02 run took it and shifted by the next day. 969 of the 1,748 have their shifted
+    stamp on the NEXT UTC calendar day. No committed reader takes that date without converting to New York time first (EARN-006), so this is a
+    hazard for a future reader, not an effect seen in any study.
   * A JSON STAMP THAT IS THE HELD STAMP DOUBLE-CONVERTED (to_double_converted) IS THE SAME PRINT. merge_incremental() returns those as `doubled`,
     not `changed`; main() counts them in ONE summary line (`N held prints SEC serves double-converted (+4h EDT / +5h EST); a sample of K
     header-verified ...`), never per print, and they alone never raise ATTENTION or exit 2. A date SEC lists with a stamp that is neither the
     held one, nor its evening form, nor its double conversion is still CHANGED, loudly, exactly as before.
-  * THE RULE IS CHECKED, NOT TRUSTED. Each run reads the filing header of a random sample of DOUBLE_SAMPLE (4) of the doubled prints (the
-    prints of a MIXED registrant first: one SEC serves both ways, the only place a wrong held stamp, the New York digits EARN-004 fixed,
-    looks exactly like SEC's shift). A sample print whose header UTC is not the held stamp is ATTENTION CHANGED (exit 2) and says the other
-    doubled prints rest on that sample; one whose header cannot be read is ATTENTION FAILED. The held stamp is never rewritten. The sample
-    is drawn from a seed that is the calendar date: different every day, but the job's three attempts read the SAME prints, so a refuted
-    print cannot clear itself on the retry by not being drawn again. What the sample cannot do: find ONE wrong print among thousands on
-    a given night (4 of 1,743 is 0.2%); the registrants it is aimed at (mixed ones) and the CHANGED test cover the known ways a held stamp goes wrong.
+  * THE RULE IS CHECKED, NOT TRUSTED. Each run reads the filing header of EVERY doubled print of a MIXED registrant (one SEC serves both ways;
+    at most MIXED_CAP) and of DOUBLE_SAMPLE (4) other doubled prints: those with the lowest sha256(salt|ticker|date), the salt drawn from a seed
+    that is the calendar date. A print's rank does not depend on the other prints, so the sample differs from day to day, but a print that joins
+    the feed, or a registrant that turns mixed, between the job's three attempts changes it by at most one print (about 4 in the population
+    size): a refuted print does not clear itself on the retry. A mixed registrant is the only place a wrong held stamp (the New York digits
+    EARN-004 fixed) looks exactly like SEC's shift. As measured 2026-10-03 NO registrant is mixed (0 of 133), so today the sample is the uniform
+    draw alone, and a registrant with one judged print (SPCX, XOM) cannot be told mixed. A refuted print raises ATTENTION on the nights it is
+    read and is not remembered from night to night. A sample print whose header UTC is not the held stamp is ATTENTION CHANGED (exit 2) and says
+    the other doubled prints rest on that sample; one whose header cannot be read is ATTENTION FAILED; doubled prints with no sample at all are
+    ATTENTION too. The held stamp is never rewritten. What the sample cannot do: find ONE wrong print among thousands on a given night (4 of
+    1,743 is 0.2%). Unchanged and also silent: a held stamp that is the true stamp + the offset, against a JSON serving the true stamp, passes
+    as the evening form below; no such print can now arrive, since every print that enters the feed is header-checked.
   * EVERY PRINT THAT ENTERS THE FEED IS CHECKED AGAINST ITS HEADER, WHATEVER ITS AGE (new, backfilled, adopted): verify_new() no longer has an
-    opt-out, so the 14-day cut-off that let a backfill take SEC's stamp unchecked is gone. A JSON stamp that is the header's UTC double-converted
-    is the `doubled` verdict of check_stamp(): the header's UTC is stored and the print is recorded in earnings_8k_corrections.json as a
-    stamp_at_write entry like the New York case. Without it a new print from a switched registrant (JPM, BAC, GS, MS and WFC are all
-    switched) would be DEFERRED every night and the feed would stop at its last print.
-  * `--check` is a DRY RUN: the whole pass against live SEC, the same output and the same exit code, but no lock is taken and nothing is
-    written (no feed, no run stamp, no corrections record). It cannot be combined with an explicit correction, adoption or reversal.
+    opt-out, so the 14-day cut-off that let a backfill take SEC's stamp unchecked is gone (a new ticker's backfill now costs one header request
+    per historical print, about 8 seconds per 60 prints, and one unreadable header holds the whole ticker back). A JSON stamp that is the
+    header's UTC double-converted is the `doubled` verdict of check_stamp(): the header's UTC is stored and the print is recorded in
+    earnings_8k_corrections.json as a stamp_at_write entry like the New York case. Without it a new print that SEC serves double-converted, as
+    it serves every existing print of JPM, BAC, GS, MS and WFC, would be DEFERRED and the feed would stop at its last print (not yet seen for
+    a brand-new print: TSLA's was served true on its filing evening).
+  * `--check` is a DRY RUN: the whole pass against live SEC, the same output and the same exit code, but no lock is held and nothing is
+    written (no feed, no run stamp, no corrections record). It refuses to start while the nightly writer holds the feed's lock (two passes
+    at once would double the request rate against SEC), and it cannot be combined with an explicit correction, adoption or reversal.
 
 Exit: 0 = every ticker answered, nothing needs a human · 1 = REFUSED, nothing written (SEC unreachable, throttled, or a
 book missing) · 2 = the feed is updated but a human should look (a ticker failed, a held print vanished or changed, a CIK
@@ -135,6 +144,7 @@ Run: /opt/anaconda3/bin/python fetch_earnings_8k.py            # the incremental
 import argparse
 import copy
 import datetime as dt
+import fcntl
 import gzip
 import hashlib
 import json
@@ -160,7 +170,8 @@ PRED = f"{BASE}/data/edgar/cik_predecessors.json"
 MIN_GAP_S = 0.12        # 8.3 requests a second at most: under SEC's 10/s ceiling with room for the round trip
 MAX_TRIES = 3
 BACKFILL_FROM = "2010-01-01"   # older submission pages are skipped for a NEW ticker, as the original build did
-DOUBLE_SAMPLE = 4       # EARN-011: held prints SEC serves double-converted that have their filing header read each run, chosen at random (3-5)
+DOUBLE_SAMPLE = 4       # EARN-011: held prints SEC serves double-converted, other than a mixed registrant's, whose filing header is read each run (3-5)
+MIXED_CAP = 100         # EARN-011: at most this many doubled prints of mixed registrants have their header read each run (every one, up to this)
 FMT = "%Y-%m-%dT%H:%M:%S"
 ET, UTC = ZoneInfo("America/New_York"), dt.timezone.utc
 HDR_URL = "https://www.sec.gov/Archives/edgar/data/{cik}/{nodash}/{acc}.hdr.sgml"
@@ -304,13 +315,16 @@ def check_double(cik, e, fetch_text):
     return "mismatch", f"the filing header says {et_wall} ET = {utc} UTC, not the held {e['accepted']}{why}"
 
 
-def pick_sample(doubled, k, rng):
-    """EARN-011. Which held prints SEC serves double-converted have their filing header read this run: k of them at random, the prints of a MIXED
-    registrant first (see merge_incremental), then the rest; all of them when there are fewer than k. rng: a random.Random."""
-    first = [x for x in doubled if x.get("mixed")]
-    rest = [x for x in doubled if not x.get("mixed")]
-    take = rng.sample(first, min(k, len(first)))
-    return take + rng.sample(rest, min(k - len(take), len(rest)))
+def pick_sample(doubled, k, rng, cap=MIXED_CAP):
+    """EARN-011. Which held prints SEC serves double-converted have their filing header read this run: EVERY doubled print of a MIXED registrant (see
+    merge_incremental; at most `cap`), and the k others ranked lowest by sha256(salt|ticker|date), salt = rng.getrandbits(64) (all of them when there
+    are fewer than k). A print's rank does not depend on the other prints, so a print that joins the population, or a registrant that turns mixed,
+    between the job's attempts changes the sample by at most one print per newcomer: a refuted print cannot clear itself on the retry by not being
+    drawn again. rng: a random.Random."""
+    salt = rng.getrandbits(64)
+    rank = lambda x: hashlib.sha256(f"{salt}|{x['ticker']}|{x['date']}".encode()).hexdigest()
+    return (sorted((x for x in doubled if x.get("mixed")), key=rank)[:cap]
+            + sorted((x for x in doubled if not x.get("mixed")), key=rank)[:k])
 
 
 def clean(r):
@@ -729,6 +743,24 @@ def append_corrections(entries):
 
 
 # ---------------------------------------------------------------- run
+def writer_running(path):
+    """True when another process holds the book's lock (the nightly job mid-run). Probes WITHOUT keeping it: opens the lock file if one exists, tries a
+    non-blocking exclusive flock and lets go at once. A missing lock file means nothing has ever written here, so nothing is running."""
+    lock = os.path.abspath(path) + ".lock"
+    if not os.path.exists(lock):
+        return False
+    fd = os.open(lock, os.O_RDWR)
+    try:
+        fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except BlockingIOError:
+        return True
+    else:
+        fcntl.flock(fd, fcntl.LOCK_UN)
+        return False
+    finally:
+        os.close(fd)
+
+
 def stats(feed):
     dates = [e["date"] for v in feed.values() for e in v["events"]]
     return len(dates), max(dates) if dates else ""
@@ -784,7 +816,11 @@ def main(argv):
         print(f"REFUSED: {CIK_MAP} is missing - nothing to fetch for; nothing written")
         return 1
     if args.check:
-        print("earnings_8k --check: DRY RUN against live SEC - no lock is taken and nothing is written (no feed, no run stamp, no corrections record)")
+        if writer_running(FEED):
+            print("REFUSED: --check: the feed's lock is held by a running writer (the nightly job?) - a dry run now would double the request rate "
+                  "against SEC. Nothing was fetched or written; try again when it has finished.")
+            return 1
+        print("earnings_8k --check: DRY RUN against live SEC - no lock is held and nothing is written (no feed, no run stamp, no corrections record)")
     else:
         atomicio.hold_book(FEED)                       # BOOK-001: the lock FIRST, then the read (a dry run only reads, and the feed is replaced whole)
     cik_map = json.load(open(CIK_MAP))
@@ -868,11 +904,13 @@ def main(argv):
           f"{n0} -> {n1} prints, newest {newest0} -> {newest1}"
           + ("" if (n_new or explicit) else " · nothing new: the feed is unchanged and was not rewritten")
           + (" · DRY RUN: nothing was written" if args.check else ""))
+    k_s = len(rep["double_sample"])
     sample_ok = sum(1 for s in rep["double_sample"] if s["verdict"] == "ok")
     print(f"  {n_dbl} held prints SEC serves double-converted (+4h EDT / +5h EST) in {tk_dbl} ticker(s); "
-          + (f"a sample of {len(rep['double_sample'])} header-verified: {sample_ok} equal the held stamp"
-             + (" (the feed is right, SEC's JSON is the shifted one)" if sample_ok == len(rep["double_sample"]) else
-                f", {len(rep['double_sample']) - sample_ok} do not (ATTENTION below)") if rep["double_sample"] else "no header sample needed"))
+          + ("no header sample needed" if not n_dbl else "NO header sample was read (ATTENTION below)" if not k_s else
+             f"a sample of {k_s} header-verified: {sample_ok} equal the held stamp"
+             + ((f" (all {n_dbl} are right)" if k_s == n_dbl else f" (those {k_s} are right; the other {n_dbl - k_s} are counted on that sample, not verified)")
+                if sample_ok == k_s else f", {k_s - sample_ok} not confirmed (ATTENTION below)")))
     for s in sorted(rep["double_sample"], key=lambda s: (s["ticker"], s["date"])):
         print(f"  sample {s['ticker']} {s['date']}{' (mixed registrant)' if s['mixed'] else ''}: {s['verdict']} - {s['detail']}")
     for tk, ds in sorted(rep["new"].items()):
@@ -880,6 +918,9 @@ def main(argv):
     for tk, d, verdict, detail in rep["checked"]:
         print(f"  stamp {tk} {d}: {verdict} - {detail}")
     attention = 0
+    if n_dbl and not k_s:                              # a dead sampler must not look clean (Brain section 3)
+        attention += 1
+        print(f"ATTENTION SAMPLE: {n_dbl} held prints are counted as double-converted but no filing header was read for any of them - the rule is UNCHECKED.")
     for e in explicit:
         if e["kind"] == "predecessor":
             print(f"  ADOPTED (explicit, noted) {e['ticker']}: {e['inserted']} print(s) ({e['inserted_2011_or_later']} dated 2011 or later) from "
@@ -927,7 +968,7 @@ def main(argv):
 
 # ---------------------------------------------------------------- selftest (offline)
 def selftest():
-    global PRED, FEED, CORR, RUN, CIK_MAP, get, get_text
+    global PRED, FEED, CORR, RUN, CIK_MAP, get, get_text, DOUBLE_SAMPLE, update
     bad = []
 
     def check(cond, msg):
@@ -1067,7 +1108,12 @@ def selftest():
     mixed_pool = pool + [{"ticker": "M1", "date": "2026-05-28", "mixed": True}, {"ticker": "M2", "date": "2026-05-28", "mixed": True}]
     check(all({"M1", "M2"} <= {y["ticker"] for y in pick_sample(mixed_pool, DOUBLE_SAMPLE, random.Random(sd))} for sd in range(20)), "the prints of a mixed registrant are always in the sample")
     many = [{"ticker": f"M{i}", "date": "2026-05-28", "mixed": True} for i in range(9)] + pool
-    check(all(all(y["mixed"] for y in pick_sample(many, DOUBLE_SAMPLE, random.Random(sd))) for sd in range(20)), "more mixed prints than the sample: the sample is all mixed")
+    got_many = [pick_sample(many, DOUBLE_SAMPLE, random.Random(sd)) for sd in range(20)]
+    check(all(len(x) == 9 + DOUBLE_SAMPLE and sum(1 for y in x if y["mixed"]) == 9 for x in got_many),
+          "EVERY print of a mixed registrant is read however many there are, plus DOUBLE_SAMPLE others")
+    huge = [{"ticker": f"X{i:03d}", "date": "2026-05-28", "mixed": True} for i in range(MIXED_CAP + 50)] + pool
+    got_huge = pick_sample(huge, DOUBLE_SAMPLE, random.Random(1))
+    check(len(got_huge) == MIXED_CAP + DOUBLE_SAMPLE and sum(1 for y in got_huge if y["mixed"]) == MIXED_CAP, "the mixed prints read are capped at MIXED_CAP")
     # 8. verify_new: a deferred print holds back every later one (the feed only takes prints newer than its newest)
     seq = [{"date": "2026-09-28", "accepted": "2026-09-28T20:00:00", "_acc": "A-1"}, {"date": "2026-09-29", "accepted": "2026-09-29T20:00:00", "_acc": "A-2"},
            {"date": "2026-09-30", "accepted": "2026-09-30T20:00:00", "_acc": "A-3"}]
@@ -1483,16 +1529,24 @@ def selftest():
               "CCC": {"cik": "0000000003", "events": [E("2026-06-01")]}}
     e_text = lambda utc_map: (lambda url: hdr_of(utc_map[re.search(r"/([^/]+)\.hdr\.sgml$", url).group(1)]))
 
-    def e2e(argv, feed_obj, pages_obj, text_fn, corr_obj=None):
-        """one main() in a scratch directory with FEED/RUN/CORR/CIK_MAP and the two SEC fetchers replaced. -> (rc, stdout, facts)"""
+    def e2e(argv, feed_obj, pages_obj, text_fn, corr_obj=None, cmap=None, lock=None):
+        """one main() in a scratch directory with FEED/RUN/CORR/CIK_MAP and the two SEC fetchers replaced. lock: None, "idle" (a lock file nobody holds)
+        or "held" (the test holds it, as the nightly job would). -> (rc, stdout, facts)"""
         global FEED, RUN, CORR, CIK_MAP, PRED, get, get_text
         saved = (FEED, RUN, CORR, CIK_MAP, PRED, get, get_text)
         d = _tf2.mkdtemp()
         FEED, RUN, CORR, CIK_MAP, PRED = (os.path.join(d, n) for n in ("feed.json", "run.json", "corr.json", "cik_map.json", "pred.json"))
         try:
-            json.dump(e_cik, open(CIK_MAP, "w"))
+            json.dump(cmap or e_cik, open(CIK_MAP, "w"))
             open(FEED, "w").write(json.dumps(feed_obj))
             os.utime(FEED, (1000000000, 1000000000))                     # a rewrite would move this
+            held_fd = None
+            if lock:
+                held_fd = os.open(FEED + ".lock", os.O_CREAT | os.O_RDWR, 0o644)
+                if lock == "held":
+                    fcntl.flock(held_fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                else:
+                    os.close(held_fd); held_fd = None
             if corr_obj is not None:
                 json.dump(corr_obj, open(CORR, "w"))
             get, get_text = (lambda u: pages_obj[u]), text_fn
@@ -1501,15 +1555,25 @@ def selftest():
                 rc = main(argv)
             facts = {"feed": open(FEED, "rb").read(), "mtime": os.stat(FEED).st_mtime, "run": json.load(open(RUN)) if os.path.exists(RUN) else None,
                      "corr": json.load(open(CORR)) if os.path.exists(CORR) else None, "lock": os.path.exists(FEED + ".lock")}
+            if lock == "idle":                                           # was the lock left free? (a probe must let go at once)
+                probe = os.open(FEED + ".lock", os.O_RDWR)
+                try:
+                    fcntl.flock(probe, fcntl.LOCK_EX | fcntl.LOCK_NB); facts["lock_free_after"] = True
+                except BlockingIOError:
+                    facts["lock_free_after"] = False
+                finally:
+                    os.close(probe)
             return rc, o.getvalue(), facts
         finally:
+            if held_fd is not None:
+                os.close(held_fd)
             FEED, RUN, CORR, CIK_MAP, PRED, get, get_text = saved
             shutil.rmtree(d, ignore_errors=True)
     feed_bytes = json.dumps(e_feed).encode()
     # (a) the 10-02 situation: SEC serves 3 held prints double-converted. Exit 0, ONE summary line, no ATTENTION, the feed byte-identical and not rewritten, no record.
     rc, out, fx = e2e([], e_feed, e_pages(), e_text(e_utc))
     check(rc == 0 and "ATTENTION" not in out, "(a) double-converted held prints alone: exit 0 and no ATTENTION line")
-    check("  3 held prints SEC serves double-converted (+4h EDT / +5h EST) in 2 ticker(s); a sample of 3 header-verified: 3 equal the held stamp (the feed is right, SEC's JSON is the shifted one)\n" in out
+    check("  3 held prints SEC serves double-converted (+4h EDT / +5h EST) in 2 ticker(s); a sample of 3 header-verified: 3 equal the held stamp (all 3 are right)\n" in out
           and out.count("held prints SEC serves double-converted") == 1, "(a) counted in ONE summary line, never per print")
     check(fx["feed"] == feed_bytes and fx["mtime"] == 1000000000 and fx["corr"] is None, "(a) the feed's bytes are identical and it was not rewritten; no corrections record")
     check(fx["run"] and fx["run"]["changed"] == [] and fx["run"]["failed"] == [] and fx["run"]["double_converted"] == 3 and fx["run"]["double_converted_tickers"] == 2
@@ -1521,12 +1585,13 @@ def selftest():
     check(fx["feed"] == feed_bytes and fx["run"]["changed"] == [["AAA", "2026-08-20", "2026-08-20T20:17:37"]], "(b) it is KEPT as held, and the run stamp lists it for the resolver")
     # (c) a SAMPLE MISMATCH alarms: BBB's filing header says 11:30:00 UTC, not the held 10:59:50, though SEC's JSON is the held stamp double-converted
     rc, out, fx = e2e([], e_feed, e_pages(), e_text(dict(e_utc, **{"H-3": "2026-05-14T11:30:00"})))
-    check(rc == 2 and "ATTENTION CHANGED BBB 2026-05-14" in out and "NOT proven" in out and "11:30:00" in out and "do not (ATTENTION below)" in out,
+    check(rc == 2 and "ATTENTION CHANGED BBB 2026-05-14" in out and "NOT proven" in out and "11:30:00" in out and "1 not confirmed (ATTENTION below)" in out,
           "(c) a header-sample print that disagrees with the held stamp exits 2, says so, and says the others rest on the sample")
     check(fx["feed"] == feed_bytes and fx["run"]["changed"] == [["BBB", "2026-05-14", "2026-05-14T10:59:50"]], "(c) the held stamp is KEPT and the run stamp lists the print")
     # (c2) an unreadable sample header alarms too (never counted as agreement)
     rc, out, fx = e2e([], e_feed, e_pages(), lambda url: (_ for _ in ()).throw(ConnectionError("dead")) if "H-3" in url else e_text(e_utc)(url))
-    check(rc == 2 and "ATTENTION FAILED BBB (header sample for 2026-05-14 unreadable" in out and fx["feed"] == feed_bytes, "(c2) a sample header that cannot be read exits 2")
+    check(rc == 2 and "ATTENTION FAILED BBB (header sample for 2026-05-14 unreadable" in out and fx["feed"] == feed_bytes
+          and "a sample of 3 header-verified: 2 equal the held stamp, 1 not confirmed (ATTENTION below)" in out, "(c2) a sample header that cannot be read exits 2, and the summary line does not count it as agreement")
     # (d) --check: the whole pass against (faked) live SEC, a genuinely new print for CCC, and NOTHING written, no lock, no run stamp, no record
     new_ccc = {"C3": [R("2026-06-01", acc="H-4"), R("2026-09-30", acc="H-5")]}                      # e_pages(C3=...) replaces CCC's rows
     e_utc5 = dict(e_utc, **{"H-5": "2026-09-30T20:17:37"})
@@ -1552,6 +1617,63 @@ def selftest():
     # (f) the same print when its header cannot be read: DEFERRED, not written (exit 2), as before
     rc, out, fx = e2e([], e_feed, e_pages(**new_aaa), lambda url: (_ for _ in ()).throw(ConnectionError("dead")) if "H-6" in url else e_text(e_utc)(url))
     check(rc == 2 and "ATTENTION DEFERRED AAA 2026-10-02" in out and json.loads(fx["feed"])["AAA"] == e_feed["AAA"], "(f) a new print whose header cannot be read is still DEFERRED")
+    # (a2) more doubled prints than the sample: the summary line says what was proved and what was counted on the sample
+    f12e, u12e, t12e, c12e = sw_world(12)
+    rc, out, fx = e2e([], f12e, u12e, t12e, cmap={"SW": "0000000021"})
+    check(rc == 0 and "  12 held prints SEC serves double-converted (+4h EDT / +5h EST) in 1 ticker(s); a sample of 4 header-verified: 4 equal the held stamp "
+          "(those 4 are right; the other 8 are counted on that sample, not verified)\n" in out and fx["feed"] == json.dumps(f12e).encode() and fx["mtime"] == 1000000000,
+          "(a2) 12 doubled prints, 4 read: the line says the other 8 are counted on the sample, not verified; nothing written")
+    # (d2) --check with a print that HAS to be normalised: a non-empty ledger would expose a --check that appends
+    rc, out, fx = e2e(["--check"], e_feed, e_pages(**new_aaa), e_text(dict(e_utc, **{"H-6": "2026-10-02T20:15:15"})))
+    check(rc == 0 and "doubled -" in out and fx["feed"] == feed_bytes and fx["run"] is None and fx["corr"] is None and not fx["lock"],
+          "(d2) --check with a print that needs normalising writes no feed, run stamp or corrections record")
+    # (d3) --check refuses while a writer holds the feed's lock, and a lock nobody holds is let go at once
+    rc, out, fx = e2e(["--check"], e_feed, e_pages(), e_text(e_utc), lock="held")
+    check(rc == 1 and "REFUSED" in out and "lock is held" in out and "ATTENTION" not in out and "double-converted" not in out and fx["feed"] == feed_bytes and fx["run"] is None,
+          "(d3) --check refuses to start while the nightly writer holds the feed's lock, fetching and writing nothing")
+    rc, out, fx = e2e(["--check"], e_feed, e_pages(), e_text(e_utc), lock="idle")
+    check(rc == 0 and fx["lock_free_after"] is True and fx["run"] is None and fx["feed"] == feed_bytes, "(d3) an idle lock does not stop --check and the probe leaves it free")
+    # (g) main() seeds the sample with the calendar date; update() draws from the rng it is given
+    seen_seed, real_R = [], random.Random
+    random.Random = lambda *a: (seen_seed.append(a), real_R(*a))[1]
+    try:
+        e2e([], e_feed, e_pages(), e_text(e_utc))
+    finally:
+        random.Random = real_R
+    check(seen_seed == [(dt.date.today().isoformat(),)], "(g) main() seeds the header sample with the calendar date, once")
+    sm = []
+    for seed_ in ("2026-10-03", "2026-10-03", "2026-10-04"):
+        f_, u_, t_, c_ = sw_world(12)
+        _, r_ = update(f_, {"SW": "0000000021"}, lambda u, u_=u_: u_[u], t_, random.Random(seed_))
+        sm.append([x["date"] for x in r_["double_sample"]])
+    check(sm[0] == sm[1] and sm[0] != sm[2], "(g) update() draws from the rng it is given: same seed same prints, another day other prints")
+    # (g2) the job's retry: a print that joins the population, or a registrant that turns mixed, between attempts never swaps a sampled print out
+    pop_ = [{"ticker": f"T{i:02d}", "date": "2026-05-28", "mixed": False} for i in range(60)]
+    s1_ = {(y["ticker"], y["date"]) for y in pick_sample(pop_, DOUBLE_SAMPLE, random.Random("2026-10-03"))}
+    ok_g2 = True
+    for i in range(0, 61, 3):
+        p2 = pop_[:i] + [{"ticker": "T%02dx" % i, "date": "2026-10-03", "mixed": False}] + pop_[i:]
+        ok_g2 &= len(s1_ - {(y["ticker"], y["date"]) for y in pick_sample(p2, DOUBLE_SAMPLE, random.Random("2026-10-03"))}) <= 1
+    for t_ in sorted({t for t, d in s1_}):
+        p3 = [dict(y, mixed=True) if y["ticker"] == t_ else y for y in pop_]
+        ok_g2 &= s1_ <= {(y["ticker"], y["date"]) for y in pick_sample(p3, DOUBLE_SAMPLE, random.Random("2026-10-03"))}
+    check(ok_g2, "(g2) a print that joins the population, or a registrant that turns mixed, between attempts never swaps a sampled print out")
+    # (h) a dead sampler must not look clean: doubled prints counted and no sample read is ATTENTION
+    real_ds, DOUBLE_SAMPLE = DOUBLE_SAMPLE, 0
+    try:
+        rc, out, fx = e2e([], e_feed, e_pages(), e_text(e_utc))
+    finally:
+        DOUBLE_SAMPLE = real_ds
+    check(rc == 2 and "NO header sample was read (ATTENTION below)" in out and "ATTENTION SAMPLE: 3 held prints" in out and fx["feed"] == feed_bytes,
+          "(h) doubled prints counted with no header read at all exits 2: a dead sampler is not a clean run")
+    # (j) main() still refuses to write when the pass moved a held print (the invariant is CALLED, not just defined: Brain section 2)
+    real_update = update
+    update = lambda feed_, *a, **k: (feed_["AAA"]["events"][0].update(accepted="2026-05-28T00:00:00"), real_update(feed_, *a, **k))[1]
+    try:
+        rc, out, fx = e2e([], e_feed, e_pages(), e_text(e_utc))
+    finally:
+        update = real_update
+    check(rc == 1 and "INVARIANT BROKEN" in out and fx["feed"] == feed_bytes and fx["run"] is None, "(j) a pass that moved a held print is REFUSED by main() and writes nothing")
     # 16. the throttle keeps under SEC's 10 requests a second; the feed's format is json.dumps defaults
     check(MIN_GAP_S >= 0.1, "request spacing is at least 0.1s (<= 10/s)")
     check(json.dumps({"a": [1]}) == '{"a": [1]}', "json.dumps default format is the feed's format")
