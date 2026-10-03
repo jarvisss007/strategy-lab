@@ -106,9 +106,9 @@ The 18:10 PT run of 2026-10-02 flagged 1,131 held prints CHANGED and exited 2 on
     held one, nor its evening form, nor its double conversion is still CHANGED, loudly, exactly as before.
   * THE RULE IS CHECKED, NOT TRUSTED. Each run reads the filing header of EVERY doubled print of a MIXED registrant (one SEC serves both ways;
     at most MIXED_CAP) and of DOUBLE_SAMPLE (4) other doubled prints: those with the lowest sha256(salt|ticker|date), the salt drawn from a seed
-    that is the calendar date. A print's rank does not depend on the other prints, so the sample differs from day to day, but a print that joins
-    the feed, or a registrant that turns mixed, between the job's three attempts changes it by at most one print (about 4 in the population
-    size): a refuted print does not clear itself on the retry. A mixed registrant is the only place a wrong held stamp (the New York digits
+    that is the calendar date. A print's rank does not depend on the other prints, so the sample differs from day to day, but between the job's
+    three attempts a print that joins the feed can push out at most one sampled print (about 4 in the population size) and a registrant that
+    turns mixed only adds prints: a refuted print does not clear itself on the retry. A mixed registrant is the only place a wrong held stamp (the New York digits
     EARN-004 fixed) looks exactly like SEC's shift. As measured 2026-10-03 NO registrant is mixed (0 of 133), so today the sample is the uniform
     draw alone, and a registrant with one judged print (SPCX, XOM) cannot be told mixed. A refuted print raises ATTENTION on the nights it is
     read and is not remembered from night to night. A sample print whose header UTC is not the held stamp is ATTENTION CHANGED (exit 2) and says
@@ -138,7 +138,7 @@ Run: /opt/anaconda3/bin/python fetch_earnings_8k.py            # the incremental
      /opt/anaconda3/bin/python fetch_earnings_8k.py --adopt-predecessors XOM --note "why"   # a disclosed one-time succession backfill
      /opt/anaconda3/bin/python fetch_earnings_8k.py --unadopt-predecessors XOM --note "why" # its reversal
      /opt/anaconda3/bin/python fetch_earnings_8k.py --predecessor-label   # the EARN-009 line, read-only
-     /opt/anaconda3/bin/python fetch_earnings_8k.py --check    # EARN-011: the whole pass against live SEC as a DRY RUN, writes nothing, takes no lock
+     /opt/anaconda3/bin/python fetch_earnings_8k.py --check    # EARN-011: the whole pass against live SEC as a DRY RUN, writes nothing, holds no lock
      /opt/anaconda3/bin/python fetch_earnings_8k.py --selftest # offline checks of the merge and stamp rules, writes nothing
 """
 import argparse
@@ -318,8 +318,8 @@ def check_double(cik, e, fetch_text):
 def pick_sample(doubled, k, rng, cap=MIXED_CAP):
     """EARN-011. Which held prints SEC serves double-converted have their filing header read this run: EVERY doubled print of a MIXED registrant (see
     merge_incremental; at most `cap`), and the k others ranked lowest by sha256(salt|ticker|date), salt = rng.getrandbits(64) (all of them when there
-    are fewer than k). A print's rank does not depend on the other prints, so a print that joins the population, or a registrant that turns mixed,
-    between the job's attempts changes the sample by at most one print per newcomer: a refuted print cannot clear itself on the retry by not being
+    are fewer than k). A print's rank does not depend on the other prints, so between the job's attempts a print that joins the population can push
+    out at most one sampled print and a registrant that turns mixed only adds prints: a refuted print cannot clear itself on the retry by not being
     drawn again. rng: a random.Random."""
     salt = rng.getrandbits(64)
     rank = lambda x: hashlib.sha256(f"{salt}|{x['ticker']}|{x['date']}".encode()).hexdigest()
@@ -468,7 +468,7 @@ def update(feed, cik_map, fetch, fetch_text, rng=None):
         rep["checked"] += [(tk,) + x for x in seen]
         rep["doubled"] += [dict(x, ticker=tk, cik=c) for x in doubled]
     # EARN-011: the rule "SEC serves the held stamp double-converted, so it is the same print" is CHECKED each run against the filing's own header
-    # for a random few of those prints (those of a mixed registrant first). A print whose header does not say the held stamp is a CHANGED print;
+    # for every doubled print of a mixed registrant and for a few others drawn by pick_sample. A print whose header does not say the held stamp is a CHANGED print;
     # one whose header cannot be read is a FAILED one: both are ATTENTION, and neither rewrites anything.
     for x in pick_sample(rep["doubled"], DOUBLE_SAMPLE, rng or random.Random()):
         verdict, detail = check_double(x["cik"], x, fetch_text)
@@ -747,9 +747,10 @@ def writer_running(path):
     """True when another process holds the book's lock (the nightly job mid-run). Probes WITHOUT keeping it: opens the lock file if one exists, tries a
     non-blocking exclusive flock and lets go at once. A missing lock file means nothing has ever written here, so nothing is running."""
     lock = os.path.abspath(path) + ".lock"
-    if not os.path.exists(lock):
+    try:
+        fd = os.open(lock, os.O_RDWR)                  # no O_CREAT: a dry run never creates the lock file
+    except FileNotFoundError:
         return False
-    fd = os.open(lock, os.O_RDWR)
     try:
         fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
     except BlockingIOError:
@@ -778,8 +779,8 @@ def main(argv):
     ap.add_argument("--predecessor-label", action="store_true",
                     help="read-only: print the EARN-009 line (which tickers' counts include a predecessor registrant's prints)")
     ap.add_argument("--check", action="store_true",
-                    help="EARN-011 dry run: the whole pass against live SEC with the same output and exit code, taking no lock and writing "
-                         "nothing (no feed, no run stamp, no corrections record)")
+                    help="EARN-011 dry run: the whole pass against live SEC with the same output and exit code, holding no lock (it refuses to "
+                         "start while the nightly writer holds it) and writing nothing (no feed, no run stamp, no corrections record)")
     ap.add_argument("--note", default="", help="why: written to earnings_8k_corrections.json with the correction")
     args = ap.parse_args(argv)
     if args.selftest:
@@ -852,8 +853,8 @@ def main(argv):
         return 1
     before = copy.deepcopy(feed)                       # AFTER an explicit stage: the daily invariant guards only the pass that follows
     try:
-        # the header sample is drawn from a seed that is the calendar date: still a different sample every day, but the job's retries (3 attempts,
-        # 10 minutes apart) re-read the SAME prints, so a refuted sample print cannot clear itself on attempt 2 by not being drawn again
+        # the header sample is drawn from a seed that is the calendar date: a different sample every day, but a retry (3 attempts, 10 minutes apart)
+        # keeps every print its first attempt read except at most one per newcomer (pick_sample), so a refuted print does not clear itself on attempt 2
         feed, rep = update(feed, cik_map, get, get_text, random.Random(dt.date.today().isoformat()))
         assert_nothing_moved(before, feed)
     except Refused as e:
@@ -944,8 +945,10 @@ def main(argv):
         attention += 1
         if (tk, d) in refuted:                         # a header-sample print: SEC serves its double conversion, the filing header disagrees with the held stamp
             s = refuted[(tk, d)]
+            rest = (f"{n_dbl - k_s} double-converted prints were not header-read this run: they are counted on the strength of the sample and are NOT proven."
+                    if n_dbl > k_s else f"All {n_dbl} double-converted prints were header-read this run.")
             print(f"ATTENTION CHANGED {tk} {d}: the feed holds accepted {a} and SEC serves {s['json']} (the held stamp double-converted), but "
-                  f"{s['detail']} - KEPT as held. The other {n_dbl - 1} double-converted prints are counted on the strength of this sample and are NOT proven.")
+                  f"{s['detail']} - KEPT as held. {rest}")
             continue
         print(f"ATTENTION CHANGED {tk} {d}: the feed holds accepted {a}, SEC lists that date with another stamp - KEPT as held.")
     for x in rep["cik_moved"]:
@@ -1585,9 +1588,14 @@ def selftest():
     check(fx["feed"] == feed_bytes and fx["run"]["changed"] == [["AAA", "2026-08-20", "2026-08-20T20:17:37"]], "(b) it is KEPT as held, and the run stamp lists it for the resolver")
     # (c) a SAMPLE MISMATCH alarms: BBB's filing header says 11:30:00 UTC, not the held 10:59:50, though SEC's JSON is the held stamp double-converted
     rc, out, fx = e2e([], e_feed, e_pages(), e_text(dict(e_utc, **{"H-3": "2026-05-14T11:30:00"})))
-    check(rc == 2 and "ATTENTION CHANGED BBB 2026-05-14" in out and "NOT proven" in out and "11:30:00" in out and "1 not confirmed (ATTENTION below)" in out,
-          "(c) a header-sample print that disagrees with the held stamp exits 2, says so, and says the others rest on the sample")
+    check(rc == 2 and "ATTENTION CHANGED BBB 2026-05-14" in out and "All 3 double-converted prints were header-read this run." in out and "11:30:00" in out
+          and "1 not confirmed (ATTENTION below)" in out, "(c) a header-sample print that disagrees with the held stamp exits 2 and says so (here every doubled print was read)")
     check(fx["feed"] == feed_bytes and fx["run"]["changed"] == [["BBB", "2026-05-14", "2026-05-14T10:59:50"]], "(c) the held stamp is KEPT and the run stamp lists the print")
+    # (c3) more doubled prints than the sample, every header wrong: each sampled print alarms and the message counts the prints that were NOT read
+    f12c, u12c, t12c, c12c = sw_world(12, {f"S-{i}": "2026-01-01T00:00:00" for i in range(12)})
+    rc, out, fx = e2e([], f12c, u12c, t12c, cmap={"SW": "0000000021"})
+    check(rc == 2 and out.count("ATTENTION CHANGED SW ") == DOUBLE_SAMPLE and out.count("8 double-converted prints were not header-read this run") == DOUBLE_SAMPLE
+          and "NOT proven" in out and fx["feed"] == json.dumps(f12c).encode(), "(c3) 12 doubled prints, all refuted: every sampled print alarms, 8 are said to be unread and NOT proven")
     # (c2) an unreadable sample header alarms too (never counted as agreement)
     rc, out, fx = e2e([], e_feed, e_pages(), lambda url: (_ for _ in ()).throw(ConnectionError("dead")) if "H-3" in url else e_text(e_utc)(url))
     check(rc == 2 and "ATTENTION FAILED BBB (header sample for 2026-05-14 unreadable" in out and fx["feed"] == feed_bytes

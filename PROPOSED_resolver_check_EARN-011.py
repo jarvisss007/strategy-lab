@@ -1,16 +1,18 @@
-"""PROPOSED resolver checks for EARN-011 - handed to the session that owns command-center/council/resolver.py. NOT wired.
+"""PROPOSED resolver checks for EARN-011 - handed to the session that owns the council resolver. NOT wired.
 
 Each check returns (ok: bool, message: str) like every resolver check. Every name carries the _earn011_ / _EARN011_ prefix so it cannot collide with an
 existing check or constant (helpers share the prefix and return other types; only the three below are checks). Suggested registry lines for the
 CHECKS dict in resolver.py:
 
-    "earn011_last_exit_explained": _earn011_last_exit_explained,            # judges EARN-004's "the last run exited 2" in light of the summary line
+    "earn011_last_exit_judged": _earn011_last_exit_judged,                  # judges EARN-004's "the last run exited 2" in light of the summary line
     "earn011_fetcher_carries_the_fix": _earn011_fetcher_carries_the_fix,    # the fetcher's guard is the fixed one and its offline selftest passes
     "earn011_last_run_proves_the_fix": _earn011_last_run_proves_the_fix,    # the row's CLOSING check: a run of the fixed script exited 0 with the summary line
 
-EARN-011's own register row has check "" today; once the first nightly run of the fixed script exists, `earn011_last_run_proves_the_fix` is the check to put
-there. Read-only: nothing here writes a file or touches the network. The only subprocesses are `launchctl print` (what edgar_feed_is_current already
-reads) and the fetcher's offline `--selftest`, which writes nothing outside its own temp directories.
+WIRING. EARN-011's own register row has check "" today. Put `earn011_last_run_proves_the_fix` there until it passes for the first time (the first 18:10 PT
+run of the fixed script), then switch the row to `earn011_fetcher_carries_the_fix`: a permanent nightly "proves" would reopen EARN-011 on any later real alarm,
+which EARN-004's own check already owns. `earn011_last_exit_judged` is a diagnostic beside EARN-004's check, not a closing check. Read-only: nothing here
+writes a file or touches the network. The only subprocesses are `launchctl print` (what edgar_feed_is_current already reads) and the fetcher's offline
+`--selftest` (run with -B from a neutral directory, so it writes no .pyc into the lab either).
 
 WHY THESE CHECKS EXIST. SEC's submissions JSON now serves some registrants' acceptance stamps double-converted (the true UTC stamp read as New York
 time and converted again). Before the fix the daily pass called every such held print CHANGED: the 18:10 PT run of 2026-10-02 printed 1,131 ATTENTION
@@ -19,12 +21,16 @@ summary line, `N held prints SEC serves double-converted (+4h EDT / +5h EST) in 
 means a real ATTENTION line (a CHANGED print, a refuted or unreadable header sample, a failed ticker, a deferred print...). So the same exit code now
 reads two ways, and the summary line is what tells them apart:
 
-  earn011_last_exit_explained. Reads ~/bin/logs/edgar-8k.log (the LAST run: its final attempt, the one launchd records) and launchd's last exit code.
+  earn011_last_exit_judged. Reads ~/bin/logs/edgar-8k.log (the LAST run: its final attempt, the one launchd records) and launchd's last exit code.
     exit 0 or never exited                              -> passes (nothing to judge).
+    a last attempt with no 'done' line                  -> passes while the log is fresh (a run in progress), FAILS once it has been silent for 45 minutes
+                                                           (the retry loop's longest pause is 10): a run that never finished is not "in progress".
     exit 2, the attempt HAS the summary line and ATTENTION lines -> FAILS and names them: the exit is REAL, the double-conversion count is not among them.
     exit 2, the attempt HAS the summary line and NO ATTENTION line -> FAILS: the log and the exit code disagree.
-    exit 2, the attempt has NO summary line and only ATTENTION CHANGED lines -> PASSES, saying so: this is the EARN-011 flood of a run made before the fix
-      (the 2026-10-02 18:10 run), not a new defect; the next 18:10 run of the fixed script decides, and earn011_last_run_proves_the_fix stays red until it has.
+    exit 2, the attempt has NO summary line and only ATTENTION CHANGED lines -> FAILS, as `EXPLAINED, NOT CURED`: this is what the script BEFORE the fix prints
+      when SEC serves held prints double-converted (the 2026-10-02 18:10 run), but that script could not tell a real change from the flood, so it does not
+      show that none was real; the next 18:10 run of the fixed script decides. It must not PASS: a pass means "nothing to do" and can auto-close a row, and
+      the text it keys on (the absence of the summary line) is exactly what a wording change would silently turn into "explained".
     exit 2, no summary line, any other ATTENTION kind / exit 1 / any other code -> FAILS and says what it saw.
   earn011_fetcher_carries_the_fix. fetch_earnings_8k.py parses; verify_new() has NO opt-out parameter (it is (cik, prints, fetch_text): the 14-day
     cut-off that let a backfill take SEC's stamp unchecked cannot come back); FRESH_DAYS is not defined; to_double_converted, check_double and
@@ -37,10 +43,10 @@ reads two ways, and the summary line is what tells them apart:
 
 WHAT THEY CANNOT SHOW. A random sample reads 4 of N doubled prints: the sample proves the RULE is holding, not that every print was looked at (the
 fetcher's docstring says so, and that no registrant was mixed on 2026-10-03). The log is append-only and shared by every run; a run that died before its
-'done' line is reported as in progress, not judged.
+'done' line is reported as in progress until the log has been silent for 45 minutes, then fails.
 
 Run it by hand: /opt/anaconda3/bin/python PROPOSED_resolver_check_EARN-011.py             # the three checks against the live state, a report
-                /opt/anaconda3/bin/python PROPOSED_resolver_check_EARN-011.py --selftest  # 36 fixture scenarios (fake log, run stamp, fetcher); no live state
+                /opt/anaconda3/bin/python PROPOSED_resolver_check_EARN-011.py --selftest  # 37 fixture scenarios (fake log, run stamp, fetcher); no live state
 """
 import ast
 import json
@@ -48,12 +54,14 @@ import os
 import re
 import subprocess
 import sys
+import tempfile
+import time
 
-_E11_HOME = os.path.expanduser("~")
-_EARN011_SL = f"{_E11_HOME}/strategy-lab"
+_EARN011_HOME = os.path.expanduser("~")
+_EARN011_SL = f"{_EARN011_HOME}/strategy-lab"
 _EARN011_FETCHER = f"{_EARN011_SL}/fetch_earnings_8k.py"
 _EARN011_RUN = f"{_EARN011_SL}/data/edgar/earnings_8k_run.json"
-_EARN011_LOG = f"{_E11_HOME}/bin/logs/edgar-8k.log"
+_EARN011_LOG = f"{_EARN011_HOME}/bin/logs/edgar-8k.log"
 _EARN011_LABEL = "com.anupam.edgar-8k"
 _EARN011_SUMMARY = re.compile(r"^\s+(\d+) held prints SEC serves double-converted \(\+4h EDT / \+5h EST\) in (\d+) ticker\(s\); (.*)$", re.M)
 _EARN011_ATTENTION = re.compile(r"^ATTENTION (CIK MOVED|[A-Z]+)\b", re.M)
@@ -95,13 +103,20 @@ def _earn011_attention_kinds(block):
     return kinds
 
 
-def _earn011_last_exit_explained():
+def _earn011_last_exit_judged():
     """Judges EARN-004's 'the last edgar-8k run exited 2' in light of the EARN-011 summary line (see the module docstring for the table)."""
     run = _earn011_last_run()
     code = _earn011_launchd_code()
     if run is None:
         return False, f"{_EARN011_LOG} holds no edgar-8k run to judge"
     if not run["done"]:
+        try:
+            idle = (time.time() - os.path.getmtime(_EARN011_LOG)) / 60
+        except OSError:
+            idle = 0.0
+        if idle > 45:                                  # the retry loop's longest silence is its 10-minute sleep
+            return False, (f"attempt {run['attempt']} of the last run has no 'done' line and the log has been silent for {idle:.0f} minutes: "
+                           f"a run that never finished")
         return True, f"attempt {run['attempt']} of the last run has no 'done' line yet: a run is in progress, not judged"
     if run["exit"] == 0:
         s = _EARN011_SUMMARY.search(run["block"])
@@ -118,9 +133,9 @@ def _earn011_last_exit_explained():
     if run["exit"] == 2 and s:
         return False, f"the last run exited 2 and printed the EARN-011 summary line but no ATTENTION line: the log and the exit code disagree ({_EARN011_LOG})"
     if run["exit"] == 2 and kinds and set(kinds) == {"CHANGED"}:
-        return True, (f"the last run (finished {run['finished']}) exited 2 with {kinds['CHANGED']} ATTENTION CHANGED line(s) and NO EARN-011 summary line: "
-                      f"the flood of a run made before the fix (SEC serving held prints double-converted), not a new defect; the next 18:10 PT run of the "
-                      f"fixed script decides, and earn011_last_run_proves_the_fix stays red until it has")
+        return False, (f"EXPLAINED, NOT CURED: the last run (finished {run['finished']}) exited 2 with {kinds['CHANGED']} ATTENTION CHANGED line(s) and no "
+                       f"EARN-011 summary line, which is what the script BEFORE the fix prints when SEC serves held prints double-converted. That script "
+                       f"cannot tell a real change from the flood, so this does not show that none is real; the next 18:10 PT run of the fixed script decides")
     return False, (f"the last run (finished {run['finished']}) exited {run['exit']} with {listed} and no EARN-011 summary line: "
                    f"not the EARN-011 flood, read {_EARN011_LOG}")
 
@@ -151,7 +166,7 @@ def _earn011_fetcher_carries_the_fix():
     if "--check" not in (ast.get_source_segment(source, funcs["main"]) or ""):
         return False, "main() no longer offers --check (the dry run)"
     try:
-        p = subprocess.run([_EARN011_PYTHON, _EARN011_FETCHER, "--selftest"], capture_output=True, text=True, timeout=600, cwd=_EARN011_SL)
+        p = subprocess.run([_EARN011_PYTHON, "-B", _EARN011_FETCHER, "--selftest"], capture_output=True, text=True, timeout=600, cwd=tempfile.gettempdir())
     except Exception as e:                             # noqa: BLE001 - reported
         return False, f"fetch_earnings_8k.py --selftest could not be run: {type(e).__name__}: {e}"
     if p.returncode != 0 or "selftest: PASS" not in (p.stdout or ""):
@@ -172,7 +187,7 @@ def _earn011_last_run_proves_the_fix():
     if run is None or not run["done"]:
         return False, "NOT yet proven: the log has no finished run"
     if run["exit"] != 0:
-        return False, f"the last run of the fixed script exited {run['exit']}, not 0: {_earn011_last_exit_explained()[1]}"
+        return False, f"the last run of the fixed script exited {run['exit']}, not 0: {_earn011_last_exit_judged()[1]}"
     s = _EARN011_SUMMARY.search(run["block"])
     if not s:
         return False, "the last run exited 0 but its attempt printed no EARN-011 summary line (the stamp says it is the fixed script): the log and the stamp disagree"
@@ -197,7 +212,6 @@ def _earn011_last_run_proves_the_fix():
 
 def _earn011_selftest():
     """Every branch of the three checks against fixtures in a temp directory: a fake edgar-8k log, run stamp and fetcher. Touches no live file."""
-    import tempfile
     g = globals()
     names = ("_EARN011_LOG", "_EARN011_RUN", "_EARN011_FETCHER", "_EARN011_SL", "_earn011_launchd_code")
     saved = {n: g[n] for n in names}
@@ -219,14 +233,15 @@ def _earn011_selftest():
         g["_EARN011_LOG"] = os.path.join(d, "log.txt")
         open(g["_EARN011_LOG"], "w").write(log) if log is not None else (os.path.exists(g["_EARN011_LOG"]) and os.remove(g["_EARN011_LOG"]))
         g["_earn011_launchd_code"] = lambda: code
-        return _earn011_last_exit_explained()
+        return _earn011_last_exit_judged()
     try:
         ok, m = run_exp(older + head(1) + "x\n" + summ() + done(0), "0")
         check(ok and "1743 double-converted in 68 ticker(s)" in m, "exit 0 with the summary line passes and quotes it")
         ok, m = run_exp(older + head(1) + "x\n" + done(0), "0")
         check(ok and "script before the fix" in m, "exit 0 without a summary line (an old run) passes")
         ok, m = run_exp(older + head(1) + chg + done(2), "2")
-        check(ok and "3 ATTENTION CHANGED" in m and "before the fix" in m and "stays red" in m, "exit 2, no summary, only CHANGED: the pre-fix flood, passes and says why")
+        check(not ok and "EXPLAINED, NOT CURED" in m and "3 ATTENTION CHANGED" in m and "cannot tell a real change" in m,
+              "exit 2, no summary, only CHANGED: the pre-fix flood is explained but FAILS (a pass could auto-close a row)")
         ok, m = run_exp(older + head(1) + summ() + chg + done(2), "2")
         check(not ok and "REAL reason: 3 CHANGED" in m and "1743" in m, "exit 2 WITH the summary line and CHANGED lines is real")
         ok, m = run_exp(older + head(1) + summ() + done(2), "2")
@@ -240,7 +255,11 @@ def _earn011_selftest():
         ok, m = run_exp(older + head(1) + "REFUSED: SEC answered for 3 of 144 tickers\n" + done(1), "1")
         check(not ok and "exited 1" in m, "exit 1 (REFUSED) fails")
         ok, m = run_exp(older + head(1) + "earnings_8k: SEC answered\n", None)
-        check(ok and "in progress" in m, "a last attempt with no 'done' line is in progress: not judged")
+        check(ok and "in progress" in m, "a last attempt with no 'done' line and a fresh log is in progress: not judged")
+        three_hours_ago = time.time() - 3 * 3600
+        os.utime(g["_EARN011_LOG"], (three_hours_ago, three_hours_ago))
+        ok, m = _earn011_last_exit_judged()
+        check(not ok and "never finished" in m and "silent for 180 minutes" in m, "...and a log silent for 3 hours means a run that never finished: FAILS")
         ok, m = run_exp(older + head(1) + summ() + chg + done(2), "0")
         check(not ok and "launchd records last exit code 0" in m, "launchd and the log disagreeing is reported")
         ok, m = run_exp(head(1) + chg + done(2) + head(1) + "x\n" + summ() + done(0), "0")
@@ -328,7 +347,7 @@ if __name__ == "__main__" and "--selftest" in sys.argv:
 
 if __name__ == "__main__":
     results = []
-    for fn in (_earn011_last_exit_explained, _earn011_fetcher_carries_the_fix, _earn011_last_run_proves_the_fix):
+    for fn in (_earn011_last_exit_judged, _earn011_fetcher_carries_the_fix, _earn011_last_run_proves_the_fix):
         ok, msg = fn()
         results.append(ok)
         print(f"{'PASS' if ok else 'FAIL'}  {fn.__name__}: {msg}")
