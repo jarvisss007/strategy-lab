@@ -1,5 +1,5 @@
 {
- "built": "2026-09-28 06:12 PDT",
+ "built": "2026-10-04 10:43 PDT",
  "gap_threshold": 0.04,
  "vol_threshold": 2.0,
  "event_study": {
@@ -6691,16 +6691,6 @@
  },
  "upcoming_universe": [
   {
-   "date": "2026-09-30",
-   "ticker": "MU",
-   "when": "time-after-hours"
-  },
-  {
-   "date": "2026-10-01",
-   "ticker": "NKE",
-   "when": "time-after-hours"
-  },
-  {
    "date": "2026-10-08",
    "ticker": "PEP",
    "when": "time-pre-market"
@@ -6709,9 +6699,59 @@
    "date": "2026-10-08",
    "ticker": "PKE",
    "when": "time-not-supplied"
+  },
+  {
+   "date": "2026-10-13",
+   "ticker": "JPM",
+   "when": "time-pre-market"
+  },
+  {
+   "date": "2026-10-13",
+   "ticker": "JNJ",
+   "when": "time-pre-market"
+  },
+  {
+   "date": "2026-10-13",
+   "ticker": "UNH",
+   "when": "time-pre-market"
+  },
+  {
+   "date": "2026-10-13",
+   "ticker": "GS",
+   "when": "time-pre-market"
+  },
+  {
+   "date": "2026-10-14",
+   "ticker": "ASML",
+   "when": "time-pre-market"
+  },
+  {
+   "date": "2026-10-14",
+   "ticker": "BAC",
+   "when": "time-pre-market"
+  },
+  {
+   "date": "2026-10-14",
+   "ticker": "MS",
+   "when": "time-pre-market"
+  },
+  {
+   "date": "2026-10-14",
+   "ticker": "WFC",
+   "when": "time-pre-market"
+  },
+  {
+   "date": "2026-10-15",
+   "ticker": "TSM",
+   "when": "time-pre-market"
+  },
+  {
+   "date": "2026-10-15",
+   "ticker": "SCHW",
+   "when": "time-pre-market"
   }
  ],
- "upcoming_all_count": 119,
+ "upcoming_all_count": 99,
  "calendar_status": "ok",
  "calendar_days_ok": 10,
  "calendar_days_err": 0,
