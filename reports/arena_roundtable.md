@@ -1,10 +1,10 @@
 # Arena Roundtable — 2026-10-04
 
-Tape: **calm-up** · session 2026-10-02 · 12 agents · opened 20, closed 43 this session · 116 open · 2692 forward closes all-time
+Tape: **calm-up** · session 2026-10-02 · 12 agents · opened 20, closed 43 this session · 115 open · 2694 forward closes all-time
 
-> **This lab is 70% of the desk's scored record (2692 of 3869 scored rows in the Calibration Observatory).** Any pooled desk statistic is therefore mostly a statement about the Arena, not about the desk. Read the other labs' standings on their own n.
+> **This lab is 70% of the desk's scored record (2694 of 3872 scored rows in the Calibration Observatory).** Any pooled desk statistic is therefore mostly a statement about the Arena, not about the desk. Read the other labs' standings on their own n.
 
-**Drain (ARENA-003).** 0 of 116 open rows read `days_left <= 0`; 0 of those are PAST due (negative). 43 closed this session, 2692 all-time. No due rows on the book. This pass ran outside market hours, so every due row was eligible to close.
+**Drain (ARENA-003).** 0 of 115 open rows read `days_left <= 0`; 0 of those are PAST due (negative). 43 closed this session, 2694 all-time. No due rows on the book. This pass ran outside market hours, so every due row was eligible to close.
 
 - Tape today: CALM-UP. Our pooled record in this weather — hot hands: FRESH_HIGH (+231), PULLBACK_50 (+28), DEEP_DIP (+11); cold hands: RSI2_DIP (-36), TREND_RIDER (-180). (History, not prophecy.)
 - FRESH_HIGH and SHORT_EXT enter on the same bar 42% of the time — one trade, two directions. The pooled ledger says the long side wins that argument; the skeptic keeps paying for the lesson.
@@ -33,7 +33,7 @@ Entry DAYS, not trades — same-day entries share one regime and are one observa
 - BOLL_SNAP: **38** entry days — **test LIVE (>=15)**
 - TREND_RIDER: **27** entry days — **test LIVE (>=15)**
 - DEEP_DIP: **24** entry days — **test LIVE (>=15)**
-- FRESH_HIGH: **21** entry days — **test LIVE (>=15)**
+- FRESH_HIGH: **22** entry days — **test LIVE (>=15)**
 - SHORT_EXT: **11** entry days
 - STORM_DIP: **1** entry days
 
@@ -46,14 +46,14 @@ _Rows that share an entry date share one tape (Firm Brain #4). S17: each entry d
 - PANIC_LITE: per-entry-day mean +21 bps over 45 entry days (row mean +6, n=646) · win rate per entry day 49% (row hit 47%)
 - DOUBLE_DIP: per-entry-day mean +37 bps over 40 entry days (row mean +83, n=265) · win rate per entry day 48% (row hit 52%)
 - STORM_DIP: per-entry-day mean +1217 bps over 1 entry day - one event, no inference (row mean +1217, n=40) · win rate per entry day 100% (row hit 90%)
-- FRESH_HIGH: per-entry-day mean -174 bps over 21 entry days (row mean -100, n=50) · win rate per entry day 43% (row hit 40%)
+- FRESH_HIGH: per-entry-day mean -166 bps over 22 entry days (row mean -96, n=52) · win rate per entry day 46% (row hit 40%)
 - SHORT_EXT: per-entry-day mean +76 bps over 11 entry days (row mean +223, n=24) · win rate per entry day 46% (row hit 54%)
 - TREND_RIDER: per-entry-day mean -64 bps over 27 entry days (row mean -72, n=76) · win rate per entry day 48% (row hit 50%)
 - RSI2_DIP: per-entry-day mean +25 bps over 47 entry days (row mean +2, n=522) · win rate per entry day 47% (row hit 45%)
 - REVERSAL_3: per-entry-day mean +21 bps over 44 entry days (row mean +17, n=305) · win rate per entry day 43% (row hit 48%)
 - BOLL_SNAP: per-entry-day mean +38 bps over 38 entry days (row mean +247, n=185) · win rate per entry day 55% (row hit 57%)
 - PULLBACK_50: per-entry-day mean +58 bps over 43 entry days (row mean +69, n=199) · win rate per entry day 60% (row hit 54%)
-- Exits on copied/zero-volume bars: **0** of 2394 forward exits tested; 298 exit(s) have no bar in data/open, close and volume.csv to test, counted untested, not clean
+- Exits on copied/zero-volume bars: **0** of 2394 forward exits tested; 300 exit(s) have no bar in data/open, close and volume.csv to test, counted untested, not clean
 
 ## Notes to the desk
 

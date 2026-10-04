@@ -169,30 +169,6 @@
    "regime": "calm-up"
   },
   {
-   "strategy": "FRESH_HIGH",
-   "ticker": "ES=F",
-   "side": 1,
-   "hold": 10,
-   "entry_date": "2026-09-21",
-   "entry_t": 20717,
-   "entry_px": 7830.5,
-   "mtm": -0.0088,
-   "days_left": 1,
-   "regime": "calm-up"
-  },
-  {
-   "strategy": "FRESH_HIGH",
-   "ticker": "NQ=F",
-   "side": 1,
-   "hold": 10,
-   "entry_date": "2026-09-21",
-   "entry_t": 20717,
-   "entry_px": 30775.75,
-   "mtm": 0.00729,
-   "days_left": 1,
-   "regime": "calm-up"
-  },
-  {
    "strategy": "TREND_RIDER",
    "ticker": "SCHW",
    "side": 1,
@@ -1390,6 +1366,18 @@
    "entry_px": 85.67,
    "mtm": -0.00223,
    "days_left": 3,
+   "regime": "calm-up"
+  },
+  {
+   "strategy": "FRESH_HIGH",
+   "ticker": "NQ=F",
+   "side": 1,
+   "hold": 10,
+   "entry_date": "2026-10-04",
+   "entry_t": 20730,
+   "entry_px": 31133.0,
+   "mtm": -0.00108,
+   "days_left": 10,
    "regime": "calm-up"
   }
  ]
