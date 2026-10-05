@@ -1347,7 +1347,7 @@ window.RETURNS_DATA = {
    "horizon": 1,
    "n": 443745,
    "corr": -0.0128,
-   "pvalue": 1.2383201723127887e-17,
+   "pvalue": 1.2383437539434772e-17,
    "sign_hit": 48.3,
    "kind": "reversal"
   },
@@ -1355,7 +1355,7 @@ window.RETURNS_DATA = {
    "horizon": 2,
    "n": 221784,
    "corr": -0.0004,
-   "pvalue": 0.8657938311562895,
+   "pvalue": 0.8657886395754067,
    "sign_hit": 49.8,
    "kind": "reversal"
   },
@@ -1363,7 +1363,7 @@ window.RETURNS_DATA = {
    "horizon": 5,
    "n": 88536,
    "corr": -0.0028,
-   "pvalue": 0.4001205712574903,
+   "pvalue": 0.4001178555291084,
    "sign_hit": 49.6,
    "kind": "reversal"
   },
@@ -1371,7 +1371,7 @@ window.RETURNS_DATA = {
    "horizon": 10,
    "n": 44181,
    "corr": 0.0343,
-   "pvalue": 5.150344587271091e-13,
+   "pvalue": 5.15028625786294e-13,
    "sign_hit": 50.8,
    "kind": "momentum"
   },
@@ -1379,7 +1379,7 @@ window.RETURNS_DATA = {
    "horizon": 21,
    "n": 20898,
    "corr": 0.0001,
-   "pvalue": 0.9853658982091148,
+   "pvalue": 0.9853647317683032,
    "sign_hit": 50.4,
    "kind": "momentum"
   },
@@ -1387,7 +1387,7 @@ window.RETURNS_DATA = {
    "horizon": 63,
    "n": 6784,
    "corr": 0.0055,
-   "pvalue": 0.6477441610086461,
+   "pvalue": 0.647744726606247,
    "sign_hit": 53.9,
    "kind": "momentum"
   }
