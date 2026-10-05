@@ -1,9 +1,52 @@
 {
- "generated": "2026-09-30 22:45 PT",
- "open": [],
+ "generated": "2026-10-05 13:50 PT",
+ "open": [
+  {
+   "ticker": "LIN",
+   "entry_px": 474.65,
+   "now_px": 482.38,
+   "pnl_pct": 1.63,
+   "opened": "2026-09-30"
+  },
+  {
+   "ticker": "MOH",
+   "entry_px": 189.1,
+   "now_px": 194.05,
+   "pnl_pct": 2.62,
+   "opened": "2026-09-30"
+  },
+  {
+   "ticker": "NKE",
+   "entry_px": 35.4,
+   "now_px": 33.96,
+   "pnl_pct": -4.07,
+   "opened": "2026-09-30"
+  },
+  {
+   "ticker": "PEP",
+   "entry_px": 126.72,
+   "now_px": 125.65,
+   "pnl_pct": -0.84,
+   "opened": "2026-09-30"
+  },
+  {
+   "ticker": "TXT",
+   "entry_px": 76.2,
+   "now_px": 75.75,
+   "pnl_pct": -0.59,
+   "opened": "2026-09-30"
+  },
+  {
+   "ticker": "UNH",
+   "entry_px": 367.08,
+   "now_px": 378.58,
+   "pnl_pct": 3.13,
+   "opened": "2026-09-30"
+  }
+ ],
  "open_n": 6,
  "closed_n": 0,
  "avg_excess_pct": null,
- "next_formation": "2026-09-30",
+ "next_formation": "2026-12-31",
  "rule": "FAMILY 9 frozen: own-history valuation pctile <= 20 (>=20 prior quarters) AND Piotroski F >= 6; $2,000 units; exit at pctile > 50 or 6 months; excess vs SPY"
 }
