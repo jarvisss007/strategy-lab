@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """Pull 15y daily VOLUME for the universe (for microstructure/liquidity hypotheses).
 Writes data/volume.csv. Run: /opt/anaconda3/bin/python fetch_volume.py"""
-import csv, json, os, time, urllib.request
+import csv, io, json, os, time, urllib.request
 from datetime import datetime, timezone
 
 from panel_guard import report, trim_incomplete_tail
+from atomicio import atomic_write_text   # BOOK-001: never truncate a shared panel in place
 
 BASE = os.path.dirname(os.path.abspath(__file__))
 UA = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)"}
@@ -46,11 +47,13 @@ def main():
     dates = sorted({dt for d in vol.values() for dt in d})
     dates, dropped = trim_incomplete_tail(dates, vol, ok)   # see panel_guard.py
     report(dropped)
-    with open(os.path.join(BASE, "data", "volume.csv"), "w", newline="") as f:
-        w = csv.writer(f)
-        w.writerow(["date"] + ok)
-        for dt in dates:
-            w.writerow([dt] + [vol[s].get(dt, "") for s in ok])
+    # SWEEP-003 / BOOK-001: data/volume.csv is read by the labs' backtests; write beside and replace, never truncate in place (same bytes as before).
+    buf = io.StringIO()
+    w = csv.writer(buf)
+    w.writerow(["date"] + ok)
+    for dt in dates:
+        w.writerow([dt] + [vol[s].get(dt, "") for s in ok])
+    atomic_write_text(os.path.join(BASE, "data", "volume.csv"), buf.getvalue())
     print(f"OK {len(ok)} tickers, {len(dates)} dates {dates[0]}..{dates[-1]}")
 
 
