@@ -111,7 +111,12 @@ def already_logged(date):
 
 
 def main(argv=None):
-    dry = "--dry-run" in (sys.argv[1:] if argv is None else argv)
+    args = sys.argv[1:] if argv is None else list(argv)
+    unknown = [a for a in args if a != "--dry-run"]
+    if unknown:                  # a mistyped flag (--dryrun, --help) must not fall through to a REAL run that appends to the log
+        print(f"record_daytype.py: unknown argument(s) {unknown}; the only flag is --dry-run. Nothing fetched, nothing written.", file=sys.stderr)
+        raise SystemExit(2)
+    dry = "--dry-run" in args
     names = record_names()
     rows, logdate, nodata = [], None, []
     for s in names:

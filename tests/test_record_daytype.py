@@ -11,6 +11,7 @@ it reached zero: no row was written for nine sessions and the old task called it
  4 a missing or empty universe file falls back to the watchlist; both empty -> no names -> the 'no intraday data' line (the wrapper calls that BROKEN)
  5 names that return no bars are named in the line, and do not stop the others
  6 the recorded rows equal analyze() of the stub bars (the row definition did not change)
+ 6b an unknown flag (--help, a mistyped --dryrun) exits 2 before fetching or writing anything
  7 daytype_gaps.csv lists every NYSE session between the last row logged before the starvation and the first session of the new rule (nothing is silently missing)
 """
 import csv
@@ -112,6 +113,14 @@ def test_06_a_row_is_still_analyze_of_the_bars(lab):
     want = R.analyze(_bars(ord("A")))
     for k in HEADER[2:]:
         assert float(r[k]) == pytest.approx(float(want[k])) if k != "regime" else r[k] == want[k]
+
+
+def test_06b_an_unknown_flag_never_falls_through_to_a_real_run(lab, capsys):
+    for flag in ("--help", "--dryrun", "-h"):
+        with pytest.raises(SystemExit) as e:
+            R.main([flag])
+        assert e.value.code == 2
+    assert capsys.readouterr().err.count("unknown argument(s)") == 3 and not (lab / "daytype_log.csv").exists()
 
 
 def test_07_every_lost_session_is_listed_in_the_gaps_file():
