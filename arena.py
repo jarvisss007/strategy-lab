@@ -33,7 +33,7 @@ Run: /opt/anaconda3/bin/python arena.py            (after stock-radar collector)
 """
 import csv, json, math, os
 from datetime import date, timedelta
-from atomicio import atomic_json, atomic_write_text   # BOOK-001: never truncate a book in place
+from atomicio import atomic_json, atomic_write_text, atomic_csv   # BOOK-001: never truncate a book in place
 
 HOME = os.path.expanduser("~")
 LAB = os.path.join(HOME, "strategy-lab")
@@ -495,16 +495,17 @@ def main():
             "exit_date", "exit_px", "net", "excess", "regime", "tags",
             "entry_px_tape", "exit_px_tape", "net_tape", "excess_tape"]
     old = list(csv.DictReader(open(TRADES_F))) if os.path.exists(TRADES_F) else []
-    with open(TRADES_F, "w") as f:
-        w = csv.DictWriter(f, fieldnames=cols, extrasaction="ignore")
-        w.writeheader()
-        for r in old + closed_now:
-            row = {c: r.get(c, "") for c in cols}
-            # Declared from the rule's own definition, never from the row. The tag is a
-            # property of the STRATEGY, so it is deterministic and carries no knowledge
-            # of how the trade turned out.
-            row["tags"] = STRATS.get(r.get("strategy"), {}).get("tags", "")
-            w.writerow(row)
+    # SWEEP-003 / BOOK-001: arena_trades.csv is read by every portfolio build, so it is written beside and replaced, never truncated in place
+    # (a reader that opened the file mid-rewrite saw a header and no trades - the Labor Day shape). Same bytes as the old open(..., "w") loop.
+    out_rows = []
+    for r in old + closed_now:
+        row = {c: r.get(c, "") for c in cols}
+        # Declared from the rule's own definition, never from the row. The tag is a
+        # property of the STRATEGY, so it is deterministic and carries no knowledge
+        # of how the trade turned out.
+        row["tags"] = STRATS.get(r.get("strategy"), {}).get("tags", "")
+        out_rows.append(row)
+    atomic_csv(TRADES_F, cols, out_rows, extrasaction="ignore")
 
     cur_reg, _ = regime(spy["series_t"][-1])
 
