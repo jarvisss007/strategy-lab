@@ -6,7 +6,7 @@ name, and APPENDS one row per name to daytype_log.csv. Over months this turns th
 conclusive. Idempotent: won't double-log a date. Run after ~1:10pm PT.
 Run: /opt/anaconda3/bin/python record_daytype.py
 
-DAYTYPE-001 (2026-10-09): THE RECORDER NO LONGER GATES ON THE QUIET LABEL. It used to fetch only the names universe_daytype.json labels non-QUIET (trailing-21-session
+DAYTYPE-001 (2026-10-08): THE RECORDER NO LONGER GATES ON THE QUIET LABEL. It used to fetch only the names universe_daytype.json labels non-QUIET (trailing-21-session
 average zigzag path >= an absolute 8%, a floor calibrated on SNDK that the 2026-08-05 audit kept ABSOLUTE on purpose). As realised intraday volatility fell across
 August and September the set shrank with every weekly rebuild - 30 names a day in July, 28, 24, 14, 7, 3, 1 - and on 2026-09-28 it reached zero, so no row was
 written for nine sessions (2026-09-28..10-08) while the old task reported "market closed". The measurements were right (fresh 15m bars, 26 a day, current to
