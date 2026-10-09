@@ -1,46 +1,46 @@
 {
- "generated": "2026-10-05 13:50 PT",
+ "generated": "2026-10-09 00:00 PT",
  "open": [
   {
    "ticker": "LIN",
    "entry_px": 474.65,
-   "now_px": 482.38,
-   "pnl_pct": 1.63,
+   "now_px": 481.7,
+   "pnl_pct": 1.49,
    "opened": "2026-09-30"
   },
   {
    "ticker": "MOH",
    "entry_px": 189.1,
-   "now_px": 194.05,
-   "pnl_pct": 2.62,
+   "now_px": 195.76,
+   "pnl_pct": 3.52,
    "opened": "2026-09-30"
   },
   {
    "ticker": "NKE",
    "entry_px": 35.4,
-   "now_px": 33.96,
-   "pnl_pct": -4.07,
+   "now_px": 34.74,
+   "pnl_pct": -1.86,
    "opened": "2026-09-30"
   },
   {
    "ticker": "PEP",
    "entry_px": 126.72,
-   "now_px": 125.65,
-   "pnl_pct": -0.84,
+   "now_px": 128.34,
+   "pnl_pct": 1.28,
    "opened": "2026-09-30"
   },
   {
    "ticker": "TXT",
    "entry_px": 76.2,
-   "now_px": 75.75,
-   "pnl_pct": -0.59,
+   "now_px": 73.22,
+   "pnl_pct": -3.91,
    "opened": "2026-09-30"
   },
   {
    "ticker": "UNH",
    "entry_px": 367.08,
-   "now_px": 378.58,
-   "pnl_pct": 3.13,
+   "now_px": 370.95,
+   "pnl_pct": 1.05,
    "opened": "2026-09-30"
   }
  ],
@@ -48,5 +48,10 @@
  "closed_n": 0,
  "avg_excess_pct": null,
  "next_formation": "2026-12-31",
+ "processed_quarters": [
+  "2026-09-30"
+ ],
+ "deferred": [],
+ "refused": {},
  "rule": "FAMILY 9 frozen: own-history valuation pctile <= 20 (>=20 prior quarters) AND Piotroski F >= 6; $2,000 units; exit at pctile > 50 or 6 months; excess vs SPY"
 }
