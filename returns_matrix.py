@@ -13,6 +13,7 @@ pattern test. A correlation is NOT a tradeable edge — costs and survivorship b
 still apply (see the Strategy Lab verdict).
 """
 import json, os
+from atomicio import atomic_json, atomic_write_text   # BOOK-001: never truncate a dashboard data file in place
 import numpy as np
 import pandas as pd
 from scipy import stats
@@ -95,7 +96,7 @@ def main():
     big = big_move_test(prices)
     payload = {"n_tickers": len(snap), "horizons": HORIZONS, "snapshot": snap,
                "pattern": pat, "big_move": big}
-    json.dump(payload, open(os.path.join(BASE, "reports", "returns_matrix.json"), "w"), indent=1)
+    atomic_json(os.path.join(BASE, "reports", "returns_matrix.json"), payload, indent=1)   # SWEEP-003 / BOOK-001: write beside and replace
     # DATA-004 (2026-09-16): returns.html loads reports/returns_matrix.JS and reads
     # window.RETURNS_DATA, but this writer only ever emitted the .JSON. The .js was a
     # Jul 8 orphan nothing regenerated, so the Returns Matrix page served 69-day-old
@@ -103,8 +104,7 @@ def main():
     # build_hub.py read. The .js wrapper is not optional: the page is opened over
     # file:// by double-click, where fetch() of a .json is blocked — same reason
     # asia-radar writes markets.js beside markets.json. Emit both, always.
-    with open(os.path.join(BASE, "reports", "returns_matrix.js"), "w") as f:
-        f.write("window.RETURNS_DATA = " + json.dumps(payload, indent=1) + ";")
+    atomic_write_text(os.path.join(BASE, "reports", "returns_matrix.js"), "window.RETURNS_DATA = " + json.dumps(payload, indent=1) + ";")
 
     print("=== Return autocorrelation, pooled over 15y & all names (non-overlapping) ===")
     print(f"{'horizon':>7s} {'n':>8s} {'corr':>8s} {'p-value':>9s} {'sign-hit':>8s}  read")

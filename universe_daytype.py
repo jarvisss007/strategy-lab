@@ -28,6 +28,7 @@ path (the brief's K=1.5 relative design). It is a separate, additional signal â€
 does NOT feed the character labels or gate anything.
 """
 import csv, json, os, time
+from atomicio import atomic_json, atomic_write_text, atomic_csv   # BOOK-001: never truncate a dashboard data file in place
 from collections import defaultdict
 import numpy as np
 import day_type as DT
@@ -126,17 +127,12 @@ def main():
            "unusual_note": f"unusual_pct = % of eval sessions with path >= {UNUSUAL_K}x own "
                            f"trailing ~60d median path; separate signal, feeds no label",
            "rows": rows, "failed": failed}
-    json.dump(out, open(os.path.join(BASE, "reports", "universe_daytype.json"), "w"), indent=1)
+    atomic_json(os.path.join(BASE, "reports", "universe_daytype.json"), out, indent=1)   # SWEEP-003 / BOOK-001: write beside and replace
     # .js wrapper for daytype.html over file:// (fetch() is blocked there â€” commit a5eab35
     # intended this emit but it was never wired in; the .js had been stale since Jul 8)
-    with open(os.path.join(BASE, "reports", "universe_daytype.js"), "w") as f:
-        f.write("window.DAYTYPE_DATA = ")
-        json.dump(out, f, indent=1)
-        f.write(";\n")
+    atomic_write_text(os.path.join(BASE, "reports", "universe_daytype.js"), "window.DAYTYPE_DATA = " + json.dumps(out, indent=1) + ";\n")
     cols = list(rows[0].keys())
-    with open(os.path.join(BASE, "reports", "universe_daytype.csv"), "w", newline="") as f:
-        w = csv.DictWriter(f, fieldnames=cols)
-        w.writeheader(); w.writerows(rows)
+    atomic_csv(os.path.join(BASE, "reports", "universe_daytype.csv"), cols, rows)
 
     print(f"\n=== Intraday opportunity ranking ({len(rows)} names, top 20) ===")
     print(f"{'tick':6s} {'char':9s} {'eff':>5s} {'path%':>6s} {'range%':>6s} "

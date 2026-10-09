@@ -5,6 +5,7 @@ data/intraday.json = {ticker: {date: [[HHMM, open, high, low, close], ...]}}.
 Feeds intraday_study.py, intraday_discover.py, and the dashboard.
 Run: /opt/anaconda3/bin/python intraday_cache.py [interval] [range]"""
 import csv, json, os, sys, time, urllib.request, datetime as dt
+from atomicio import atomic_json   # BOOK-001: never truncate a cache file in place
 from collections import defaultdict
 
 BASE = os.path.dirname(os.path.abspath(__file__))
@@ -52,7 +53,7 @@ def main():
         time.sleep(0.15)
     meta = {"interval": ITV, "range": RNG, "n": len(ok),
             "built": dt.datetime.now().astimezone().strftime("%Y-%m-%d %H:%M %Z"), "failed": fail}
-    json.dump({"meta": meta, "data": out}, open(os.path.join(BASE, "data", f"intraday_{ITV}.json"), "w"))
+    atomic_json(os.path.join(BASE, "data", f"intraday_{ITV}.json"), {"meta": meta, "data": out})   # SWEEP-003 / BOOK-001: write beside and replace
     print(f"OK {len(ok)} tickers cached ({ITV}/{RNG}); failed {len(fail)}: {fail[:8]}")
 
 
