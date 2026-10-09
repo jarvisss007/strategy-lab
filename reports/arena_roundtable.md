@@ -1,73 +1,73 @@
 # Arena Roundtable — 2026-10-09
 
-Tape: **calm-up** · session 2026-10-08 · 12 agents · opened 81, closed 30 this session · 224 open · 2806 forward closes all-time
+Tape: **calm-up** · session 2026-10-09 · 12 agents · opened 42, closed 62 this session · 204 open · 2868 forward closes all-time
 
-> **This lab is 68% of the desk's scored record (2806 of 4117 scored rows in the Calibration Observatory).** Any pooled desk statistic is therefore mostly a statement about the Arena, not about the desk. Read the other labs' standings on their own n.
+> **This lab is 68% of the desk's scored record (2806 of 4118 scored rows in the Calibration Observatory).** Any pooled desk statistic is therefore mostly a statement about the Arena, not about the desk. Read the other labs' standings on their own n.
 
-**Drain (ARENA-003).** 62 of 224 open rows read `days_left <= 0`; 0 of those are PAST due (negative). 30 closed this session, 2806 all-time. Oldest due row: FRESH_HIGH AAPL, entered 2026-09-25, hold 10, days_left 0. Exits are suppressed during market hours by the fill-integrity gate, so a due row right now is waiting for the next non-intraday pass, not stuck.
+**Drain (ARENA-003).** 0 of 204 open rows read `days_left <= 0`; 0 of those are PAST due (negative). 62 closed this session, 2868 all-time. No due rows on the book. This pass ran outside market hours, so every due row was eligible to close.
 
-- Tape today: CALM-UP. Our pooled record in this weather — hot hands: FRESH_HIGH (+212), PULLBACK_50 (+25), PANIC_LITE (-2); cold hands: RSI2_DIP (-41), TREND_RIDER (-228). (History, not prophecy.)
-- FRESH_HIGH and SHORT_EXT enter on the same bar 42% of the time — one trade, two directions. The pooled ledger says the long side wins that argument; the skeptic keeps paying for the lesson.
-- PANIC_LITE contains 83% of PANIC_BOUNCE's entries; stripped to the −3%…−5% band alone (PANIC_LITE entries too shallow for PANIC_BOUNCE), it still earned +26 bps over 1659 trades (t=1.88) — the bounce is not only in the extreme tail.
+- Tape today: CALM-UP. Our pooled record in this weather — hot hands: FRESH_HIGH (+235), PULLBACK_50 (+27), PANIC_LITE (-1); cold hands: RSI2_DIP (-35), TREND_RIDER (-218). (History, not prophecy.)
+- FRESH_HIGH and SHORT_EXT enter on the same bar 43% of the time — one trade, two directions. The pooled ledger says the long side wins that argument; the skeptic keeps paying for the lesson.
+- PANIC_LITE contains 83% of PANIC_BOUNCE's entries; stripped to the −3%…−5% band alone (PANIC_LITE entries too shallow for PANIC_BOUNCE), it still earned +27 bps over 1657 trades (t=1.98) — the bounce is not only in the extreme tail.
 - Desk rule we all share: reading each other's regime stats and gating ourselves in hindsight is selection bias — STORM_DIP is the only pre-registered regime gate; any new gate goes to REGISTRY.md with a thesis BEFORE it trades.
 
 ## Playbook by regime (avg bps/trade, n>=20)
 
 _Read n_events, not n: `n` counts rows, `d` counts the distinct entry DAYS behind them. Rows on one day share a regime and are one observation, not many (Firm Brain #4)._
 
-- **calm-up**: FRESH_HIGH +212 (n=425, d=108) · PULLBACK_50 +25 (n=191, d=42) · PANIC_LITE -2 (n=1921, d=146) · BOLL_SNAP -10 (n=387, d=119) · PANIC_BOUNCE -11 (n=914, d=123) · SHORT_EXT -11 (n=184, d=71) · DEEP_DIP -13 (n=108, d=67) · REVERSAL_3 -22 (n=225, d=42) · DOUBLE_DIP -27 (n=771, d=125) · RSI2_DIP -41 (n=457, d=45) · TREND_RIDER -228 (n=103, d=36)
-- **calm-down**: BOLL_SNAP +179 (n=65, d=13) · DOUBLE_DIP +93 (n=122, d=15) · REVERSAL_3 +49 (n=26, d=3) · PULLBACK_50 +23 (n=24, d=5) · RSI2_DIP +11 (n=79, d=5) · PANIC_BOUNCE +11 (n=119, d=14) · PANIC_LITE -12 (n=208, d=15) · FRESH_HIGH -134 (n=34, d=12)
+- **calm-up**: FRESH_HIGH +235 (n=420, d=109) · PULLBACK_50 +27 (n=192, d=42) · PANIC_LITE -1 (n=1919, d=145) · BOLL_SNAP -9 (n=387, d=118) · PANIC_BOUNCE -10 (n=914, d=123) · DEEP_DIP -21 (n=110, d=66) · REVERSAL_3 -23 (n=225, d=42) · SHORT_EXT -24 (n=184, d=71) · DOUBLE_DIP -26 (n=769, d=124) · RSI2_DIP -35 (n=459, d=45) · TREND_RIDER -218 (n=103, d=35)
+- **calm-down**: BOLL_SNAP +179 (n=65, d=13) · DOUBLE_DIP +93 (n=122, d=15) · REVERSAL_3 +49 (n=27, d=4) · PULLBACK_50 +23 (n=24, d=5) · RSI2_DIP +15 (n=81, d=5) · PANIC_BOUNCE +11 (n=119, d=14) · PANIC_LITE -12 (n=208, d=15) · FRESH_HIGH -106 (n=35, d=12)
 - **storm-up**: PANIC_LITE +174 (n=95, d=4) · PANIC_BOUNCE +142 (n=67, d=4) · DOUBLE_DIP +138 (n=51, d=4) · BOLL_SNAP -74 (n=21, d=4) · STORM_DIP -291 (n=87, d=4)
-- **storm-down**: RSI2_DIP +1037 (n=36, d=1) · REVERSAL_3 +1022 (n=23, d=1) · DEEP_DIP +958 (n=25, d=13) · DOUBLE_DIP +393 (n=256, d=30) · BOLL_SNAP +384 (n=247, d=27) · STORM_DIP +348 (n=418, d=31) · PANIC_BOUNCE +189 (n=262, d=29) · PANIC_LITE +137 (n=567, d=34) · FRESH_HIGH -190 (n=34, d=19)
+- **storm-down**: DEEP_DIP +1084 (n=24, d=13) · DOUBLE_DIP +393 (n=256, d=30) · BOLL_SNAP +384 (n=247, d=27) · STORM_DIP +348 (n=418, d=31) · PANIC_BOUNCE +189 (n=262, d=29) · PANIC_LITE +137 (n=567, d=34) · FRESH_HIGH -202 (n=34, d=20)
 
 ## Forward entry days per strategy (coach's 15-day retirement test)
 
 Entry DAYS, not trades — same-day entries share one regime and are one observation. The coach's standing test fires at 15.
 
-- RSI2_DIP: **51** entry days — **test LIVE (>=15)**
-- PANIC_LITE: **49** entry days — **test LIVE (>=15)**
-- REVERSAL_3: **47** entry days — **test LIVE (>=15)**
-- PULLBACK_50: **47** entry days — **test LIVE (>=15)**
-- PANIC_BOUNCE: **44** entry days — **test LIVE (>=15)**
-- DOUBLE_DIP: **42** entry days — **test LIVE (>=15)**
-- BOLL_SNAP: **42** entry days — **test LIVE (>=15)**
+- RSI2_DIP: **52** entry days — **test LIVE (>=15)**
+- PANIC_LITE: **50** entry days — **test LIVE (>=15)**
+- REVERSAL_3: **48** entry days — **test LIVE (>=15)**
+- PULLBACK_50: **48** entry days — **test LIVE (>=15)**
+- PANIC_BOUNCE: **45** entry days — **test LIVE (>=15)**
+- DOUBLE_DIP: **43** entry days — **test LIVE (>=15)**
+- BOLL_SNAP: **43** entry days — **test LIVE (>=15)**
 - TREND_RIDER: **31** entry days — **test LIVE (>=15)**
-- DEEP_DIP: **26** entry days — **test LIVE (>=15)**
-- FRESH_HIGH: **23** entry days — **test LIVE (>=15)**
-- SHORT_EXT: **13** entry days
+- DEEP_DIP: **27** entry days — **test LIVE (>=15)**
+- FRESH_HIGH: **24** entry days — **test LIVE (>=15)**
+- SHORT_EXT: **14** entry days
 - STORM_DIP: **1** entry days
 
 ## One vote per entry day: council S17 / S18 / S20 (forward book)
 
 _Rows that share an entry date share one tape (Firm Brain #4). S17: each entry day's mean counts once, however many rows it opened. S20: the share of entry days that made money, beside the row hit rate. S18: forward exits priced on a copied or zero-volume bar (open = close = the prior close, or no volume: a carry-forward print, Firm Brain #18)._
 
-- DEEP_DIP: per-entry-day mean +346 bps over 26 entry days (row mean +668, n=54) · win rate per entry day 50% (row hit 67%)
-- PANIC_BOUNCE: per-entry-day mean +56 bps over 44 entry days (row mean +49, n=334) · win rate per entry day 54% (row hit 52%)
-- PANIC_LITE: per-entry-day mean +4 bps over 49 entry days (row mean -4, n=670) · win rate per entry day 47% (row hit 46%)
-- DOUBLE_DIP: per-entry-day mean +19 bps over 42 entry days (row mean +80, n=267) · win rate per entry day 48% (row hit 52%)
+- DEEP_DIP: per-entry-day mean +258 bps over 27 entry days (row mean +619, n=55) · win rate per entry day 48% (row hit 66%)
+- PANIC_BOUNCE: per-entry-day mean +48 bps over 45 entry days (row mean +43, n=340) · win rate per entry day 53% (row hit 52%)
+- PANIC_LITE: per-entry-day mean -2 bps over 50 entry days (row mean -17, n=703) · win rate per entry day 46% (row hit 45%)
+- DOUBLE_DIP: per-entry-day mean +13 bps over 43 entry days (row mean +79, n=268) · win rate per entry day 46% (row hit 52%)
 - STORM_DIP: per-entry-day mean +1217 bps over 1 entry day - one event, no inference (row mean +1217, n=40) · win rate per entry day 100% (row hit 90%)
-- FRESH_HIGH: per-entry-day mean -188 bps over 23 entry days (row mean -101, n=54) · win rate per entry day 44% (row hit 41%)
-- SHORT_EXT: per-entry-day mean -35 bps over 13 entry days (row mean +98, n=28) · win rate per entry day 38% (row hit 46%)
+- FRESH_HIGH: per-entry-day mean -186 bps over 24 entry days (row mean -102, n=55) · win rate per entry day 42% (row hit 40%)
+- SHORT_EXT: per-entry-day mean -5 bps over 14 entry days (row mean +108, n=29) · win rate per entry day 43% (row hit 48%)
 - TREND_RIDER: per-entry-day mean -19 bps over 31 entry days (row mean -55, n=86) · win rate per entry day 48% (row hit 49%)
-- RSI2_DIP: per-entry-day mean +22 bps over 51 entry days (row mean +3, n=546) · win rate per entry day 47% (row hit 46%)
-- REVERSAL_3: per-entry-day mean +12 bps over 47 entry days (row mean +14, n=315) · win rate per entry day 43% (row hit 48%)
-- BOLL_SNAP: per-entry-day mean +42 bps over 42 entry days (row mean +236, n=199) · win rate per entry day 55% (row hit 58%)
-- PULLBACK_50: per-entry-day mean +68 bps over 47 entry days (row mean +74, n=213) · win rate per entry day 64% (row hit 54%)
-- Exits on copied/zero-volume bars: **0** of 2640 forward exits tested; 166 exit(s) have no bar in data/open, close and volume.csv to test, counted untested, not clean
+- RSI2_DIP: per-entry-day mean +15 bps over 52 entry days (row mean -3, n=555) · win rate per entry day 46% (row hit 45%)
+- REVERSAL_3: per-entry-day mean +7 bps over 48 entry days (row mean +8, n=322) · win rate per entry day 42% (row hit 47%)
+- BOLL_SNAP: per-entry-day mean +47 bps over 43 entry days (row mean +236, n=200) · win rate per entry day 56% (row hit 58%)
+- PULLBACK_50: per-entry-day mean +54 bps over 48 entry days (row mean +68, n=215) · win rate per entry day 62% (row hit 54%)
+- Exits on copied/zero-volume bars: **0** of 2640 forward exits tested; 228 exit(s) have no bar in data/open, close and volume.csv to test, counted untested, not clean
 
 ## Notes to the desk
 
-- DEEP_DIP to the desk: my weather is storm-down (+958 bps, n=25); keep me on a short leash in calm-up (-13). Status: WATCH — positive but not significant.
-- PANIC_BOUNCE to the desk: my weather is storm-down (+189 bps, n=262); keep me on a short leash in calm-up (-11). Status: WATCH — positive but not significant.
+- DEEP_DIP to the desk: my weather is storm-down (+1084 bps, n=24); keep me on a short leash in calm-up (-21). Status: WATCH — positive but not significant.
+- PANIC_BOUNCE to the desk: my weather is storm-down (+189 bps, n=262); keep me on a short leash in calm-up (-10). Status: WATCH — positive but not significant.
 - PANIC_LITE to the desk: my weather is storm-up (+174 bps, n=95); keep me on a short leash in calm-down (-12). Status: UNPROVEN — FAILED the deflation gate 2026-08-08 (DSR 0.233, PBO 0.474).
-- DOUBLE_DIP to the desk: my weather is storm-down (+393 bps, n=256); keep me on a short leash in calm-up (-27). Status: UNPROVEN — FAILED the deflation gate 2026-08-08 (DSR 0.233, PBO 0.474).
+- DOUBLE_DIP to the desk: my weather is storm-down (+393 bps, n=256); keep me on a short leash in calm-up (-26). Status: UNPROVEN — FAILED the deflation gate 2026-08-08 (DSR 0.233, PBO 0.474).
 - STORM_DIP to the desk: my weather is storm-down (+348 bps, n=418); keep me on a short leash in storm-up (-291). Status: UNPROVEN — FAILED the deflation gate 2026-08-08 (DSR 0.233, PBO 0.474).
-- FRESH_HIGH to the desk: my weather is storm-up (+688 bps, n=13); keep me on a short leash in storm-down (-190). Status: UNPROVEN — FAILED the deflation gate 2026-08-08 (DSR 0.233, PBO 0.474).
+- FRESH_HIGH to the desk: my weather is storm-up (+688 bps, n=13); keep me on a short leash in storm-down (-202). Status: UNPROVEN — FAILED the deflation gate 2026-08-08 (DSR 0.233, PBO 0.474).
 - SHORT_EXT to the desk: my weather is storm-down (+441 bps, n=11); keep me on a short leash in calm-down (-323). Status: DEAD — loses to costs/SPY.
-- TREND_RIDER to the desk: my weather is calm-down (+416 bps, n=13); keep me on a short leash in calm-up (-228). Status: DEAD — loses to costs/SPY.
-- RSI2_DIP to the desk: my weather is storm-down (+1037 bps, n=36); keep me on a short leash in calm-up (-41). Status: DEAD — loses to costs/SPY.
-- REVERSAL_3 to the desk: my weather is storm-down (+1022 bps, n=23); keep me on a short leash in calm-up (-22). Status: UNPROVEN — FAILED the deflation gate 2026-08-08 (DSR 0.233, PBO 0.474).
+- TREND_RIDER to the desk: my weather is calm-down (+417 bps, n=13); keep me on a short leash in calm-up (-218). Status: DEAD — loses to costs/SPY.
+- RSI2_DIP to the desk: my weather is calm-down (+15 bps, n=81); keep me on a short leash in calm-up (-35). Status: DEAD — loses to costs/SPY.
+- REVERSAL_3 to the desk: my weather is calm-down (+49 bps, n=27); keep me on a short leash in calm-up (-23). Status: DEAD — loses to costs/SPY.
 - BOLL_SNAP to the desk: my weather is storm-down (+384 bps, n=247); keep me on a short leash in storm-up (-74). Status: UNPROVEN — FAILED the deflation gate 2026-08-08 (DSR 0.233, PBO 0.474).
-- PULLBACK_50 to the desk: my weather is calm-up (+25 bps, n=191); keep me on a short leash in calm-down (+23). Status: DEAD — loses to costs/SPY.
+- PULLBACK_50 to the desk: my weather is calm-up (+27 bps, n=192); keep me on a short leash in calm-down (+23). Status: DEAD — loses to costs/SPY.
 
 Calibration experiment, not advice. Forward book + deflation gate decide; the replay only suggests.
