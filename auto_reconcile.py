@@ -45,7 +45,7 @@ import csv
 import datetime as dt
 import json
 import os
-from atomicio import atomic_json, atomic_write_text   # BOOK-001: never truncate a book in place
+from atomicio import atomic_json, atomic_write_text, atomic_csv   # BOOK-001: never truncate a book in place
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 HOME = os.path.expanduser("~")
@@ -174,11 +174,8 @@ def main():
     if a.dry_run:
         print("  dry run — nothing written.")
         return
-    with open(TRADES, "w") as f:
-        w = csv.DictWriter(f, fieldnames=COLS, extrasaction="ignore")
-        w.writeheader()
-        for r in rows:
-            w.writerow({c: r.get(c, "") for c in COLS})
+    # SWEEP-003 / BOOK-001: write beside and replace; the book is never truncated in place. Same bytes as the old open(..., "w") loop.
+    atomic_csv(TRADES, COLS, [{c: r.get(c, "") for c in COLS} for r in rows], extrasaction="ignore")
     atomic_json(STATE, state, indent=1)
     stamp = dt.datetime.now().strftime("%Y-%m-%d %H:%M PT")
     fields = list(csv.DictReader(open(LOG)).fieldnames)
