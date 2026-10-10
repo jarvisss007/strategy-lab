@@ -11,6 +11,7 @@ Honest caveat: ~20 sessions/name — treat t-stats as suggestive, not proof (nam
 on the same date are correlated). The recorder is what makes this conclusive.
 Run: /opt/anaconda3/bin/python intraday_discover.py"""
 import csv, json, os
+from atomicio import atomic_json, atomic_csv   # BOOK-001: never truncate a book in place
 from collections import defaultdict
 import numpy as np
 
@@ -101,11 +102,9 @@ def main():
                      "basket_sharpe": round(float(bkt), 2), "read": read})
         print(f"{label:28s} {len(a):6d} {avg:7.3f} {hit:6.1f} {tstat:7.2f} {bkt:9.2f}  {read}")
 
-    with open(os.path.join(BASE, "intraday_discoveries.csv"), "w", newline="") as f:
-        w = csv.DictWriter(f, fieldnames=["strategy", "trades", "avg_pct", "hit_pct", "tstat", "basket_sharpe", "read"])
-        w.writeheader(); w.writerows(rows)
-    json.dump({"strategies": rows, "note": "~20 sessions/name; enter-at-signal exit-at-close net of costs"},
-              open(os.path.join(BASE, "reports", "intraday_discover.json"), "w"), indent=1)
+    atomic_csv(os.path.join(BASE, "intraday_discoveries.csv"), ["strategy", "trades", "avg_pct", "hit_pct", "tstat", "basket_sharpe", "read"], rows)
+    atomic_json(os.path.join(BASE, "reports", "intraday_discover.json"),
+                {"strategies": rows, "note": "~20 sessions/name; enter-at-signal exit-at-close net of costs"}, indent=1)
     print("\nThe opening-range 'break closes in direction ~90%' collapses here: you enter at the")
     print("break, so you only get break->close, minus costs. Whatever's left is the real story.")
     print("~20 sessions can't be conclusive — the recorder grows the sample. -> intraday_discoveries.csv")

@@ -17,6 +17,7 @@ Writes data/value_panel.csv (tracked — it is derived-but-slow, the firm keeps 
 Run: /opt/anaconda3/bin/python value_history.py [--limit N]
 """
 import csv, json, os, sys, time, urllib.request, datetime as dt
+from atomicio import atomic_csv   # BOOK-001: never truncate a book in place
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 WATCH = os.path.expanduser("~/stock-radar/watchlist.csv")
@@ -127,10 +128,7 @@ def main():
             print(f"  {i+1}/{len(tickers)} fetched, {len(rows)} FY rows")
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
     cols = ["ticker", "fy", "filed"] + list(CONCEPTS)
-    with open(OUT, "w", newline="") as f:
-        w = csv.DictWriter(f, fieldnames=cols); w.writeheader()
-        for r in sorted(rows, key=lambda x: (x["ticker"], x["fy"])):
-            w.writerow(r)
+    atomic_csv(OUT, cols, sorted(rows, key=lambda x: (x["ticker"], x["fy"])))     # BOOK-001: write beside and replace
     names_ok = len({r['ticker'] for r in rows})
     print(f"value_panel.csv: {len(rows)} FY rows across {names_ok} names "
           f"({len(missed)} skipped: {', '.join(t for t,_ in missed[:8])}{'…' if len(missed)>8 else ''})")

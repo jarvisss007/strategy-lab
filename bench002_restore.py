@@ -45,6 +45,8 @@ import csv
 import datetime as dt
 import os
 
+from atomicio import atomic_csv   # BOOK-001: never truncate a book in place
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 TRADES = os.path.join(HERE, "reports", "arena_trades.csv")
 LOG = os.path.join(HERE, "reports", "price_restatement_log.csv")
@@ -95,11 +97,8 @@ def main():
     if not a.apply:
         print("\n  dry run — nothing written. Re-run with --apply.")
         return
-    with open(TRADES, "w") as f:
-        w = csv.DictWriter(f, fieldnames=COLS, extrasaction="ignore")
-        w.writeheader()
-        for r in rows:
-            w.writerow({c: r.get(c, "") for c in COLS})
+    # BOOK-001: write beside and replace; the ledger is never truncated in place. Same bytes as the old open(..., "w") loop.
+    atomic_csv(TRADES, COLS, [{c: r.get(c, "") for c in COLS} for r in rows], extrasaction="ignore")
     stamp = dt.datetime.now().strftime("%Y-%m-%d %H:%M PT")
     with open(LOG, "a") as f:
         w = csv.DictWriter(f, fieldnames=list(csv.DictReader(open(LOG)).fieldnames),

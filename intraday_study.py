@@ -8,6 +8,7 @@ names. Answers three descriptive questions:
 Writes reports/intraday_study.json. Honest caveat: ~20 sessions, descriptive only.
 Run: /opt/anaconda3/bin/python intraday_study.py"""
 import json, os
+from atomicio import atomic_json   # BOOK-001: never truncate a book in place
 from collections import defaultdict
 import numpy as np
 
@@ -87,7 +88,7 @@ def main():
            "first_hour": {"n": n, "continuation_pct": round(cont / max(1, n) * 100, 1),
                           "trend_given_clean_open_pct": round(float(np.mean(hi_eff_trend)) * 100, 1) if hi_eff_trend else None,
                           "base_trend_pct": round(float(np.mean(base_trend)) * 100, 1)}}
-    json.dump(out, open(os.path.join(BASE, "reports", "intraday_study.json"), "w"), indent=1)
+    atomic_json(os.path.join(BASE, "reports", "intraday_study.json"), out, indent=1)
 
     print(f"=== Intraday study — {len(names)} high-opportunity names, ~20 sessions each ===\n")
     print("1. TIME-OF-DAY PROFILE (avg signed move per 15-min slot; * = biggest abs slots)")

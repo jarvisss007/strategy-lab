@@ -20,6 +20,7 @@ without a return. Outputs beside the originals — nothing is edited in place:
   reports/rot_restate_note.json       old vs restated, by date
 """
 import csv, json, os, sys, shutil, datetime as dt, importlib.util as _iu
+from atomicio import atomic_json   # BOOK-001: never truncate a book in place
 HERE = os.path.dirname(os.path.abspath(__file__)); REP = os.path.join(HERE, "reports")
 RADAR = "/Users/anupampatil/stock-radar/data/radar.json"
 _sp = _iu.spec_from_file_location("_sessions", "/Users/anupampatil/stock-radar/sessions.py"); S = _iu.module_from_spec(_sp); _sp.loader.exec_module(S)
@@ -142,7 +143,7 @@ note = {"as_of": dt.date.today().isoformat(), "ruling": "ROT-001 (Anupam 2026-09
         "restated": {r[0]: {"nav_base": r[1], "nav_rot": r[2], "gap_pct": r[3]} for r in rot_rows}},
         "overlays": {"published": {k: {c: v for c, v in r.items() if c in ('nav_base','nav_stop_only','nav_take_profit')} for k, r in old_ovl.items()},
         "restated": {r[0]: {"nav_base": r[3], "nav_stop_only": r[5], "nav_take_profit": r[8]} for r in ovl_rows}}}
-json.dump(note, open(os.path.join(REP, "rot_restate_note.json"), "w"), indent=1)
+atomic_json(os.path.join(REP, "rot_restate_note.json"), note, indent=1)
 if APPLY:
     targets = [("rotation_log.csv", rot_rows, ["date","nav_base","nav_rot","gap_pct","n_open","n_culled","n_boosted","culled","boosted"]),
                ("exit_overlays_log.csv", ovl_rows, ["date","regime","flipped","nav_base","nav_regime_exit","nav_stop_only","regime_exits","stop_exits","nav_take_profit","tp_exits"])]
@@ -156,9 +157,9 @@ if APPLY:
         os.replace(tmp, src)
     if not ONLY_OVL:
         rot_book["restated"] = f"ROT-001: re-based to the session-only replay at {END}"
-        json.dump(rot_book, open(os.path.join(REP, "rotation_book.json"), "w"), indent=1)
+        atomic_json(os.path.join(REP, "rotation_book.json"), rot_book, indent=1)
     ob["restated"] = f"ROT-001 replay through {END} (2026-09-10 repair of the re-compounded overlay book)"
-    json.dump(ob, open(os.path.join(REP, "exit_overlays.json"), "w"), indent=1)
+    atomic_json(os.path.join(REP, "exit_overlays.json"), ob, indent=1)
     print(f"APPLIED: restated {'overlay' if ONLY_OVL else 'rotation + overlay'} log(s) in place (originals kept as *.pre-ROT-001.csv); book(s) re-based through {END}")
 else:
     print("dry run — pass --apply to write")

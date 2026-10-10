@@ -6,6 +6,7 @@ Progress tab shows it. Run daily by refresh_all.sh (launchd).
 Run: /opt/anaconda3/bin/python learning_meter.py"""
 import csv, os
 import datetime as dt
+from atomicio import atomic_csv   # BOOK-001: never truncate a book in place
 
 LAB = os.path.dirname(os.path.abspath(__file__))
 RADAR = os.path.join(os.path.expanduser("~"), "stock-radar")
@@ -53,10 +54,7 @@ def main():
     existing = rows(OUT)
     if any(r["date"] == today for r in existing):
         existing = [r for r in existing if r["date"] != today] + [dict((k, str(v)) for k, v in rec.items())]
-        with open(OUT, "w", newline="") as f:
-            w = csv.DictWriter(f, fieldnames=list(rec.keys()))
-            w.writeheader()
-            w.writerows(existing)
+        atomic_csv(OUT, list(rec.keys()), existing)          # BOOK-001: write beside and replace
     else:
         new = not os.path.exists(OUT)
         with open(OUT, "a", newline="") as f:

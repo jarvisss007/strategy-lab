@@ -18,6 +18,7 @@ forecast (VAL-F9, p=0.20) is on file. Grid, bars, benchmark and data law are the
 Run: /opt/anaconda3/bin/python family9_gate.py  ->  reports/family9_gate.{json,md}
 """
 import csv, json, os, sys, datetime as dt
+from atomicio import atomic_json, atomic_write_text   # BOOK-001: never truncate a book in place
 import numpy as np, pandas as pd
 import warnings; warnings.filterwarnings("ignore")
 
@@ -172,7 +173,7 @@ def main():
            "caveats": ["survivorship-tilted, growth-heavy universe (bias against value in-sample, stated at registration)",
                        "annual filings only; quarterly TTM would react faster", "one 70/30 split; n=1 experiment"]}
     os.makedirs(os.path.join(HERE, "reports"), exist_ok=True)
-    json.dump(out, open(os.path.join(HERE, "reports", "family9_gate.json"), "w"), indent=1)
+    atomic_json(os.path.join(HERE, "reports", "family9_gate.json"), out, indent=1)
     md = [f"# FAMILY 9 — own-history value + quality floor · {out['run']}", "",
           f"{out['names']} names · monthly excess vs SPY · IS {out['is_range'][0]}→{out['is_range'][1]} · OOS {out['oos_range'][0]}→{out['oos_range'][1]}", "",
           f"**Verdict: {out['verdict']}**", "", "| bar | value | pass |", "|---|---|---|",
@@ -182,7 +183,7 @@ def main():
           f"Best IS config D={best[0]}th pctile, F≥{best[1]}, hold {best[2]}m: IS excess Sharpe {out['is_best_sharpe_excess']} vs deflated benchmark {out['deflated_benchmark']}. Toolkit: {rep['verdict']}.", "",
           "Caveats: " + " · ".join(out["caveats"]), "", "| D | Q | H | IS xs Sharpe | OOS xs Sharpe |", "|---|---|---|---|---|"]
     md += [f"| {t['D']} | {t['Q']} | {t['H']} | {t['is_sharpe_xs']} | {t['oos_sharpe_xs']} |" for t in table]
-    open(os.path.join(HERE, "reports", "family9_gate.md"), "w").write("\n".join(md) + "\n")
+    atomic_write_text(os.path.join(HERE, "reports", "family9_gate.md"), "\n".join(md) + "\n")
     print(json.dumps({k: out[k] for k in ("best_config", "is_best_sharpe_excess", "deflated_benchmark", "dsr", "pbo", "oos_sharpe_excess", "oos_total_excess_pct", "bars", "verdict")}, indent=1))
 
 

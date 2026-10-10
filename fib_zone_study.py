@@ -18,6 +18,7 @@ If the ratios matter, 50-61.8 should stand out from its neighbours. If they do n
 smooth dial from "shallow = strong trend" to "deep = broken trend".
 """
 import csv, datetime as dt, json, math, statistics as st
+from atomicio import atomic_json   # BOOK-001: never truncate a book in place
 K, MINMOVE = 10, 0.10
 rows = list(csv.DictReader(open("data/prices.csv"))); dates = [r["date"] for r in rows]
 px = {t: [float(r[t]) if r[t] not in ("", None) else None for r in rows] for t in rows[0] if t != "date"}
@@ -75,5 +76,4 @@ def table(side, label):
     return out
 res = {"long_side_pullbacks_in_uptrends": table(1, "PULLBACKS IN UP-SWINGS (the long setup)"),
        "short_side_bounces_in_downtrends": table(-1, "BOUNCES IN DOWN-SWINGS (the short setup)")}
-json.dump(dict(generated=dt.datetime.now().isoformat(timespec="seconds"), pivot_bars=K, min_swing=MINMOVE, prices_through=dates[-1], **res),
-          open("reports/fib_zone_study.json", "w"), indent=1)
+atomic_json("reports/fib_zone_study.json", dict(generated=dt.datetime.now().isoformat(timespec="seconds"), pivot_bars=K, min_swing=MINMOVE, prices_through=dates[-1], **res), indent=1)

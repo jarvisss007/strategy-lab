@@ -19,6 +19,7 @@ Also runs the one honest, tradeable test: does the first hour predict the rest o
 the day? Usage: python day_type.py [TICKER] [--csv]
 """
 import csv, json, sys, urllib.request, datetime as dt
+from atomicio import atomic_csv   # BOOK-001: never truncate a book in place
 from collections import defaultdict
 import numpy as np
 
@@ -170,11 +171,7 @@ def main():
         path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "reports", f"{sym}_daytape.csv")
         cols = ["date", "open", "close", "net", "path", "path_pct", "eff", "regime",
                 "swing_count", "avg_swing", "largest_swing", "dominance", "today_mode", "when_to_trade"]
-        with open(path, "w", newline="") as f:
-            w = csv.DictWriter(f, fieldnames=cols, extrasaction="ignore")
-            w.writeheader()
-            for r in rows:
-                w.writerow(r)
+        atomic_csv(path, cols, rows, extrasaction="ignore")      # BOOK-001: write beside and replace
         print(f"\nCSV -> reports/{sym}_daytape.csv")
 
 

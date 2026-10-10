@@ -14,6 +14,7 @@ Writes reports/value_screen.json and value.html (self-contained). Reads only.
 Run: /opt/anaconda3/bin/python value_screen.py
 """
 import csv, json, os, sys, datetime as dt
+from atomicio import atomic_json, atomic_write_text   # BOOK-001: never truncate a book in place
 import warnings; warnings.filterwarnings("ignore")
 import numpy as np, pandas as pd
 
@@ -65,7 +66,7 @@ def main():
                           "stock-radar/agent/ledger.csv as [anupam][fund] with a 6-month check date "
                           "and is scored vs SPY — your judgment vs the rule, same signal, one scoreboard.")}
     os.makedirs(os.path.join(HERE, "reports"), exist_ok=True)
-    json.dump(out, open(os.path.join(HERE, "reports", "value_screen.json"), "w"), indent=1)
+    atomic_json(os.path.join(HERE, "reports", "value_screen.json"), out, indent=1)
 
     tr = "".join(
         f"<tr class='{'q' if r['qualifies'] else ''}'><td><b>{r['ticker']}</b></td>"
@@ -91,7 +92,7 @@ th,td{{padding:7px 10px;border-bottom:1px solid var(--line);text-align:right}}th
 <div class=tscroll><table><thead><tr><th>ticker</th><th>own-history pctile</th><th>F-score</th><th>ratio</th><th>price</th><th>off 52w high</th><th>revenue YoY</th><th></th></tr></thead><tbody>{tr}</tbody></table></div>
 <p class=sub style="margin-top:14px">Frozen rule and forward book: strategy-lab/value_forward.py (formations from 2026-09-30). Gate verdict on record: FAILS (closest miss — DSR 0.79, PBO 0.52, +23.1% OOS excess). The screen informs; the ledger scores; the registry never moves.</p>
 </div></body></html>"""
-    open(os.path.join(HERE, "value.html"), "w").write(html)
+    atomic_write_text(os.path.join(HERE, "value.html"), html)
     q = [r["ticker"] for r in rows if r["qualifies"]]
     print(f"value screen: {out['n']} scoreable, {out['qualifiers']} qualify: {', '.join(q)}")
     print("top 10 cheapest vs own history:", ", ".join(f"{r['ticker']}(p{r['pctile']:.0f},F{r['fscore']})" for r in rows[:10]))

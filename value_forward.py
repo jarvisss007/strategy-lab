@@ -46,7 +46,7 @@ COLS = ["opened", "ticker", "entry_px", "shares", "spy_at_entry", "review_after"
 
 sys.path.insert(0, HERE)
 from family9_gate import fscore                     # one definition of the quality floor
-from atomicio import atomic_json, atomic_write_text   # BOOK-001: never truncate a book in place
+from atomicio import atomic_json, atomic_write_text, atomic_csv   # BOOK-001: never truncate a book in place
 
 
 def quarter_ends(upto):
@@ -240,8 +240,7 @@ def main(today=None):
     # with headers is a statement: the runner ran and formed nothing.
     if not dry and not os.path.exists(BOOK):
         os.makedirs(os.path.dirname(BOOK), exist_ok=True)
-        with open(BOOK, "w", newline="") as f:
-            csv.DictWriter(f, fieldnames=COLS).writeheader()
+        atomic_csv(BOOK, COLS, [])                       # BOOK-001: the header-only book, written beside and replaced
 
     if dry:
         sig = ratios_and_f(panel, names, last_day, mraw)

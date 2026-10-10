@@ -49,6 +49,8 @@ import datetime as dt
 import json
 import os
 
+from atomicio import atomic_json   # BOOK-001: never truncate a book in place
+
 HOME = os.path.expanduser("~")
 HERE = os.path.dirname(os.path.abspath(__file__))
 RADAR = os.path.join(HOME, "stock-radar", "data", "radar.json")
@@ -143,7 +145,7 @@ def main():
     ap.add_argument("--json", action="store_true")
     args = ap.parse_args()
     rep = audit()
-    json.dump(rep, open(OUT, "w"), indent=1)
+    atomic_json(OUT, rep, indent=1)
     if args.json:
         print(json.dumps(rep, indent=1))
         return
