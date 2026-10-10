@@ -14,6 +14,7 @@ Writes reports/value_screen.json and value.html (self-contained). Reads only.
 Run: /opt/anaconda3/bin/python value_screen.py
 """
 import csv, json, os, sys, datetime as dt
+import os as _b1_os, sys as _b1_sys; _b1_sys.path.append(_b1_os.path.dirname(_b1_os.path.abspath(__file__)))   # BOOK-001: atomicio sits beside this file (appended: never shadows)
 from atomicio import atomic_json, atomic_write_text   # BOOK-001: never truncate a book in place
 import warnings; warnings.filterwarnings("ignore")
 import numpy as np, pandas as pd

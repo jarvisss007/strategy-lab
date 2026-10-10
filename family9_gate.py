@@ -18,6 +18,7 @@ forecast (VAL-F9, p=0.20) is on file. Grid, bars, benchmark and data law are the
 Run: /opt/anaconda3/bin/python family9_gate.py  ->  reports/family9_gate.{json,md}
 """
 import csv, json, os, sys, datetime as dt
+import os as _b1_os, sys as _b1_sys; _b1_sys.path.append(_b1_os.path.dirname(_b1_os.path.abspath(__file__)))   # BOOK-001: atomicio sits beside this file (appended: never shadows)
 from atomicio import atomic_json, atomic_write_text   # BOOK-001: never truncate a book in place
 import numpy as np, pandas as pd
 import warnings; warnings.filterwarnings("ignore")

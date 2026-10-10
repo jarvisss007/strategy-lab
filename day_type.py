@@ -19,6 +19,7 @@ Also runs the one honest, tradeable test: does the first hour predict the rest o
 the day? Usage: python day_type.py [TICKER] [--csv]
 """
 import csv, json, sys, urllib.request, datetime as dt
+import os as _b1_os, sys as _b1_sys; _b1_sys.path.append(_b1_os.path.dirname(_b1_os.path.abspath(__file__)))   # BOOK-001: atomicio sits beside this file (appended: never shadows)
 from atomicio import atomic_csv   # BOOK-001: never truncate a book in place
 from collections import defaultdict
 import numpy as np

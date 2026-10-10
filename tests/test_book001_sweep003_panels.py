@@ -147,3 +147,16 @@ def test_bench002_restore_main_writes_the_same_ledger_bytes_as_before(tmp_path, 
     br.main()
     assert trades.read_bytes() == old.read_bytes()
     assert not [p for p in os.listdir(tmp_path) if ".tmp." in p]
+
+ROOT_DIR = __import__("pathlib").Path(LAB)
+LOADABLE = ["bench002_restore.py", "learning_meter.py", "value_history.py", "value_forward.py", "intraday_discover.py", "intraday_study.py", "family9_gate.py", "price_integrity.py", "value_screen.py", "day_type.py"]
+
+
+def test_each_converted_module_loads_by_path_from_any_cwd(tmp_path):
+    """a resolver check, a bin script or another repo may load these with spec_from_file_location and no sys.path help: the atomicio import must not depend on the
+    caller's path (found by loading every converted module from cwd=/ on 2026-10-09; a bare `from atomicio import` failed for most of them)."""
+    import subprocess
+    code = "import importlib.util as u,sys; s=u.spec_from_file_location('probe', sys.argv[1]); m=u.module_from_spec(s); s.loader.exec_module(m)"
+    for name in LOADABLE:
+        r = subprocess.run([sys.executable, "-c", code, str(ROOT_DIR / name)], cwd=tmp_path, capture_output=True, text=True, timeout=180)
+        assert r.returncode == 0, (name, r.stderr[-300:])

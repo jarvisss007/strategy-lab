@@ -8,6 +8,7 @@ names. Answers three descriptive questions:
 Writes reports/intraday_study.json. Honest caveat: ~20 sessions, descriptive only.
 Run: /opt/anaconda3/bin/python intraday_study.py"""
 import json, os
+import os as _b1_os, sys as _b1_sys; _b1_sys.path.append(_b1_os.path.dirname(_b1_os.path.abspath(__file__)))   # BOOK-001: atomicio sits beside this file (appended: never shadows)
 from atomicio import atomic_json   # BOOK-001: never truncate a book in place
 from collections import defaultdict
 import numpy as np

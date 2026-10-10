@@ -11,6 +11,7 @@ Honest caveat: ~20 sessions/name — treat t-stats as suggestive, not proof (nam
 on the same date are correlated). The recorder is what makes this conclusive.
 Run: /opt/anaconda3/bin/python intraday_discover.py"""
 import csv, json, os
+import os as _b1_os, sys as _b1_sys; _b1_sys.path.append(_b1_os.path.dirname(_b1_os.path.abspath(__file__)))   # BOOK-001: atomicio sits beside this file (appended: never shadows)
 from atomicio import atomic_json, atomic_csv   # BOOK-001: never truncate a book in place
 from collections import defaultdict
 import numpy as np
