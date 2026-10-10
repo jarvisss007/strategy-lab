@@ -1,8 +1,8 @@
-# Arena Roundtable — 2026-10-09
+# Arena Roundtable — 2026-10-10
 
 Tape: **calm-up** · session 2026-10-09 · 12 agents · opened 42, closed 62 this session · 204 open · 2868 forward closes all-time
 
-> **This lab is 68% of the desk's scored record (2806 of 4118 scored rows in the Calibration Observatory).** Any pooled desk statistic is therefore mostly a statement about the Arena, not about the desk. Read the other labs' standings on their own n.
+> **This lab is 69% of the desk's scored record (2868 of 4185 scored rows in the Calibration Observatory).** Any pooled desk statistic is therefore mostly a statement about the Arena, not about the desk. Read the other labs' standings on their own n.
 
 **Drain (ARENA-003).** 0 of 204 open rows read `days_left <= 0`; 0 of those are PAST due (negative). 62 closed this session, 2868 all-time. No due rows on the book. This pass ran outside market hours, so every due row was eligible to close.
 
@@ -15,7 +15,7 @@ Tape: **calm-up** · session 2026-10-09 · 12 agents · opened 42, closed 62 thi
 
 _Read n_events, not n: `n` counts rows, `d` counts the distinct entry DAYS behind them. Rows on one day share a regime and are one observation, not many (Firm Brain #4)._
 
-- **calm-up**: FRESH_HIGH +235 (n=420, d=109) · PULLBACK_50 +27 (n=192, d=42) · PANIC_LITE -1 (n=1919, d=145) · BOLL_SNAP -9 (n=387, d=118) · PANIC_BOUNCE -10 (n=914, d=123) · DEEP_DIP -21 (n=110, d=66) · REVERSAL_3 -23 (n=225, d=42) · SHORT_EXT -24 (n=184, d=71) · DOUBLE_DIP -26 (n=769, d=124) · RSI2_DIP -35 (n=459, d=45) · TREND_RIDER -218 (n=103, d=35)
+- **calm-up**: FRESH_HIGH +235 (n=420, d=108) · PULLBACK_50 +27 (n=192, d=42) · PANIC_LITE -1 (n=1919, d=145) · BOLL_SNAP -9 (n=387, d=118) · PANIC_BOUNCE -10 (n=914, d=123) · DEEP_DIP -21 (n=110, d=66) · REVERSAL_3 -23 (n=225, d=42) · SHORT_EXT -24 (n=184, d=71) · DOUBLE_DIP -26 (n=769, d=124) · RSI2_DIP -35 (n=459, d=45) · TREND_RIDER -218 (n=103, d=35)
 - **calm-down**: BOLL_SNAP +179 (n=65, d=13) · DOUBLE_DIP +93 (n=122, d=15) · REVERSAL_3 +49 (n=27, d=4) · PULLBACK_50 +23 (n=24, d=5) · RSI2_DIP +15 (n=81, d=5) · PANIC_BOUNCE +11 (n=119, d=14) · PANIC_LITE -12 (n=208, d=15) · FRESH_HIGH -106 (n=35, d=12)
 - **storm-up**: PANIC_LITE +174 (n=95, d=4) · PANIC_BOUNCE +142 (n=67, d=4) · DOUBLE_DIP +138 (n=51, d=4) · BOLL_SNAP -74 (n=21, d=4) · STORM_DIP -291 (n=87, d=4)
 - **storm-down**: DEEP_DIP +1084 (n=24, d=13) · DOUBLE_DIP +393 (n=256, d=30) · BOLL_SNAP +384 (n=247, d=27) · STORM_DIP +348 (n=418, d=31) · PANIC_BOUNCE +189 (n=262, d=29) · PANIC_LITE +137 (n=567, d=34) · FRESH_HIGH -202 (n=34, d=20)
