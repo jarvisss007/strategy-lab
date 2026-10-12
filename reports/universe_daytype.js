@@ -371,7 +371,7 @@ window.DAYTYPE_DATA = {
   {
    "ticker": "STX",
    "n_days": 21,
-   "avg_eff": 0.425,
+   "avg_eff": 0.424,
    "pct_trend": 38.1,
    "pct_chop": 28.6,
    "pct_mixed": 33.3,
@@ -483,7 +483,7 @@ window.DAYTYPE_DATA = {
   {
    "ticker": "ON",
    "n_days": 21,
-   "avg_eff": 0.552,
+   "avg_eff": 0.551,
    "pct_trend": 61.9,
    "pct_chop": 19.0,
    "pct_mixed": 19.0,
@@ -567,7 +567,7 @@ window.DAYTYPE_DATA = {
   {
    "ticker": "MBLY",
    "n_days": 21,
-   "avg_eff": 0.526,
+   "avg_eff": 0.529,
    "pct_trend": 47.6,
    "pct_chop": 33.3,
    "pct_mixed": 19.0,
@@ -721,7 +721,7 @@ window.DAYTYPE_DATA = {
   {
    "ticker": "MOH",
    "n_days": 21,
-   "avg_eff": 0.457,
+   "avg_eff": 0.456,
    "pct_trend": 52.4,
    "pct_chop": 38.1,
    "pct_mixed": 9.5,
@@ -945,7 +945,7 @@ window.DAYTYPE_DATA = {
   {
    "ticker": "BA",
    "n_days": 20,
-   "avg_eff": 0.671,
+   "avg_eff": 0.672,
    "pct_trend": 70.0,
    "pct_chop": 10.0,
    "pct_mixed": 20.0,
@@ -1155,7 +1155,7 @@ window.DAYTYPE_DATA = {
   {
    "ticker": "NVDA",
    "n_days": 21,
-   "avg_eff": 0.724,
+   "avg_eff": 0.725,
    "pct_trend": 81.0,
    "pct_chop": 0.0,
    "pct_mixed": 19.0,
@@ -1559,6 +1559,20 @@ window.DAYTYPE_DATA = {
    "character": "QUIET"
   },
   {
+   "ticker": "AVGO",
+   "n_days": 21,
+   "avg_eff": 0.681,
+   "pct_trend": 85.7,
+   "pct_chop": 4.8,
+   "pct_mixed": 9.5,
+   "avg_path_pct": 2.5,
+   "avg_range_pct": 2.6,
+   "avg_largest_swing_pct": 2.3,
+   "tradeable_pct": 0.0,
+   "unusual_pct": null,
+   "character": "QUIET"
+  },
+  {
    "ticker": "TXN",
    "n_days": 21,
    "avg_eff": 0.626,
@@ -1603,27 +1617,13 @@ window.DAYTYPE_DATA = {
   {
    "ticker": "MSFT",
    "n_days": 16,
-   "avg_eff": 0.618,
+   "avg_eff": 0.617,
    "pct_trend": 75.0,
    "pct_chop": 12.5,
    "pct_mixed": 12.5,
    "avg_path_pct": 2.4,
    "avg_range_pct": 2.2,
    "avg_largest_swing_pct": 2.1,
-   "tradeable_pct": 0.0,
-   "unusual_pct": null,
-   "character": "QUIET"
-  },
-  {
-   "ticker": "AVGO",
-   "n_days": 21,
-   "avg_eff": 0.689,
-   "pct_trend": 85.7,
-   "pct_chop": 0.0,
-   "pct_mixed": 14.3,
-   "avg_path_pct": 2.4,
-   "avg_range_pct": 2.6,
-   "avg_largest_swing_pct": 2.3,
    "tradeable_pct": 0.0,
    "unusual_pct": null,
    "character": "QUIET"
@@ -1939,7 +1939,7 @@ window.DAYTYPE_DATA = {
   {
    "ticker": "GD",
    "n_days": 13,
-   "avg_eff": 0.747,
+   "avg_eff": 0.748,
    "pct_trend": 92.3,
    "pct_chop": 0.0,
    "pct_mixed": 7.7,
