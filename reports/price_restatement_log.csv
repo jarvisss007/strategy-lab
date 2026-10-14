@@ -26,3 +26,4 @@ restated_at,scope,strategy,ticker,entry_date,exit_date,field,old_entry_px,new_en
 2026-08-19 00:09 PT,open,PANIC_LITE,QBTS,2026-08-17,,entry REPAIRED in place,16.21,20.87,,,,-0.06621,,,auto_reconcile vs settled feed (DATA-002)
 2026-08-19 00:09 PT,closed,PANIC_BOUNCE,QBTS,2026-08-13,2026-08-17,tape DECLARED (scored row untouched),20.9,20.9,16.21,20.87,,-0.00344,,0.00326,auto_reconcile vs settled feed (DATA-002)
 2026-08-19 00:09 PT,closed,PANIC_LITE,QBTS,2026-08-13,2026-08-17,tape DECLARED (scored row untouched),20.9,20.9,16.21,20.87,,-0.00344,,0.00326,auto_reconcile vs settled feed (DATA-002)
+2026-10-14 13:21 PT,open,REVERSAL_3,NQ=F,2026-10-14,,entry REPAIRED in place,30784.5,30159.25,,,,-0.002,,,auto_reconcile vs settled feed (DATA-002)
