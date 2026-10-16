@@ -27,3 +27,8 @@ restated_at,scope,strategy,ticker,entry_date,exit_date,field,old_entry_px,new_en
 2026-08-19 00:09 PT,closed,PANIC_BOUNCE,QBTS,2026-08-13,2026-08-17,tape DECLARED (scored row untouched),20.9,20.9,16.21,20.87,,-0.00344,,0.00326,auto_reconcile vs settled feed (DATA-002)
 2026-08-19 00:09 PT,closed,PANIC_LITE,QBTS,2026-08-13,2026-08-17,tape DECLARED (scored row untouched),20.9,20.9,16.21,20.87,,-0.00344,,0.00326,auto_reconcile vs settled feed (DATA-002)
 2026-10-14 13:21 PT,open,REVERSAL_3,NQ=F,2026-10-14,,entry REPAIRED in place,30784.5,30159.25,,,,-0.002,,,auto_reconcile vs settled feed (DATA-002)
+2026-10-16 13:36 PT,open,REVERSAL_3,NQ=F,2026-10-16,,entry REPAIRED in place,30092.25,29358.25,,,,-0.002,,,auto_reconcile vs settled feed (DATA-002)
+2026-10-16 13:36 PT,open,BOLL_SNAP,NQ=F,2026-10-16,,entry REPAIRED in place,30046.5,29358.25,,,,-0.002,,,auto_reconcile vs settled feed (DATA-002)
+2026-10-16 13:36 PT,closed,FRESH_HIGH,NQ=F,2026-10-04,2026-10-16,tape DECLARED (scored row untouched),31133.0,31133.0,30182.25,29358.25,,-0.05901,,-0.0507,auto_reconcile vs settled feed (DATA-002)
+2026-10-16 13:36 PT,closed,RSI2_DIP,NQ=F,2026-10-13,2026-10-16,tape DECLARED (scored row untouched),30685.5,30685.5,30182.25,29358.25,,-0.04525,,-0.02628,auto_reconcile vs settled feed (DATA-002)
+2026-10-16 13:36 PT,closed,REVERSAL_3,NQ=F,2026-10-14,2026-10-16,tape DECLARED (scored row untouched),30159.25,30159.25,30182.25,29358.25,,-0.02856,,-0.02031,auto_reconcile vs settled feed (DATA-002)
