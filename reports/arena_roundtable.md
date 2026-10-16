@@ -1,10 +1,10 @@
 # Arena Roundtable — 2026-10-16
 
-Tape: **calm-up** · session 2026-10-15 · 12 agents · opened 47, closed 37 this session · 309 open · 3124 forward closes all-time
+Tape: **calm-up** · session 2026-10-15 · 12 agents · opened 47, closed 37 this session · 310 open · 3124 forward closes all-time
 
 > **This lab is 68% of the desk's scored record (3124 of 4570 scored rows in the Calibration Observatory).** Any pooled desk statistic is therefore mostly a statement about the Arena, not about the desk. Read the other labs' standings on their own n.
 
-**Drain (ARENA-003).** 0 of 309 open rows read `days_left <= 0`; 0 of those are PAST due (negative). 37 closed this session, 3124 all-time. No due rows on the book. This pass ran outside market hours, so every due row was eligible to close.
+**Drain (ARENA-003).** 0 of 310 open rows read `days_left <= 0`; 0 of those are PAST due (negative). 37 closed this session, 3124 all-time. No due rows on the book. This pass ran outside market hours, so every due row was eligible to close.
 
 - Tape today: CALM-UP. Our pooled record in this weather — hot hands: FRESH_HIGH (+210), SHORT_EXT (+5), PANIC_LITE (-10); cold hands: DEEP_DIP (-200), TREND_RIDER (-261). (History, not prophecy.)
 - FRESH_HIGH and SHORT_EXT enter on the same bar 43% of the time — one trade, two directions. The pooled ledger says the long side wins that argument; the skeptic keeps paying for the lesson.

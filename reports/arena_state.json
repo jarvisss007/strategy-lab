@@ -224,7 +224,7 @@
    "entry_date": "2026-10-06",
    "entry_t": 20732,
    "entry_px": 7837.5,
-   "mtm": -0.00672,
+   "mtm": -0.00624,
    "days_left": 2,
    "regime": "calm-up"
   },
@@ -692,7 +692,7 @@
    "entry_date": "2026-10-13",
    "entry_t": 20739,
    "entry_px": 30685.5,
-   "mtm": -0.02184,
+   "mtm": -0.02282,
    "days_left": 2,
    "regime": "calm-up"
   },
@@ -3116,7 +3116,7 @@
    "entry_date": "2026-10-14",
    "entry_t": 20740,
    "entry_px": 7766.75,
-   "mtm": 0.00235,
+   "mtm": 0.00283,
    "days_left": 3,
    "regime": "calm-up"
   },
@@ -3704,8 +3704,20 @@
    "entry_date": "2026-10-16",
    "entry_t": 20742,
    "entry_px": 30092.25,
-   "mtm": -0.00252,
+   "mtm": -0.00352,
    "days_left": 2,
+   "regime": "calm-up"
+  },
+  {
+   "strategy": "BOLL_SNAP",
+   "ticker": "NQ=F",
+   "side": 1,
+   "hold": 3,
+   "entry_date": "2026-10-16",
+   "entry_t": 20742,
+   "entry_px": 30046.5,
+   "mtm": 0.0,
+   "days_left": 3,
    "regime": "calm-up"
   }
  ]
