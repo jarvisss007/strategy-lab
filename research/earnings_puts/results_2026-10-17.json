@@ -1,0 +1,1638 @@
+{
+ "generated": "2026-10-17T16:10:44",
+ "prereg": "4521297",
+ "prices_through": "2026-10-16",
+ "n_prints": 5610,
+ "n_tickers": 129,
+ "n_with_eps_label": 5202,
+ "first_print": "2012-11-01",
+ "last_print": "2026-10-16",
+ "H1": {
+  "beats_react": {
+   "n": 4246,
+   "mean": 1.194,
+   "median": 0.726,
+   "pos_pct": 55.3,
+   "t_cr1": 8.85
+  },
+  "beats_react_x": {
+   "n": 4246,
+   "mean": 1.1,
+   "median": 0.708,
+   "pos_pct": 55.2,
+   "t_cr1": 8.6
+  },
+  "misses_react": {
+   "n": 956,
+   "mean": -2.097,
+   "median": -2.288,
+   "pos_pct": 33.1,
+   "t_cr1": -7.32
+  },
+  "misses_react_x": {
+   "n": 956,
+   "mean": -2.189,
+   "median": -2.176,
+   "pos_pct": 32.0,
+   "t_cr1": -7.83
+  },
+  "all_react": {
+   "n": 5610,
+   "mean": 0.552,
+   "median": 0.143,
+   "pos_pct": 51.0,
+   "t_cr1": 4.78
+  },
+  "all_react_x": {
+   "n": 5610,
+   "mean": 0.457,
+   "median": 0.106,
+   "pos_pct": 50.7,
+   "t_cr1": 4.19
+  },
+  "beat_share_pct": 81.6,
+  "big_beats_gt5_react": {
+   "n": 2711,
+   "mean": 1.977,
+   "median": 1.3,
+   "pos_pct": 58.9,
+   "t_cr1": 10.62
+  },
+  "beats_fell_pct": 44.6
+ },
+ "H2": {
+  "h1": {
+   "all": {
+    "n": 5248,
+    "mean": 6.716,
+    "median": -100.0,
+    "pos_pct": 33.0,
+    "t_cr1": 2.32
+   },
+   "beats": {
+    "n": 3981,
+    "mean": -11.318,
+    "median": -100.0,
+    "pos_pct": 28.9,
+    "t_cr1": -3.82
+   },
+   "misses": {
+    "n": 893,
+    "mean": 89.557,
+    "median": 10.801,
+    "pos_pct": 51.7,
+    "t_cr1": 9.34
+   },
+   "eras": {
+    "2011-15": {
+     "n": 1005,
+     "mean": 1.115,
+     "median": -100.0,
+     "pos_pct": 32.3,
+     "t_cr1": 0.19
+    },
+    "2016-20": {
+     "n": 1869,
+     "mean": 3.153,
+     "median": -100.0,
+     "pos_pct": 32.5,
+     "t_cr1": 0.73
+    },
+    "2021-26": {
+     "n": 2374,
+     "mean": 11.893,
+     "median": -100.0,
+     "pos_pct": 33.7,
+     "t_cr1": 2.47
+    }
+   },
+   "y2025_26": {
+    "n": 651,
+    "mean": 5.835,
+    "median": -90.321,
+    "pos_pct": 36.7,
+    "t_cr1": 0.69
+   },
+   "price_pct_spot_median": 2.07,
+   "at_k_real": {
+    "k": 1.08,
+    "mean": -1.188,
+    "t_cr1": -0.44,
+    "after_spread": -14.6
+   }
+  },
+  "h2": {
+   "all": {
+    "n": 5244,
+    "mean": -1.436,
+    "median": -100.0,
+    "pos_pct": 31.6,
+    "t_cr1": -0.51
+   },
+   "beats": {
+    "n": 3979,
+    "mean": -18.127,
+    "median": -100.0,
+    "pos_pct": 27.3,
+    "t_cr1": -6.19
+   },
+   "misses": {
+    "n": 892,
+    "mean": 75.272,
+    "median": 8.415,
+    "pos_pct": 50.9,
+    "t_cr1": 9.19
+   },
+   "eras": {
+    "2011-15": {
+     "n": 1005,
+     "mean": -9.174,
+     "median": -100.0,
+     "pos_pct": 30.1,
+     "t_cr1": -1.61
+    },
+    "2016-20": {
+     "n": 1869,
+     "mean": -4.869,
+     "median": -100.0,
+     "pos_pct": 31.2,
+     "t_cr1": -1.06
+    },
+    "2021-26": {
+     "n": 2370,
+     "mean": 4.552,
+     "median": -100.0,
+     "pos_pct": 32.6,
+     "t_cr1": 1.01
+    }
+   },
+   "y2025_26": {
+    "n": 650,
+    "mean": 5.519,
+    "median": -84.884,
+    "pos_pct": 35.2,
+    "t_cr1": 0.65
+   },
+   "price_pct_spot_median": 2.22,
+   "at_k_real": {
+    "k": 1.08,
+    "mean": -8.737,
+    "t_cr1": -3.32,
+    "after_spread": -22.1
+   },
+   "by_year": {
+    "2013": {
+     "n": 316,
+     "mean": -14.8
+    },
+    "2014": {
+     "n": 342,
+     "mean": -6.9
+    },
+    "2015": {
+     "n": 344,
+     "mean": -5.4
+    },
+    "2016": {
+     "n": 346,
+     "mean": 1.8
+    },
+    "2017": {
+     "n": 361,
+     "mean": -14.7
+    },
+    "2018": {
+     "n": 377,
+     "mean": 16.3
+    },
+    "2019": {
+     "n": 384,
+     "mean": -18.3
+    },
+    "2020": {
+     "n": 401,
+     "mean": -8.7
+    },
+    "2021": {
+     "n": 408,
+     "mean": -9.6
+    },
+    "2022": {
+     "n": 446,
+     "mean": 18.2
+    },
+    "2023": {
+     "n": 471,
+     "mean": -14.4
+    },
+    "2024": {
+     "n": 395,
+     "mean": 24.9
+    },
+    "2025": {
+     "n": 252,
+     "mean": -13.1
+    },
+    "2026": {
+     "n": 398,
+     "mean": 17.3
+    }
+   }
+  },
+  "h3": {
+   "all": {
+    "n": 5241,
+    "mean": -6.373,
+    "median": -100.0,
+    "pos_pct": 30.4,
+    "t_cr1": -2.09
+   },
+   "beats": {
+    "n": 3978,
+    "mean": -21.838,
+    "median": -100.0,
+    "pos_pct": 26.4,
+    "t_cr1": -7.06
+   },
+   "misses": {
+    "n": 892,
+    "mean": 64.617,
+    "median": -10.452,
+    "pos_pct": 48.3,
+    "t_cr1": 8.02
+   },
+   "eras": {
+    "2011-15": {
+     "n": 1005,
+     "mean": -14.805,
+     "median": -100.0,
+     "pos_pct": 28.5,
+     "t_cr1": -2.41
+    },
+    "2016-20": {
+     "n": 1869,
+     "mean": -8.096,
+     "median": -100.0,
+     "pos_pct": 29.4,
+     "t_cr1": -1.52
+    },
+    "2021-26": {
+     "n": 2367,
+     "mean": -1.433,
+     "median": -100.0,
+     "pos_pct": 31.9,
+     "t_cr1": -0.31
+    }
+   },
+   "y2025_26": {
+    "n": 649,
+    "mean": -3.829,
+    "median": -99.507,
+    "pos_pct": 32.4,
+    "t_cr1": -0.46
+   },
+   "price_pct_spot_median": 2.36,
+   "at_k_real": {
+    "k": 1.08,
+    "mean": -13.308,
+    "t_cr1": -4.72,
+    "after_spread": -26.7
+   }
+  }
+ },
+ "short_stock_h2": {
+  "raw": {
+   "n": 5244,
+   "mean": -0.717,
+   "median": -0.324,
+   "pos_pct": 47.4,
+   "t_cr1": -5.1
+  },
+  "vs_spy": {
+   "n": 5244,
+   "mean": -0.567,
+   "median": -0.172,
+   "pos_pct": 48.7,
+   "t_cr1": -4.69
+  },
+  "y2025_26_raw": {
+   "n": 650,
+   "mean": -0.583,
+   "median": 0.416,
+   "pos_pct": 52.5,
+   "t_cr1": -1.12
+  }
+ },
+ "H3": {
+  "seasons": [
+   {
+    "date": "2026-07-16",
+    "tsm_react_x": -1.78,
+    "tsm_surprise": 10.89,
+    "season_n": 105,
+    "season_mean_x": -0.305,
+    "season_down_pct": 57.1
+   },
+   {
+    "date": "2026-04-16",
+    "tsm_react_x": -3.38,
+    "tsm_surprise": 4.68,
+    "season_n": 106,
+    "season_mean_x": 2.738,
+    "season_down_pct": 50.9
+   },
+   {
+    "date": "2026-01-15",
+    "tsm_react_x": 4.17,
+    "tsm_surprise": 5.53,
+    "season_n": 103,
+    "season_mean_x": -0.142,
+    "season_down_pct": 50.5
+   },
+   {
+    "date": "2025-10-16",
+    "tsm_react_x": -0.92,
+    "tsm_surprise": 11.23,
+    "season_n": 101,
+    "season_mean_x": -0.108,
+    "season_down_pct": 52.5
+   },
+   {
+    "date": "2025-07-17",
+    "tsm_react_x": 2.77,
+    "tsm_surprise": 6.79,
+    "season_n": 102,
+    "season_mean_x": 0.325,
+    "season_down_pct": 52.9
+   },
+   {
+    "date": "2025-04-17",
+    "tsm_react_x": -0.1,
+    "tsm_surprise": 3.21,
+    "season_n": 108,
+    "season_mean_x": 0.824,
+    "season_down_pct": 54.6
+   },
+   {
+    "date": "2025-01-16",
+    "tsm_react_x": 4.06,
+    "tsm_surprise": 0.68,
+    "season_n": 98,
+    "season_mean_x": -1.128,
+    "season_down_pct": 59.2
+   },
+   {
+    "date": "2024-10-17",
+    "tsm_react_x": 9.78,
+    "tsm_surprise": 8.44,
+    "season_n": 97,
+    "season_mean_x": 0.702,
+    "season_down_pct": 59.8
+   },
+   {
+    "date": "2024-07-18",
+    "tsm_react_x": 1.16,
+    "tsm_surprise": 3.97,
+    "season_n": 99,
+    "season_mean_x": -0.125,
+    "season_down_pct": 48.5
+   },
+   {
+    "date": "2024-04-18",
+    "tsm_react_x": -4.66,
+    "tsm_surprise": 4.52,
+    "season_n": 104,
+    "season_mean_x": 0.393,
+    "season_down_pct": 47.1
+   },
+   {
+    "date": "2024-01-18",
+    "tsm_react_x": 8.9,
+    "tsm_surprise": 5.07,
+    "season_n": 96,
+    "season_mean_x": 2.142,
+    "season_down_pct": 40.6
+   },
+   {
+    "date": "2023-10-19",
+    "tsm_react_x": 4.57,
+    "tsm_surprise": 10.35,
+    "season_n": 95,
+    "season_mean_x": 1.235,
+    "season_down_pct": 48.4
+   },
+   {
+    "date": "2023-07-20",
+    "tsm_react_x": -4.38,
+    "tsm_surprise": 5.52,
+    "season_n": 98,
+    "season_mean_x": 2.522,
+    "season_down_pct": 49.0
+   },
+   {
+    "date": "2023-04-20",
+    "tsm_react_x": 2.91,
+    "tsm_surprise": 10.22,
+    "season_n": 96,
+    "season_mean_x": 1.196,
+    "season_down_pct": 51.0
+   },
+   {
+    "date": "2023-01-12",
+    "tsm_react_x": 6.02,
+    "tsm_surprise": 3.42,
+    "season_n": 95,
+    "season_mean_x": 1.359,
+    "season_down_pct": 41.1
+   },
+   {
+    "date": "2022-10-13",
+    "tsm_react_x": 1.28,
+    "tsm_surprise": 6.35,
+    "season_n": 96,
+    "season_mean_x": 0.789,
+    "season_down_pct": 40.6
+   },
+   {
+    "date": "2022-07-14",
+    "tsm_react_x": 3.17,
+    "tsm_surprise": 3.05,
+    "season_n": 93,
+    "season_mean_x": 0.633,
+    "season_down_pct": 49.5
+   },
+   {
+    "date": "2022-04-14",
+    "tsm_react_x": -1.85,
+    "tsm_surprise": 6.87,
+    "season_n": 96,
+    "season_mean_x": -0.124,
+    "season_down_pct": 37.5
+   },
+   {
+    "date": "2022-01-13",
+    "tsm_react_x": 6.64,
+    "tsm_surprise": 2.7,
+    "season_n": 88,
+    "season_mean_x": -0.109,
+    "season_down_pct": 40.9
+   },
+   {
+    "date": "2021-10-14",
+    "tsm_react_x": 0.66,
+    "tsm_surprise": 3.41,
+    "season_n": 83,
+    "season_mean_x": -0.15,
+    "season_down_pct": 49.4
+   },
+   {
+    "date": "2021-07-15",
+    "tsm_react_x": -5.17,
+    "tsm_surprise": 0.88,
+    "season_n": 81,
+    "season_mean_x": -0.418,
+    "season_down_pct": 56.8
+   },
+   {
+    "date": "2021-04-15",
+    "tsm_react_x": -3.13,
+    "tsm_surprise": 2.79,
+    "season_n": 85,
+    "season_mean_x": -0.144,
+    "season_down_pct": 50.6
+   },
+   {
+    "date": "2021-01-14",
+    "tsm_react_x": 6.41,
+    "tsm_surprise": 2.67,
+    "season_n": 88,
+    "season_mean_x": -0.438,
+    "season_down_pct": 58.0
+   },
+   {
+    "date": "2020-10-15",
+    "tsm_react_x": -0.38,
+    "tsm_surprise": 9.92,
+    "season_n": 77,
+    "season_mean_x": 1.504,
+    "season_down_pct": 54.5
+   },
+   {
+    "date": "2020-07-16",
+    "tsm_react_x": 1.13,
+    "tsm_surprise": 10.05,
+    "season_n": 80,
+    "season_mean_x": -0.251,
+    "season_down_pct": 53.8
+   },
+   {
+    "date": "2020-04-16",
+    "tsm_react_x": 5.04,
+    "tsm_surprise": 8.96,
+    "season_n": 81,
+    "season_mean_x": 0.703,
+    "season_down_pct": 44.4
+   },
+   {
+    "date": "2020-01-16",
+    "tsm_react_x": -0.22,
+    "tsm_surprise": 4.57,
+    "season_n": 79,
+    "season_mean_x": 0.092,
+    "season_down_pct": 51.9
+   },
+   {
+    "date": "2019-10-17",
+    "tsm_react_x": -1.05,
+    "tsm_surprise": 2.56,
+    "season_n": 71,
+    "season_mean_x": 0.582,
+    "season_down_pct": 45.1
+   },
+   {
+    "date": "2019-07-18",
+    "tsm_react_x": 3.38,
+    "tsm_surprise": 0.54,
+    "season_n": 71,
+    "season_mean_x": 0.859,
+    "season_down_pct": 40.8
+   },
+   {
+    "date": "2019-04-18",
+    "tsm_react_x": 2.08,
+    "tsm_surprise": 1.35,
+    "season_n": 75,
+    "season_mean_x": -0.194,
+    "season_down_pct": 46.7
+   },
+   {
+    "date": "2019-01-17",
+    "tsm_react_x": 1.07,
+    "tsm_surprise": 1.97,
+    "season_n": 74,
+    "season_mean_x": 1.534,
+    "season_down_pct": 45.9
+   },
+   {
+    "date": "2018-10-18",
+    "tsm_react_x": -1.16,
+    "tsm_surprise": 1.44,
+    "season_n": 69,
+    "season_mean_x": 0.367,
+    "season_down_pct": 44.9
+   },
+   {
+    "date": "2018-07-19",
+    "tsm_react_x": 4.02,
+    "tsm_surprise": 1.3,
+    "season_n": 69,
+    "season_mean_x": 0.709,
+    "season_down_pct": 43.5
+   },
+   {
+    "date": "2018-04-19",
+    "tsm_react_x": -5.15,
+    "tsm_surprise": -2.15,
+    "season_n": 73,
+    "season_mean_x": -0.982,
+    "season_down_pct": 60.3
+   },
+   {
+    "date": "2018-01-18",
+    "tsm_react_x": 3.51,
+    "tsm_surprise": 2.27,
+    "season_n": 73,
+    "season_mean_x": -0.104,
+    "season_down_pct": 58.9
+   },
+   {
+    "date": "2017-10-19",
+    "tsm_react_x": -1.06,
+    "tsm_surprise": 1.49,
+    "season_n": 65,
+    "season_mean_x": 0.148,
+    "season_down_pct": 50.8
+   },
+   {
+    "date": "2017-07-13",
+    "tsm_react_x": 1.12,
+    "tsm_surprise": -1.12,
+    "season_n": 78,
+    "season_mean_x": 0.102,
+    "season_down_pct": 55.1
+   },
+   {
+    "date": "2017-04-13",
+    "tsm_react_x": -0.74,
+    "tsm_surprise": 4.72,
+    "season_n": 78,
+    "season_mean_x": -0.238,
+    "season_down_pct": 46.2
+   },
+   {
+    "date": "2017-01-12",
+    "tsm_react_x": -2.67,
+    "tsm_surprise": 4.27,
+    "season_n": 76,
+    "season_mean_x": 0.925,
+    "season_down_pct": 46.1
+   },
+   {
+    "date": "2016-10-13",
+    "tsm_react_x": -2.29,
+    "tsm_surprise": 2.6,
+    "season_n": 74,
+    "season_mean_x": -0.151,
+    "season_down_pct": 52.7
+   },
+   {
+    "date": "2016-07-14",
+    "tsm_react_x": 0.26,
+    "tsm_surprise": 5.65,
+    "season_n": 73,
+    "season_mean_x": 1.395,
+    "season_down_pct": 34.2
+   },
+   {
+    "date": "2016-04-14",
+    "tsm_react_x": -3.33,
+    "tsm_surprise": 2.18,
+    "season_n": 75,
+    "season_mean_x": 0.521,
+    "season_down_pct": 44.0
+   },
+   {
+    "date": "2016-01-14",
+    "tsm_react_x": 4.9,
+    "tsm_surprise": 7.8,
+    "season_n": 74,
+    "season_mean_x": -0.072,
+    "season_down_pct": 44.6
+   },
+   {
+    "date": "2015-10-15",
+    "tsm_react_x": -3.28,
+    "tsm_surprise": 3.37,
+    "season_n": 66,
+    "season_mean_x": 2.414,
+    "season_down_pct": 31.8
+   },
+   {
+    "date": "2015-07-16",
+    "tsm_react_x": -0.05,
+    "tsm_surprise": 13.7,
+    "season_n": 64,
+    "season_mean_x": -0.138,
+    "season_down_pct": 54.7
+   },
+   {
+    "date": "2015-04-16",
+    "tsm_react_x": -1.12,
+    "tsm_surprise": 1.57,
+    "season_n": 70,
+    "season_mean_x": 0.417,
+    "season_down_pct": 57.1
+   },
+   {
+    "date": "2013-04-18",
+    "tsm_react_x": 5.66,
+    "tsm_surprise": 2.63,
+    "season_n": 58,
+    "season_mean_x": 1.206,
+    "season_down_pct": 44.8
+   },
+   {
+    "date": "2013-01-17",
+    "tsm_react_x": 1.94,
+    "tsm_surprise": -0.3,
+    "season_n": 59,
+    "season_mean_x": 0.752,
+    "season_down_pct": 44.1
+   }
+  ],
+  "after_tsm_down": {
+   "n": 22,
+   "mean_x": 0.493
+  },
+  "after_tsm_up": {
+   "n": 26,
+   "mean_x": 0.497
+  },
+  "after_tsm_beat_but_fell": {
+   "n": 21,
+   "mean_x": 0.563
+  },
+  "diff_down_minus_up": -0.005,
+  "t_welch": -0.02
+ },
+ "real_october": {
+  "rows": [
+   {
+    "ticker": "GS",
+    "report_session": "2026-10-13",
+    "bought": "2026-10-09",
+    "expiry": "2026-10-16",
+    "strike": 895.0,
+    "spot_in": 895.69,
+    "ask_in": 22.95,
+    "mid_in": 20.48,
+    "bid_out": 12.9,
+    "pnl_pct_ask_bid": -43.8,
+    "pnl_pct_mid_mid": -30.6,
+    "put_cost_pct_spot": 2.29,
+    "model_price_pct_spot": 1.56,
+    "k_real": 1.46,
+    "stock_move_pct": -0.38,
+    "react_pct": -0.23,
+    "surprise_pct": 29.98
+   },
+   {
+    "ticker": "JNJ",
+    "report_session": "2026-10-13",
+    "bought": "2026-10-09",
+    "expiry": "2026-10-16",
+    "strike": 262.5,
+    "spot_in": 261.4,
+    "ask_in": 5.75,
+    "mid_in": 5.25,
+    "bid_out": 12.8,
+    "pnl_pct_ask_bid": 122.6,
+    "pnl_pct_mid_mid": 161.9,
+    "put_cost_pct_spot": 2.01,
+    "model_price_pct_spot": 1.0,
+    "k_real": 2.01,
+    "stock_move_pct": -4.91,
+    "react_pct": -5.73,
+    "surprise_pct": 2.69
+   },
+   {
+    "ticker": "MS",
+    "report_session": "2026-10-14",
+    "bought": "2026-10-12",
+    "expiry": "2026-10-16",
+    "strike": 190.0,
+    "spot_in": 190.45,
+    "ask_in": 4.3,
+    "mid_in": 4.08,
+    "bid_out": 7.95,
+    "pnl_pct_ask_bid": 84.9,
+    "pnl_pct_mid_mid": 106.7,
+    "put_cost_pct_spot": 2.14,
+    "model_price_pct_spot": 1.89,
+    "k_real": 1.13,
+    "stock_move_pct": -4.48,
+    "react_pct": -2.75,
+    "surprise_pct": 3.91
+   },
+   {
+    "ticker": "NKE",
+    "report_session": "2026-10-02",
+    "bought": "2026-09-30",
+    "expiry": "2026-10-02",
+    "strike": 35.5,
+    "spot_in": 35.41,
+    "ask_in": 1.6,
+    "mid_in": 1.57,
+    "bid_out": 1.51,
+    "pnl_pct_ask_bid": -5.6,
+    "pnl_pct_mid_mid": 0.3,
+    "put_cost_pct_spot": 4.43,
+    "model_price_pct_spot": 3.9,
+    "k_real": 1.14,
+    "stock_move_pct": -4.32,
+    "react_pct": -3.64,
+    "surprise_pct": 9.87
+   },
+   {
+    "ticker": "PEP",
+    "report_session": "2026-10-08",
+    "bought": "2026-10-06",
+    "expiry": "2026-10-09",
+    "strike": 126.0,
+    "spot_in": 125.71,
+    "ask_in": 2.43,
+    "mid_in": 2.32,
+    "bid_out": 0.07,
+    "pnl_pct_ask_bid": -97.1,
+    "pnl_pct_mid_mid": -95.9,
+    "put_cost_pct_spot": 1.85,
+    "model_price_pct_spot": 2.14,
+    "k_real": 0.86,
+    "stock_move_pct": 2.09,
+    "react_pct": 3.73,
+    "surprise_pct": 1.95
+   },
+   {
+    "ticker": "TSLA",
+    "report_session": "2026-10-02",
+    "bought": "2026-09-30",
+    "expiry": "2026-10-02",
+    "strike": 355.0,
+    "spot_in": 354.13,
+    "ask_in": 5.5,
+    "mid_in": 5.4,
+    "bid_out": 0.0,
+    "pnl_pct_ask_bid": -100.0,
+    "pnl_pct_mid_mid": -99.9,
+    "put_cost_pct_spot": 1.52,
+    "model_price_pct_spot": 2.83,
+    "k_real": 0.54,
+    "stock_move_pct": 4.45,
+    "react_pct": 4.65,
+    "surprise_pct": null
+   },
+   {
+    "ticker": "UNH",
+    "report_session": "2026-10-13",
+    "bought": "2026-10-09",
+    "expiry": "2026-10-16",
+    "strike": 380.0,
+    "spot_in": 379.46,
+    "ask_in": 14.6,
+    "mid_in": 14.1,
+    "bid_out": 6.55,
+    "pnl_pct_ask_bid": -55.1,
+    "pnl_pct_mid_mid": -49.8,
+    "put_cost_pct_spot": 3.72,
+    "model_price_pct_spot": 4.55,
+    "k_real": 0.82,
+    "stock_move_pct": -0.41,
+    "react_pct": -0.2,
+    "surprise_pct": 13.26
+   },
+   {
+    "ticker": "WFC",
+    "report_session": "2026-10-13",
+    "bought": "2026-10-09",
+    "expiry": "2026-10-16",
+    "strike": 84.0,
+    "spot_in": 83.75,
+    "ask_in": 2.24,
+    "mid_in": 2.15,
+    "bid_out": 3.1,
+    "pnl_pct_ask_bid": 38.4,
+    "pnl_pct_mid_mid": 58.5,
+    "put_cost_pct_spot": 2.56,
+    "model_price_pct_spot": 2.5,
+    "k_real": 1.03,
+    "stock_move_pct": -3.36,
+    "react_pct": -3.1,
+    "surprise_pct": 0.8
+   }
+  ],
+  "n": 8,
+  "mean_pnl_ask_bid": -7.0,
+  "mean_pnl_mid_mid": 6.4,
+  "winners": 3,
+  "k_real_median": 1.08,
+  "spread_cost_pts": 13.4
+ },
+ "tsm_put": {
+  "price_pct_spot": 1.97,
+  "result_pct_premium": 160.7,
+  "surprise_pct": 1.67,
+  "past_prints": 53,
+  "past_down": 21
+ },
+ "tsm_2026_10": {
+  "2026-10-12": 444.35,
+  "2026-10-13": 445.12,
+  "2026-10-14": 430.0,
+  "2026-10-15": 422.25,
+  "2026-10-16": 412.61,
+  "react_pct": -1.8,
+  "spy_react_pct": 0.28,
+  "two_day_hold_pct": -5.14,
+  "tue_to_fri_pct": -7.3
+ },
+ "peers_tue_to_fri_pct": {
+  "NVDA": -6.3,
+  "AMD": -12.68,
+  "ASML": -4.44,
+  "AVGO": -7.99,
+  "MU": -7.79,
+  "SPY": -1.9
+ },
+ "coming_week": {
+  "fetched_pt": "2026-10-17 16:06",
+  "week": [
+   "2026-10-19",
+   "2026-10-20",
+   "2026-10-21",
+   "2026-10-22",
+   "2026-10-23"
+  ],
+  "min_cap_b": 40.0,
+  "names": [
+   {
+    "name": "SPCX",
+    "desc": "Space Exploration Technologies Corp",
+    "cap_b": 1982,
+    "report_et": "2026-10-20",
+    "when": "after close",
+    "expiry": "20261021",
+    "implied_move_pct": 7.82,
+    "atm_put_pct": 3.91,
+    "put_breakeven_drop_pct": 3.91,
+    "atm_iv": 89.3,
+    "n_past_prints": 0
+   },
+   {
+    "name": "META",
+    "desc": "Meta Platforms Inc Class A",
+    "cap_b": 1807,
+    "report_et": "2026-10-21",
+    "when": "after close",
+    "expiry": "20261023",
+    "implied_move_pct": 7.29,
+    "atm_put_pct": 3.65,
+    "put_breakeven_drop_pct": 3.65,
+    "atm_iv": 72.4,
+    "n_past_prints": 53,
+    "past_mean_abs_react": 7.93,
+    "past_down_pct": 45.3,
+    "past_drop_beyond_breakeven_pct": 26.0,
+    "past_model_put_mean_pct": -4.4
+   },
+   {
+    "name": "TSLA",
+    "desc": "Tesla, Inc.",
+    "cap_b": 1401,
+    "report_et": "2026-10-21",
+    "when": "after close",
+    "expiry": "20261023",
+    "implied_move_pct": 7.4,
+    "atm_put_pct": 3.7,
+    "put_breakeven_drop_pct": 3.7,
+    "atm_iv": 74.0,
+    "n_past_prints": 72,
+    "past_mean_abs_react": 6.15,
+    "past_down_pct": 45.8,
+    "past_drop_beyond_breakeven_pct": 31.4,
+    "past_model_put_mean_pct": -14.3
+   },
+   {
+    "name": "XOM",
+    "desc": "Exxonmobil Holdings Corporation",
+    "cap_b": 736,
+    "report_et": "2026-10-23",
+    "when": "time n/a",
+    "expiry": "20261030",
+    "implied_move_pct": 4.77,
+    "atm_put_pct": 2.38,
+    "put_breakeven_drop_pct": 2.38,
+    "atm_iv": 30.8,
+    "n_past_prints": 60,
+    "past_mean_abs_react": 1.9,
+    "past_down_pct": 61.7,
+    "past_drop_beyond_breakeven_pct": 19.3,
+    "past_model_put_mean_pct": 25.5
+   },
+   {
+    "name": "PG",
+    "desc": "Procter & Gamble Company",
+    "cap_b": 370,
+    "report_et": "2026-10-22",
+    "when": "before open",
+    "expiry": "20261023",
+    "implied_move_pct": 3.68,
+    "atm_put_pct": 1.84,
+    "put_breakeven_drop_pct": 1.84,
+    "atm_iv": 28.7,
+    "n_past_prints": 55,
+    "past_mean_abs_react": 2.54,
+    "past_down_pct": 38.2,
+    "past_drop_beyond_breakeven_pct": 26.9,
+    "past_model_put_mean_pct": -10.2
+   },
+   {
+    "name": "LRCX",
+    "desc": "Lam Research Corporation",
+    "cap_b": 330,
+    "report_et": "2026-10-21",
+    "when": "after close",
+    "expiry": "20261023",
+    "implied_move_pct": 8.18,
+    "atm_put_pct": 4.09,
+    "put_breakeven_drop_pct": 4.09,
+    "atm_iv": 77.3,
+    "n_past_prints": 54,
+    "past_mean_abs_react": 4.68,
+    "past_down_pct": 35.2,
+    "past_drop_beyond_breakeven_pct": 7.8,
+    "past_model_put_mean_pct": -58.0
+   },
+   {
+    "name": "GE",
+    "desc": "GE Aerospace",
+    "cap_b": 326,
+    "report_et": "2026-10-20",
+    "when": "before open",
+    "expiry": "20261023",
+    "implied_move_pct": 6.15,
+    "atm_put_pct": 3.08,
+    "put_breakeven_drop_pct": 3.08,
+    "atm_iv": 55.6,
+    "n_past_prints": 55,
+    "past_mean_abs_react": 4.07,
+    "past_down_pct": 47.3,
+    "past_drop_beyond_breakeven_pct": 17.3,
+    "past_model_put_mean_pct": -15.3
+   },
+   {
+    "name": "PM",
+    "desc": "Philip Morris International Inc.",
+    "cap_b": 320,
+    "report_et": "2026-10-21",
+    "when": "before open",
+    "expiry": "20261023",
+    "implied_move_pct": 4.99,
+    "atm_put_pct": 2.5,
+    "put_breakeven_drop_pct": 2.5,
+    "atm_iv": 46.2,
+    "n_past_prints": 0
+   },
+   {
+    "name": "NFLX",
+    "desc": "Netflix, Inc.",
+    "cap_b": 294,
+    "report_et": "2026-10-20",
+    "when": "after close",
+    "expiry": "20261023",
+    "implied_move_pct": 9.49,
+    "atm_put_pct": 4.75,
+    "put_breakeven_drop_pct": 4.75,
+    "atm_iv": 89.6,
+    "n_past_prints": 56,
+    "past_mean_abs_react": 9.75,
+    "past_down_pct": 55.4,
+    "past_drop_beyond_breakeven_pct": 30.2,
+    "past_model_put_mean_pct": 1.0
+   },
+   {
+    "name": "RTX",
+    "desc": "RTX Corporation",
+    "cap_b": 261,
+    "report_et": "2026-10-20",
+    "when": "before open",
+    "expiry": "20261023",
+    "implied_move_pct": 5.14,
+    "atm_put_pct": 2.57,
+    "put_breakeven_drop_pct": 2.57,
+    "atm_iv": 46.9,
+    "n_past_prints": 54,
+    "past_mean_abs_react": 2.81,
+    "past_down_pct": 40.7,
+    "past_drop_beyond_breakeven_pct": 15.7,
+    "past_model_put_mean_pct": 6.5
+   },
+   {
+    "name": "TMO",
+    "desc": "Thermo Fisher Scientific Inc.",
+    "cap_b": 255,
+    "report_et": "2026-10-21",
+    "when": "before open",
+    "expiry": "20261023",
+    "implied_move_pct": 6.21,
+    "atm_put_pct": 3.1,
+    "put_breakeven_drop_pct": 3.1,
+    "atm_iv": 61.0,
+    "n_past_prints": 0
+   },
+   {
+    "name": "TXN",
+    "desc": "Texas Instruments Incorporated",
+    "cap_b": 252,
+    "report_et": "2026-10-21",
+    "when": "after close",
+    "expiry": "20261023",
+    "implied_move_pct": 8.38,
+    "atm_put_pct": 4.19,
+    "put_breakeven_drop_pct": 4.19,
+    "atm_iv": 76.0,
+    "n_past_prints": 55,
+    "past_mean_abs_react": 4.34,
+    "past_down_pct": 54.5,
+    "past_drop_beyond_breakeven_pct": 19.2,
+    "past_model_put_mean_pct": -3.2
+   },
+   {
+    "name": "IBM",
+    "desc": "International Business Machines Corporation",
+    "cap_b": 219,
+    "report_et": "2026-10-21",
+    "when": "after close",
+    "expiry": "20261023",
+    "implied_move_pct": 7.69,
+    "atm_put_pct": 3.85,
+    "put_breakeven_drop_pct": 3.85,
+    "atm_iv": 75.8,
+    "n_past_prints": 55,
+    "past_mean_abs_react": 5.28,
+    "past_down_pct": 60.0,
+    "past_drop_beyond_breakeven_pct": 40.4,
+    "past_model_put_mean_pct": 40.9
+   },
+   {
+    "name": "AXP",
+    "desc": "American Express Company",
+    "cap_b": 212,
+    "report_et": "2026-10-23",
+    "when": "before open",
+    "expiry": "20261023",
+    "implied_move_pct": 4.75,
+    "atm_put_pct": 2.38,
+    "put_breakeven_drop_pct": 2.38,
+    "atm_iv": 43.3,
+    "n_past_prints": 0
+   },
+   {
+    "name": "ABT",
+    "desc": "Abbott Laboratories",
+    "cap_b": 181,
+    "report_et": "2026-10-21",
+    "when": "before open",
+    "expiry": "20261023",
+    "implied_move_pct": 5.46,
+    "atm_put_pct": 2.73,
+    "put_breakeven_drop_pct": 2.73,
+    "atm_iv": 55.3,
+    "n_past_prints": 0
+   },
+   {
+    "name": "UNP",
+    "desc": "Union Pacific Corporation",
+    "cap_b": 172,
+    "report_et": "2026-10-22",
+    "when": "before open",
+    "expiry": "20261023",
+    "implied_move_pct": 4.34,
+    "atm_put_pct": 2.17,
+    "put_breakeven_drop_pct": 2.17,
+    "atm_iv": 43.1,
+    "n_past_prints": 54,
+    "past_mean_abs_react": 3.25,
+    "past_down_pct": 44.4,
+    "past_drop_beyond_breakeven_pct": 23.5,
+    "past_model_put_mean_pct": -14.9
+   },
+   {
+    "name": "NEE",
+    "desc": "NextEra Energy, Inc.",
+    "cap_b": 166,
+    "report_et": "2026-10-21",
+    "when": "before open",
+    "expiry": "20261023",
+    "implied_move_pct": 3.96,
+    "atm_put_pct": 1.98,
+    "put_breakeven_drop_pct": 1.98,
+    "atm_iv": 35.1,
+    "n_past_prints": 0
+   },
+   {
+    "name": "DHR",
+    "desc": "Danaher Corporation",
+    "cap_b": 161,
+    "report_et": "2026-10-21",
+    "when": "before open",
+    "expiry": "20261023",
+    "implied_move_pct": 6.88,
+    "atm_put_pct": 3.44,
+    "put_breakeven_drop_pct": 3.44,
+    "atm_iv": 61.9,
+    "n_past_prints": 0
+   },
+   {
+    "name": "T",
+    "desc": "AT&T Inc",
+    "cap_b": 161,
+    "report_et": "2026-10-21",
+    "when": "before open",
+    "expiry": "20261023",
+    "implied_move_pct": 4.96,
+    "atm_put_pct": 2.48,
+    "put_breakeven_drop_pct": 2.48,
+    "atm_iv": 42.4,
+    "n_past_prints": 55,
+    "past_mean_abs_react": 3.22,
+    "past_down_pct": 45.5,
+    "past_drop_beyond_breakeven_pct": 25.0,
+    "past_model_put_mean_pct": 6.1
+   },
+   {
+    "name": "ISRG",
+    "desc": "Intuitive Surgical, Inc.",
+    "cap_b": 151,
+    "report_et": "2026-10-20",
+    "when": "time n/a",
+    "expiry": "20261023",
+    "implied_move_pct": 7.89,
+    "atm_put_pct": 3.94,
+    "put_breakeven_drop_pct": 3.94,
+    "atm_iv": 72.6,
+    "n_past_prints": 0
+   },
+   {
+    "name": "CB",
+    "desc": "Chubb Limited",
+    "cap_b": 139,
+    "report_et": "2026-10-20",
+    "when": "after close",
+    "expiry": "20261120",
+    "implied_move_pct": 5.43,
+    "atm_put_pct": 2.71,
+    "put_breakeven_drop_pct": 2.71,
+    "atm_iv": 22.8,
+    "n_past_prints": 0
+   },
+   {
+    "name": "BX",
+    "desc": "Blackstone Inc.",
+    "cap_b": 132,
+    "report_et": "2026-10-22",
+    "when": "before open",
+    "expiry": "20261023",
+    "implied_move_pct": 6.3,
+    "atm_put_pct": 3.15,
+    "put_breakeven_drop_pct": 3.15,
+    "atm_iv": 59.2,
+    "n_past_prints": 0
+   },
+   {
+    "name": "VLO",
+    "desc": "Valero Energy Corporation",
+    "cap_b": 128,
+    "report_et": "2026-10-22",
+    "when": "before open",
+    "expiry": "20261023",
+    "implied_move_pct": 6.51,
+    "atm_put_pct": 3.25,
+    "put_breakeven_drop_pct": 3.25,
+    "atm_iv": 57.7,
+    "n_past_prints": 0
+   },
+   {
+    "name": "LMT",
+    "desc": "Lockheed Martin Corporation",
+    "cap_b": 127,
+    "report_et": "2026-10-22",
+    "when": "before open",
+    "expiry": "20261023",
+    "implied_move_pct": 4.86,
+    "atm_put_pct": 2.43,
+    "put_breakeven_drop_pct": 2.43,
+    "atm_iv": 44.4,
+    "n_past_prints": 55,
+    "past_mean_abs_react": 3.18,
+    "past_down_pct": 54.5,
+    "past_drop_beyond_breakeven_pct": 17.3,
+    "past_model_put_mean_pct": 3.9
+   },
+   {
+    "name": "NEM",
+    "desc": "Newmont Corporation",
+    "cap_b": 125,
+    "report_et": "2026-10-22",
+    "when": "after close",
+    "expiry": "20261023",
+    "implied_move_pct": 5.56,
+    "atm_put_pct": 2.78,
+    "put_breakeven_drop_pct": 2.78,
+    "atm_iv": 55.3,
+    "n_past_prints": 0
+   },
+   {
+    "name": "WDC",
+    "desc": "Western Digital Corporation",
+    "cap_b": 124,
+    "report_et": "2026-10-22",
+    "when": "after close",
+    "expiry": "20261023",
+    "implied_move_pct": 10.69,
+    "atm_put_pct": 5.34,
+    "put_breakeven_drop_pct": 5.34,
+    "atm_iv": 108.5,
+    "n_past_prints": 54,
+    "past_mean_abs_react": 5.27,
+    "past_down_pct": 55.6,
+    "past_drop_beyond_breakeven_pct": 29.4,
+    "past_model_put_mean_pct": 15.5
+   },
+   {
+    "name": "COF",
+    "desc": "Capital One Financial Corp",
+    "cap_b": 124,
+    "report_et": "2026-10-20",
+    "when": "after close",
+    "expiry": "20261023",
+    "implied_move_pct": 5.48,
+    "atm_put_pct": 2.74,
+    "put_breakeven_drop_pct": 2.74,
+    "atm_iv": 55.8,
+    "n_past_prints": 0
+   },
+   {
+    "name": "SPOT",
+    "desc": "Spotify Technology SA",
+    "cap_b": 109,
+    "report_et": "2026-10-22",
+    "when": "before open",
+    "expiry": "20261023",
+    "implied_move_pct": 9.5,
+    "atm_put_pct": 4.75,
+    "put_breakeven_drop_pct": 4.75,
+    "atm_iv": 92.6,
+    "n_past_prints": 0
+   },
+   {
+    "name": "CME",
+    "desc": "CME Group Inc. Class A",
+    "cap_b": 106,
+    "report_et": "2026-10-21",
+    "when": "before open",
+    "expiry": "20261023",
+    "implied_move_pct": 3.78,
+    "atm_put_pct": 1.89,
+    "put_breakeven_drop_pct": 1.89,
+    "atm_iv": 39.4,
+    "n_past_prints": 0
+   },
+   {
+    "name": "ELV",
+    "desc": "Elevance Health, Inc.",
+    "cap_b": 93,
+    "report_et": "2026-10-21",
+    "when": "before open",
+    "expiry": "20261120",
+    "implied_move_pct": 9.34,
+    "atm_put_pct": 4.67,
+    "put_breakeven_drop_pct": 4.67,
+    "atm_iv": 41.4,
+    "n_past_prints": 0
+   },
+   {
+    "name": "CSX",
+    "desc": "CSX Corporation",
+    "cap_b": 90,
+    "report_et": "2026-10-21",
+    "when": "after close",
+    "expiry": "20261023",
+    "implied_move_pct": 4.96,
+    "atm_put_pct": 2.48,
+    "put_breakeven_drop_pct": 2.48,
+    "atm_iv": 47.8,
+    "n_past_prints": 0
+   },
+   {
+    "name": "MMM",
+    "desc": "3M Company",
+    "cap_b": 85,
+    "report_et": "2026-10-20",
+    "when": "before open",
+    "expiry": "20261023",
+    "implied_move_pct": 6.06,
+    "atm_put_pct": 3.03,
+    "put_breakeven_drop_pct": 3.03,
+    "atm_iv": 55.4,
+    "n_past_prints": 0
+   },
+   {
+    "name": "MCO",
+    "desc": "Moody's Corporation",
+    "cap_b": 84,
+    "report_et": "2026-10-21",
+    "when": "before open",
+    "expiry": "20261120",
+    "implied_move_pct": 7.66,
+    "atm_put_pct": 3.83,
+    "put_breakeven_drop_pct": 3.83,
+    "atm_iv": 30.1,
+    "n_past_prints": 0
+   },
+   {
+    "name": "CMCSA",
+    "desc": "Comcast Corporation Class A",
+    "cap_b": 78,
+    "report_et": "2026-10-22",
+    "when": "before open",
+    "expiry": "20261023",
+    "implied_move_pct": 6.66,
+    "atm_put_pct": 3.33,
+    "put_breakeven_drop_pct": 3.33,
+    "atm_iv": 61.1,
+    "n_past_prints": 0
+   },
+   {
+    "name": "KMI",
+    "desc": "Kinder Morgan Inc Class P",
+    "cap_b": 76,
+    "report_et": "2026-10-21",
+    "when": "after close",
+    "expiry": "20261023",
+    "implied_move_pct": 3.44,
+    "atm_put_pct": 1.72,
+    "put_breakeven_drop_pct": 1.72,
+    "atm_iv": 43.9,
+    "n_past_prints": 0
+   },
+   {
+    "name": "NOC",
+    "desc": "Northrop Grumman Corp.",
+    "cap_b": 74,
+    "report_et": "2026-10-20",
+    "when": "before open",
+    "expiry": "20261120",
+    "implied_move_pct": 7.97,
+    "atm_put_pct": 3.98,
+    "put_breakeven_drop_pct": 3.98,
+    "atm_iv": 32.7,
+    "n_past_prints": 55,
+    "past_mean_abs_react": 3.08,
+    "past_down_pct": 43.6,
+    "past_drop_beyond_breakeven_pct": 13.5,
+    "past_model_put_mean_pct": 9.4
+   },
+   {
+    "name": "GM",
+    "desc": "General Motors Company",
+    "cap_b": 74,
+    "report_et": "2026-10-20",
+    "when": "before open",
+    "expiry": "20261023",
+    "implied_move_pct": 6.31,
+    "atm_put_pct": 3.15,
+    "put_breakeven_drop_pct": 3.15,
+    "atm_iv": 58.0,
+    "n_past_prints": 55,
+    "past_mean_abs_react": 3.93,
+    "past_down_pct": 47.3,
+    "past_drop_beyond_breakeven_pct": 21.2,
+    "past_model_put_mean_pct": -29.2
+   },
+   {
+    "name": "SLB",
+    "desc": "SLB Limited",
+    "cap_b": 73,
+    "report_et": "2026-10-23",
+    "when": "before open",
+    "expiry": "20261023",
+    "implied_move_pct": 5.51,
+    "atm_put_pct": 2.75,
+    "put_breakeven_drop_pct": 2.75,
+    "atm_iv": 49.9,
+    "n_past_prints": 0
+   },
+   {
+    "name": "NSC",
+    "desc": "Norfolk Southern Corporation",
+    "cap_b": 73,
+    "report_et": "2026-10-22",
+    "when": "time n/a",
+    "expiry": "20261120",
+    "implied_move_pct": 5.75,
+    "atm_put_pct": 2.88,
+    "put_breakeven_drop_pct": 2.88,
+    "atm_iv": 24.0,
+    "n_past_prints": 0
+   },
+   {
+    "name": "HON",
+    "desc": "Honeywell International Inc.",
+    "cap_b": 67,
+    "report_et": "2026-10-22",
+    "when": "before open",
+    "expiry": "20261023",
+    "implied_move_pct": 5.06,
+    "atm_put_pct": 2.53,
+    "put_breakeven_drop_pct": 2.53,
+    "atm_iv": 49.4,
+    "n_past_prints": 60,
+    "past_mean_abs_react": 2.77,
+    "past_down_pct": 48.3,
+    "past_drop_beyond_breakeven_pct": 25.0,
+    "past_model_put_mean_pct": -6.0
+   },
+   {
+    "name": "BE",
+    "desc": "Bloom Energy Corporation Class A",
+    "cap_b": 65,
+    "report_et": "2026-10-22",
+    "when": "after close",
+    "expiry": "20261023",
+    "implied_move_pct": 12.32,
+    "atm_put_pct": 6.16,
+    "put_breakeven_drop_pct": 6.16,
+    "atm_iv": 121.3,
+    "n_past_prints": 29,
+    "past_mean_abs_react": 10.36,
+    "past_down_pct": 44.8,
+    "past_drop_beyond_breakeven_pct": 26.9,
+    "past_model_put_mean_pct": 9.3
+   },
+   {
+    "name": "URI",
+    "desc": "United Rentals, Inc.",
+    "cap_b": 64,
+    "report_et": "2026-10-21",
+    "when": "after close",
+    "expiry": "20261023",
+    "implied_move_pct": 8.16,
+    "atm_put_pct": 4.08,
+    "put_breakeven_drop_pct": 4.08,
+    "atm_iv": 74.7,
+    "n_past_prints": 0
+   },
+   {
+    "name": "NDAQ",
+    "desc": "Nasdaq, Inc.",
+    "cap_b": 53,
+    "report_et": "2026-10-22",
+    "when": "before open",
+    "expiry": "20261023",
+    "implied_move_pct": 4.61,
+    "atm_put_pct": 2.31,
+    "put_breakeven_drop_pct": 2.31,
+    "atm_iv": 42.3,
+    "n_past_prints": 0
+   },
+   {
+    "name": "FIX",
+    "desc": "Comfort Systems USA, Inc.",
+    "cap_b": 51,
+    "report_et": "2026-10-22",
+    "when": "time n/a",
+    "expiry": "20261120",
+    "implied_move_pct": 16.95,
+    "atm_put_pct": 8.47,
+    "put_breakeven_drop_pct": 8.47,
+    "atm_iv": 70.5,
+    "n_past_prints": 0
+   },
+   {
+    "name": "WAB",
+    "desc": "Westinghouse Air Brake Technologies Corporation",
+    "cap_b": 48,
+    "report_et": "2026-10-21",
+    "when": "before open",
+    "expiry": "20261120",
+    "implied_move_pct": 6.84,
+    "atm_put_pct": 3.42,
+    "put_breakeven_drop_pct": 3.42,
+    "atm_iv": 27.4,
+    "n_past_prints": 0
+   },
+   {
+    "name": "FITB",
+    "desc": "Fifth Third Bancorp",
+    "cap_b": 46,
+    "report_et": "2026-10-19",
+    "when": "before open",
+    "expiry": "20261120",
+    "implied_move_pct": 6.86,
+    "atm_put_pct": 3.43,
+    "put_breakeven_drop_pct": 3.43,
+    "atm_iv": 26.5,
+    "n_past_prints": 0
+   },
+   {
+    "name": "NBIS",
+    "desc": "Nebius Group N.V. Class A",
+    "cap_b": 45,
+    "report_et": "2026-10-22",
+    "when": "time n/a",
+    "expiry": "20261023",
+    "implied_move_pct": 10.35,
+    "atm_put_pct": 5.17,
+    "put_breakeven_drop_pct": 5.17,
+    "atm_iv": 94.3,
+    "n_past_prints": 0
+   },
+   {
+    "name": "WCN",
+    "desc": "Waste Connections, Inc.",
+    "cap_b": 42,
+    "report_et": "2026-10-21",
+    "when": "after close",
+    "expiry": "20261120",
+    "implied_move_pct": 6.31,
+    "atm_put_pct": 3.15,
+    "put_breakeven_drop_pct": 3.15,
+    "atm_iv": 26.4,
+    "n_past_prints": 0
+   },
+   {
+    "name": "MSCI",
+    "desc": "MSCI Inc. Class A",
+    "cap_b": 41,
+    "report_et": "2026-10-20",
+    "when": "before open",
+    "expiry": "20261120",
+    "implied_move_pct": 8.39,
+    "atm_put_pct": 4.2,
+    "put_breakeven_drop_pct": 4.2,
+    "atm_iv": 33.9,
+    "n_past_prints": 0
+   }
+  ]
+ }
+}

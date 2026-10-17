@@ -22,3 +22,7 @@ archive/
 # neither may be swept into a commit by the session-end sweep.
 *.lock
 data/edgar/earnings_8k_run.json
+
+# earnings puts study (2026-10-17): third-party inputs stay local in this public repo; re-fetch with research/earnings_puts/fetch_*.py
+data/eps_surprise.json
+research/earnings_puts/week_implied_*.json
