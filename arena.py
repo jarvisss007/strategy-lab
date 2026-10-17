@@ -31,7 +31,7 @@ series.
 
 Run: /opt/anaconda3/bin/python arena.py            (after stock-radar collector)
 """
-import csv, json, math, os
+import csv, json, math, os, re
 from datetime import date, timedelta
 from atomicio import atomic_json, atomic_write_text, atomic_csv   # BOOK-001: never truncate a book in place
 
@@ -43,6 +43,15 @@ STATE_F = os.path.join(REPORTS, "arena_state.json")
 TRADES_F = os.path.join(REPORTS, "arena_trades.csv")
 COST = 0.001
 MAX_OPEN = 40      # raised 25→40 on 2026-07-25 (tempo sign-off in REGISTRY.md)
+
+
+def is_void(row):
+    """ARENA-010 (/void-row, 2026-10-17). arena_trades.csv has no outcome column, so a disposed closed row is marked by the bare
+    token `void` in its `tags` list (comma-separated, e.g. 'tech,void' - the spelling the Resolver's arena checks already read).
+    The reason lives in reports/arena_voids.csv, keyed on (strategy, ticker, entry_date, exit_date). A void is KEPT in the book and
+    OUT of every statistic: the forward stats, regime rhythm, streaks and tables below are computed from the non-void rows only."""
+    return "void" in {t.strip().lower() for t in re.split(r"[,;|/\s]+", row.get("tags") or "") if t.strip()}
+
 
 # TAG-001, 2026-08-11. Every rule declares its own [tech]/[fund] tag HERE, at the
 # lab's end. Until now the Calibration Observatory inferred the Arena's tag from a
@@ -504,6 +513,8 @@ def main():
         # property of the STRATEGY, so it is deterministic and carries no knowledge
         # of how the trade turned out.
         row["tags"] = STRATS.get(r.get("strategy"), {}).get("tags", "")
+        if is_void(r):   # ARENA-010: the strategy tag is re-declared every run, a disposal is not - keep the `void` token
+            row["tags"] = ",".join(t for t in (row["tags"], "void") if t)
         out_rows.append(row)
     atomic_csv(TRADES_F, cols, out_rows, extrasaction="ignore")
 
@@ -526,7 +537,9 @@ def main():
         if prior:
             last_session = d2iso(prior[-1])
 
-    fwd_trades = list(csv.DictReader(open(TRADES_F)))
+    fwd_all = list(csv.DictReader(open(TRADES_F)))
+    fwd_void = [r for r in fwd_all if is_void(r)]
+    fwd_trades = [r for r in fwd_all if not is_void(r)]   # ARENA-010 / /void-row: a void is kept in the file and OUT of every statistic
 
     opened_today_by, closed_today_by = {}, {}
     for p in still_open:
@@ -806,6 +819,7 @@ def main():
                     "stats": fwd_stats,
                     "by_regime": fwd_rhythm,
                     "closed_total": len(fwd_trades),
+                    "closed_void": len(fwd_void),
                     "closed_all": fwd_trades[::-1]},
     }
     # keep blotter payload sane for the browser
