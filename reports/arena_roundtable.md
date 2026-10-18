@@ -6,7 +6,7 @@ Tape: **calm-down** · session 2026-10-16 · 12 agents · opened 132, closed 145
 
 **Drain (ARENA-003).** 0 of 300 open rows read `days_left <= 0`; 0 of those are PAST due (negative). 145 closed this session, 3262 all-time. No due rows on the book. This pass ran outside market hours, so every due row was eligible to close.
 
-- Tape today: CALM-DOWN. Our pooled record in this weather — hot hands: BOLL_SNAP (+185), DOUBLE_DIP (+93), REVERSAL_3 (+49); cold hands: PANIC_LITE (-10), FRESH_HIGH (-289). (History, not prophecy.)
+- Tape today: CALM-DOWN. Our pooled record in this weather — hot hands: BOLL_SNAP (+183), DOUBLE_DIP (+93), REVERSAL_3 (+49); cold hands: PANIC_LITE (-10), FRESH_HIGH (-289). (History, not prophecy.)
 - FRESH_HIGH and SHORT_EXT enter on the same bar 43% of the time — one trade, two directions. The pooled ledger says the long side wins that argument; the skeptic keeps paying for the lesson.
 - PANIC_LITE contains 83% of PANIC_BOUNCE's entries; stripped to the −3%…−5% band alone (PANIC_LITE entries too shallow for PANIC_BOUNCE), it still earned +9 bps over 1778 trades (t=0.66) — the bounce is not only in the extreme tail.
 - Desk rule we all share: reading each other's regime stats and gating ourselves in hindsight is selection bias — STORM_DIP is the only pre-registered regime gate; any new gate goes to REGISTRY.md with a thesis BEFORE it trades.
@@ -15,8 +15,8 @@ Tape: **calm-down** · session 2026-10-16 · 12 agents · opened 132, closed 145
 
 _Read n_events, not n: `n` counts rows, `d` counts the distinct entry DAYS behind them. Rows on one day share a regime and are one observation, not many (Firm Brain #4)._
 
-- **calm-up**: FRESH_HIGH +197 (n=425, d=110) · SHORT_EXT +2 (n=184, d=74) · PANIC_LITE -26 (n=2057, d=145) · PANIC_BOUNCE -46 (n=975, d=124) · BOLL_SNAP -70 (n=471, d=123) · DOUBLE_DIP -87 (n=837, d=126) · REVERSAL_3 -103 (n=252, d=43) · RSI2_DIP -116 (n=505, d=46) · PULLBACK_50 -117 (n=212, d=43) · DEEP_DIP -202 (n=131, d=77) · TREND_RIDER -314 (n=105, d=37)
-- **calm-down**: BOLL_SNAP +185 (n=67, d=13) · DOUBLE_DIP +93 (n=125, d=15) · REVERSAL_3 +49 (n=27, d=3) · RSI2_DIP +45 (n=60, d=4) · PANIC_BOUNCE +13 (n=122, d=14) · PANIC_LITE -10 (n=218, d=15) · FRESH_HIGH -289 (n=34, d=12)
+- **calm-up**: FRESH_HIGH +197 (n=425, d=110) · SHORT_EXT +2 (n=184, d=74) · PANIC_LITE -26 (n=2057, d=145) · PANIC_BOUNCE -46 (n=975, d=124) · BOLL_SNAP -70 (n=471, d=123) · DOUBLE_DIP -87 (n=837, d=126) · REVERSAL_3 -103 (n=252, d=43) · RSI2_DIP -116 (n=505, d=46) · PULLBACK_50 -116 (n=212, d=43) · DEEP_DIP -202 (n=131, d=77) · TREND_RIDER -314 (n=105, d=37)
+- **calm-down**: BOLL_SNAP +183 (n=68, d=14) · DOUBLE_DIP +93 (n=125, d=15) · REVERSAL_3 +49 (n=27, d=3) · RSI2_DIP +45 (n=60, d=4) · PANIC_BOUNCE +13 (n=122, d=14) · PANIC_LITE -10 (n=218, d=15) · FRESH_HIGH -289 (n=34, d=12)
 - **storm-up**: PANIC_LITE +162 (n=98, d=4) · PANIC_BOUNCE +123 (n=69, d=4) · DOUBLE_DIP +110 (n=54, d=4) · BOLL_SNAP -72 (n=23, d=4) · STORM_DIP -296 (n=89, d=4)
 - **storm-down**: DEEP_DIP +1022 (n=25, d=15) · DOUBLE_DIP +386 (n=265, d=30) · BOLL_SNAP +376 (n=257, d=27) · STORM_DIP +341 (n=429, d=31) · PANIC_BOUNCE +189 (n=268, d=29) · PANIC_LITE +134 (n=590, d=34) · FRESH_HIGH -88 (n=43, d=21)
 
@@ -68,6 +68,6 @@ _Rows that share an entry date share one tape (Firm Brain #4). S17: each entry d
 - RSI2_DIP to the desk: my weather is calm-down (+45 bps, n=60); keep me on a short leash in calm-up (-116). Status: DEAD — loses to costs/SPY.
 - REVERSAL_3 to the desk: my weather is calm-down (+49 bps, n=27); keep me on a short leash in calm-up (-103). Status: DEAD — loses to costs/SPY.
 - BOLL_SNAP to the desk: my weather is storm-down (+376 bps, n=257); keep me on a short leash in storm-up (-72). Status: UNPROVEN — FAILED the deflation gate 2026-08-08 (DSR 0.233, PBO 0.474).
-- PULLBACK_50 to the desk: my weather is calm-down (+10 bps, n=19); keep me on a short leash in calm-up (-117). Status: DEAD — loses to costs/SPY.
+- PULLBACK_50 to the desk: my weather is calm-down (+10 bps, n=19); keep me on a short leash in calm-up (-116). Status: DEAD — loses to costs/SPY.
 
 Calibration experiment, not advice. Forward book + deflation gate decide; the replay only suggests.
