@@ -1,8 +1,8 @@
-# Arena Roundtable — 2026-10-18
+# Arena Roundtable — 2026-10-19
 
 Tape: **calm-down** · session 2026-10-16 · 12 agents · opened 132, closed 145 this session · 301 open · 3262 forward closes all-time
 
-> **This lab is 69% of the desk's scored record (3262 of 4715 scored rows in the Calibration Observatory).** Any pooled desk statistic is therefore mostly a statement about the Arena, not about the desk. Read the other labs' standings on their own n.
+> **This lab is 69% of the desk's scored record (3262 of 4723 scored rows in the Calibration Observatory).** Any pooled desk statistic is therefore mostly a statement about the Arena, not about the desk. Read the other labs' standings on their own n.
 
 **Drain (ARENA-003).** 0 of 301 open rows read `days_left <= 0`; 0 of those are PAST due (negative). 145 closed this session, 3262 all-time. No due rows on the book. This pass ran outside market hours, so every due row was eligible to close.
 
@@ -15,7 +15,7 @@ Tape: **calm-down** · session 2026-10-16 · 12 agents · opened 132, closed 145
 
 _Read n_events, not n: `n` counts rows, `d` counts the distinct entry DAYS behind them. Rows on one day share a regime and are one observation, not many (Firm Brain #4)._
 
-- **calm-up**: FRESH_HIGH +197 (n=425, d=110) · SHORT_EXT +2 (n=184, d=74) · PANIC_LITE -26 (n=2057, d=145) · PANIC_BOUNCE -46 (n=975, d=124) · BOLL_SNAP -70 (n=471, d=123) · DOUBLE_DIP -87 (n=837, d=126) · REVERSAL_3 -103 (n=252, d=43) · PULLBACK_50 -116 (n=212, d=43) · RSI2_DIP -116 (n=505, d=46) · DEEP_DIP -202 (n=131, d=77) · TREND_RIDER -314 (n=105, d=37)
+- **calm-up**: FRESH_HIGH +197 (n=425, d=110) · SHORT_EXT +2 (n=184, d=74) · PANIC_LITE -26 (n=2057, d=145) · PANIC_BOUNCE -46 (n=975, d=124) · BOLL_SNAP -70 (n=471, d=123) · DOUBLE_DIP -87 (n=837, d=126) · REVERSAL_3 -103 (n=252, d=43) · RSI2_DIP -116 (n=505, d=46) · PULLBACK_50 -116 (n=212, d=43) · DEEP_DIP -202 (n=131, d=77) · TREND_RIDER -314 (n=105, d=37)
 - **calm-down**: BOLL_SNAP +184 (n=68, d=14) · DOUBLE_DIP +93 (n=125, d=15) · REVERSAL_3 +49 (n=27, d=3) · RSI2_DIP +45 (n=60, d=4) · PANIC_BOUNCE +13 (n=122, d=14) · PANIC_LITE -10 (n=218, d=15) · FRESH_HIGH -289 (n=34, d=12)
 - **storm-up**: PANIC_LITE +162 (n=98, d=4) · PANIC_BOUNCE +123 (n=69, d=4) · DOUBLE_DIP +110 (n=54, d=4) · BOLL_SNAP -72 (n=23, d=4) · STORM_DIP -296 (n=89, d=4)
 - **storm-down**: DEEP_DIP +1022 (n=25, d=15) · DOUBLE_DIP +386 (n=265, d=30) · BOLL_SNAP +376 (n=257, d=27) · STORM_DIP +341 (n=429, d=31) · PANIC_BOUNCE +189 (n=268, d=29) · PANIC_LITE +134 (n=590, d=34) · FRESH_HIGH -88 (n=43, d=21)
@@ -53,7 +53,7 @@ _Rows that share an entry date share one tape (Firm Brain #4). S17: each entry d
 - REVERSAL_3: per-entry-day mean -37 bps over 53 entry days (row mean -57, n=368) · win rate per entry day 38% (row hit 43%)
 - BOLL_SNAP: per-entry-day mean -15 bps over 48 entry days (row mean +136, n=231) · win rate per entry day 50% (row hit 53%)
 - PULLBACK_50: per-entry-day mean -12 bps over 53 entry days (row mean +23, n=233) · win rate per entry day 57% (row hit 52%)
-- Exits on copied/zero-volume bars: **0** of 2805 forward exits tested; 457 exit(s) have no bar in data/open, close and volume.csv to test, counted untested, not clean
+- Exits on copied/zero-volume bars: **0** of 3186 forward exits tested; 76 exit(s) have no bar in data/open, close and volume.csv to test, counted untested, not clean
 
 ## Notes to the desk
 
