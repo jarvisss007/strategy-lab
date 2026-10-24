@@ -3,7 +3,7 @@
 A systematic, **honesty-first** research engine. It tests a battery of classic
 trading-strategy families across their full parameter grids on 15 years of daily
 data, then judges each one through the deflation + overfitting gate from
-[backtest-overfitting](../backtest-overfitting) — so the output is a *map of what
+[backtest-overfitting](https://github.com/jarvisss007/backtest-overfitting) — so the output is a *map of what
 has and hasn't been ruled out*, not a pile of curve-fit "edges."
 
 This is the same standard that convicted the r17 sweep and returned "no edge"
@@ -28,8 +28,8 @@ Sharpe on an out-of-sample holdout it was never fit on.
 ## Run
 
 ```bash
-/opt/anaconda3/bin/python fetch_data.py   # refresh prices (slow, ~120 tickers)
-/opt/anaconda3/bin/python lab.py          # run the survey → report + dashboard
+python fetch_data.py   # refresh prices (slow, ~120 tickers)
+python lab.py          # run the survey → report + dashboard
 ```
 
 ## The knowledge base is the point
@@ -51,11 +51,11 @@ so it works from a plain file:// double-click — no server needed.
 
 Refresh the whole thing:
 ```bash
-/opt/anaconda3/bin/python fetch_data.py        # 15y prices (slow, occasional)
-/opt/anaconda3/bin/python ~/stock-radar/collector.py   # daily monitor snapshot
-/opt/anaconda3/bin/python returns_matrix.py            # multi-horizon returns
-/opt/anaconda3/bin/python universe_daytype.py          # intraday day-type
-/opt/anaconda3/bin/python lab.py                       # strategy survey
-/opt/anaconda3/bin/python build_hub.py                 # assemble hub_data.js
+python fetch_data.py        # 15y prices (slow, occasional)
+python ~/stock-radar/collector.py   # daily monitor snapshot
+python returns_matrix.py            # multi-horizon returns
+python universe_daytype.py          # intraday day-type
+python lab.py                       # strategy survey
+python build_hub.py                 # assemble hub_data.js
 ```
 Open `terminal.html` (or Command Center → Trading Terminal).
