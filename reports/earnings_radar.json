@@ -1,5 +1,5 @@
 {
- "built": "2026-10-19 06:00 PDT",
+ "built": "2026-10-25 10:44 PDT",
  "gap_threshold": 0.04,
  "vol_threshold": 2.0,
  "event_study": {
@@ -7020,106 +7020,6 @@
  },
  "upcoming_universe": [
   {
-   "date": "2026-10-20",
-   "ticker": "GE",
-   "when": "time-pre-market"
-  },
-  {
-   "date": "2026-10-20",
-   "ticker": "NFLX",
-   "when": "time-after-hours"
-  },
-  {
-   "date": "2026-10-20",
-   "ticker": "RTX",
-   "when": "time-pre-market"
-  },
-  {
-   "date": "2026-10-20",
-   "ticker": "GM",
-   "when": "time-pre-market"
-  },
-  {
-   "date": "2026-10-20",
-   "ticker": "NOC",
-   "when": "time-pre-market"
-  },
-  {
-   "date": "2026-10-21",
-   "ticker": "META",
-   "when": "time-after-hours"
-  },
-  {
-   "date": "2026-10-21",
-   "ticker": "TSLA",
-   "when": "time-after-hours"
-  },
-  {
-   "date": "2026-10-21",
-   "ticker": "LRCX",
-   "when": "time-after-hours"
-  },
-  {
-   "date": "2026-10-21",
-   "ticker": "TXN",
-   "when": "time-after-hours"
-  },
-  {
-   "date": "2026-10-21",
-   "ticker": "IBM",
-   "when": "time-after-hours"
-  },
-  {
-   "date": "2026-10-21",
-   "ticker": "T",
-   "when": "time-pre-market"
-  },
-  {
-   "date": "2026-10-21",
-   "ticker": "MOH",
-   "when": "time-after-hours"
-  },
-  {
-   "date": "2026-10-22",
-   "ticker": "PG",
-   "when": "time-pre-market"
-  },
-  {
-   "date": "2026-10-22",
-   "ticker": "UNP",
-   "when": "time-pre-market"
-  },
-  {
-   "date": "2026-10-22",
-   "ticker": "WDC",
-   "when": "time-after-hours"
-  },
-  {
-   "date": "2026-10-22",
-   "ticker": "LMT",
-   "when": "time-pre-market"
-  },
-  {
-   "date": "2026-10-22",
-   "ticker": "BE",
-   "when": "time-after-hours"
-  },
-  {
-   "date": "2026-10-22",
-   "ticker": "HON",
-   "when": "time-pre-market"
-  },
-  {
-   "date": "2026-10-22",
-   "ticker": "DECK",
-   "when": "time-after-hours"
-  },
-  {
-   "date": "2026-10-22",
-   "ticker": "AAL",
-   "when": "time-pre-market"
-  },
-  {
    "date": "2026-10-26",
    "ticker": "VZ",
    "when": "time-pre-market"
@@ -7161,13 +7061,13 @@
   },
   {
    "date": "2026-10-27",
-   "ticker": "TER",
-   "when": "time-after-hours"
+   "ticker": "PYPL",
+   "when": "time-pre-market"
   },
   {
    "date": "2026-10-27",
-   "ticker": "PYPL",
-   "when": "time-pre-market"
+   "ticker": "TER",
+   "when": "time-after-hours"
   },
   {
    "date": "2026-10-27",
@@ -7187,6 +7087,11 @@
   {
    "date": "2026-10-28",
    "ticker": "MSFT",
+   "when": "time-after-hours"
+  },
+  {
+   "date": "2026-10-28",
+   "ticker": "KLAC",
    "when": "time-after-hours"
   },
   {
@@ -7281,6 +7186,11 @@
   },
   {
    "date": "2026-10-29",
+   "ticker": "PINS",
+   "when": "time-after-hours"
+  },
+  {
+   "date": "2026-10-29",
    "ticker": "HII",
    "when": "time-pre-market"
   },
@@ -7313,9 +7223,174 @@
    "date": "2026-10-30",
    "ticker": "CCJ",
    "when": "time-pre-market"
+  },
+  {
+   "date": "2026-11-02",
+   "ticker": "AAPL",
+   "when": "time-after-hours"
+  },
+  {
+   "date": "2026-11-02",
+   "ticker": "PLTR",
+   "when": "time-after-hours"
+  },
+  {
+   "date": "2026-11-02",
+   "ticker": "ON",
+   "when": "time-after-hours"
+  },
+  {
+   "date": "2026-11-02",
+   "ticker": "TSEM",
+   "when": "time-pre-market"
+  },
+  {
+   "date": "2026-11-03",
+   "ticker": "AMD",
+   "when": "time-after-hours"
+  },
+  {
+   "date": "2026-11-03",
+   "ticker": "SHOP",
+   "when": "time-pre-market"
+  },
+  {
+   "date": "2026-11-03",
+   "ticker": "ANET",
+   "when": "time-after-hours"
+  },
+  {
+   "date": "2026-11-03",
+   "ticker": "XYZ",
+   "when": "time-after-hours"
+  },
+  {
+   "date": "2026-11-03",
+   "ticker": "AXON",
+   "when": "time-not-supplied"
+  },
+  {
+   "date": "2026-11-03",
+   "ticker": "SMCI",
+   "when": "time-after-hours"
+  },
+  {
+   "date": "2026-11-04",
+   "ticker": "ARM",
+   "when": "time-after-hours"
+  },
+  {
+   "date": "2026-11-04",
+   "ticker": "QCOM",
+   "when": "time-after-hours"
+  },
+  {
+   "date": "2026-11-04",
+   "ticker": "CVS",
+   "when": "time-pre-market"
+  },
+  {
+   "date": "2026-11-04",
+   "ticker": "DASH",
+   "when": "time-after-hours"
+  },
+  {
+   "date": "2026-11-04",
+   "ticker": "GFS",
+   "when": "time-pre-market"
+  },
+  {
+   "date": "2026-11-04",
+   "ticker": "Q",
+   "when": "time-pre-market"
+  },
+  {
+   "date": "2026-11-04",
+   "ticker": "IONQ",
+   "when": "time-not-supplied"
+  },
+  {
+   "date": "2026-11-04",
+   "ticker": "CGNX",
+   "when": "time-after-hours"
+  },
+  {
+   "date": "2026-11-04",
+   "ticker": "CRUS",
+   "when": "time-after-hours"
+  },
+  {
+   "date": "2026-11-04",
+   "ticker": "AVA",
+   "when": "time-pre-market"
+  },
+  {
+   "date": "2026-11-04",
+   "ticker": "PCT",
+   "when": "time-after-hours"
+  },
+  {
+   "date": "2026-11-05",
+   "ticker": "ABNB",
+   "when": "time-after-hours"
+  },
+  {
+   "date": "2026-11-05",
+   "ticker": "MCHP",
+   "when": "time-after-hours"
+  },
+  {
+   "date": "2026-11-05",
+   "ticker": "U",
+   "when": "time-pre-market"
+  },
+  {
+   "date": "2026-11-05",
+   "ticker": "IREN",
+   "when": "time-not-supplied"
+  },
+  {
+   "date": "2026-11-05",
+   "ticker": "QBTS",
+   "when": "time-not-supplied"
+  },
+  {
+   "date": "2026-11-05",
+   "ticker": "SMR",
+   "when": "time-after-hours"
+  },
+  {
+   "date": "2026-11-05",
+   "ticker": "SOUN",
+   "when": "time-not-supplied"
+  },
+  {
+   "date": "2026-11-05",
+   "ticker": "LASR",
+   "when": "time-after-hours"
+  },
+  {
+   "date": "2026-11-05",
+   "ticker": "INOD",
+   "when": "time-after-hours"
+  },
+  {
+   "date": "2026-11-05",
+   "ticker": "CTMX",
+   "when": "time-not-supplied"
+  },
+  {
+   "date": "2026-11-06",
+   "ticker": "CEG",
+   "when": "time-not-supplied"
+  },
+  {
+   "date": "2026-11-06",
+   "ticker": "HUM",
+   "when": "time-pre-market"
   }
  ],
- "upcoming_all_count": 1191,
+ "upcoming_all_count": 2512,
  "calendar_status": "ok",
  "calendar_days_ok": 10,
  "calendar_days_err": 0,
