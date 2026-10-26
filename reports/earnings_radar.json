@@ -1,5 +1,5 @@
 {
- "built": "2026-10-26 05:50 PDT",
+ "built": "2026-10-26 06:31 PDT",
  "gap_threshold": 0.04,
  "vol_threshold": 2.0,
  "event_study": {
@@ -861,7 +861,7 @@
     "same_day_oc": 1.47,
     "oc_hit": 77.8,
     "drift_5d": -3.0,
-    "drift_21d": -7.57
+    "drift_21d": -7.58
    },
    "down": {
     "n": 24,
@@ -5981,7 +5981,7 @@
   },
   "COST": {
    "n_events": 8,
-   "avg_abs_gap": 4.79,
+   "avg_abs_gap": 4.8,
    "pct_gap_up": 37.5,
    "up": null,
    "down": {
@@ -7270,11 +7270,6 @@
    "when": "time-after-hours"
   },
   {
-   "date": "2026-11-03",
-   "ticker": "KTOS",
-   "when": "time-not-supplied"
-  },
-  {
    "date": "2026-11-04",
    "ticker": "ARM",
    "when": "time-after-hours"
@@ -7395,7 +7390,7 @@
    "when": "time-pre-market"
   }
  ],
- "upcoming_all_count": 2521,
+ "upcoming_all_count": 2520,
  "calendar_status": "ok",
  "calendar_days_ok": 10,
  "calendar_days_err": 0,
