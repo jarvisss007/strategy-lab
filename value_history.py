@@ -23,7 +23,7 @@ from atomicio import atomic_csv   # BOOK-001: never truncate a book in place
 HERE = os.path.dirname(os.path.abspath(__file__))
 WATCH = os.path.expanduser("~/stock-radar/watchlist.csv")
 OUT = os.path.join(HERE, "data", "value_panel.csv")
-UA = {"User-Agent": "Anupam Patil anupam.p.patil@gmail.com"}
+UA = {"User-Agent": "Anupam Patil research apati077@ucr.edu"}
 CONCEPTS = {
     "ni": ["NetIncomeLoss"],
     "equity": ["StockholdersEquity", "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest"],
