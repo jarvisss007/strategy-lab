@@ -21,14 +21,14 @@ import numpy as np, pandas as pd
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-from value_forward import load_panel, ratios_and_f, quarter_ends
+from value_forward import load_panel, ratios_and_f, quarter_ends, download_closes
 from family9_gate import fscore
 
 def main():
     import yfinance as yf
     panel = load_panel()
     names = sorted(panel)
-    px = yf.download(names, start="2015-01-01", auto_adjust=False, progress=False)["Close"]
+    px, _missing = download_closes(yf, names, label="value_screen")   # threads off + one retry + BROKEN line (AUDIT_2026-10-26 jobs 5)
     px.index = px.index.tz_localize(None)
     mraw = px.resample("ME").last()
     today = dt.date.today()

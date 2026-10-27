@@ -49,6 +49,37 @@ from family9_gate import fscore                     # one definition of the qual
 from atomicio import atomic_json, atomic_write_text, atomic_csv   # BOOK-001: never truncate a book in place
 
 
+def download_closes(yf, names, start="2015-01-01", label="value_forward"):
+    """Daily closes for `names`, downloaded ONE NAME AT A TIME (threads=False), with one retry of every name that came back empty.
+
+    AUDIT_2026-10-26_jobs item 5: the threaded download inside the 13:40-13:58 job cluster lost 15-22 names every Monday
+    ("getaddrinfo() thread failed to start", the yfinance cache "unable to open database file", the certifi CAfile error) and
+    the run said only "74 scoreable". A name still empty after the retry is printed on a BROKEN line, never dropped silently.
+    Returns (closes DataFrame, names still missing)."""
+    def _get(tks):
+        c = yf.download(tks, start=start, auto_adjust=False, progress=False, threads=False)["Close"]
+        if isinstance(c, pd.Series):
+            c = c.to_frame(tks[0])
+        return c
+
+    def _empty(px, n):
+        return n not in px.columns or not px[n].notna().any()
+
+    px = _get(list(names))
+    miss = [n for n in names if _empty(px, n)]
+    if miss:
+        print(f"{label}: {len(miss)} of {len(names)} downloads came back empty; retrying once: {', '.join(miss)}")
+        again = _get(list(miss))
+        got = [n for n in miss if not _empty(again, n)]
+        if got:
+            px = px.drop(columns=[n for n in got if n in px.columns]).join(again[got], how="outer")
+        miss = [n for n in miss if n not in got]
+        print(f"{label}: retry recovered {len(got)}" + (f": {', '.join(got)}" if got else ""))
+    if miss:
+        print(f"BROKEN: {label}: {len(miss)} of {len(names)} names have no prices after one retry and are not scored this run: {', '.join(miss)}")
+    return px, miss
+
+
 def quarter_ends(upto):
     q = []
     for y in range(2015, upto.year + 1):
@@ -146,7 +177,7 @@ def main(today=None):
     import yfinance as yf
     panel = load_panel()
     names = sorted(panel)
-    px = yf.download(names + ["SPY"], start="2015-01-01", auto_adjust=False, progress=False)["Close"]
+    px, _missing = download_closes(yf, names + ["SPY"], label="value_forward")   # threads off + one retry + BROKEN line (AUDIT_2026-10-26 jobs 5)
     px.index = px.index.tz_localize(None)
     mraw = px.resample("ME").last()
     # AUDIT-013 5c / VAL-002: NO forward fill. The last settled day is the last day SPY has a bar; a name's fill or exit price is its own close ON that day, and a name with
