@@ -35,3 +35,4 @@ restated_at,scope,strategy,ticker,entry_date,exit_date,field,old_entry_px,new_en
 2026-10-17 00:16 PT,closed,FRESH_HIGH,NQ=F,2026-10-04,2026-10-16,tape DECLARED (scored row untouched),31133.0,31133.0,30182.25,29391.5,-0.05901,-0.05794,,-0.04963,auto_reconcile vs settled feed (DATA-002)
 2026-10-17 00:16 PT,closed,RSI2_DIP,NQ=F,2026-10-13,2026-10-16,tape DECLARED (scored row untouched),30685.5,30685.5,30182.25,29391.5,-0.04525,-0.04417,,-0.0252,auto_reconcile vs settled feed (DATA-002)
 2026-10-17 00:16 PT,closed,REVERSAL_3,NQ=F,2026-10-14,2026-10-16,tape DECLARED (scored row untouched),30159.25,30159.25,30182.25,29391.5,-0.02856,-0.02746,,-0.01921,auto_reconcile vs settled feed (DATA-002)
+2026-10-30 13:16 PT,open,RSI2_DIP,NQ=F,2026-10-30,,entry REPAIRED in place,28984.5,28380.5,,,,-0.002,,,auto_reconcile vs settled feed (DATA-002)
