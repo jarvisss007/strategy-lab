@@ -13,13 +13,16 @@ and render to reports/report.md + reports/data.json.
 
 THE HOLDOUT GATE (SLAB-001, ruled by Anupam 2026-10-31). Until then "survives" meant DSR >= 0.95
 and PBO < 0.5 only; the holdout was computed and shown but decided nothing. Now the in-sample
-winner is also judged on the last 30% as PRE_REGISTRATION section 2 states the pass bar:
-  - its day-clustered mean excess return over its OWN universe's buy-and-hold (SPY for SPY-only
-    configs, the equal-weight basket for basket configs, cash for long-short configs) must be
-    > 2 x its day-clustered standard error (rows are days, so one observation per day), and
+winner is also judged on the last 30% by PRE_REGISTRATION section 2's pass bar (written for the
+forward book; that file is an unratified DRAFT):
+  - its day-clustered mean excess return over its OWN universe's buy-and-hold must be > 2 x its
+    day-clustered standard error (rows are days, so one observation per day). Section 2 names
+    SPY / NIFTY as the benchmark; the own-universe rule (SPY for SPY-only configs, the
+    equal-weight basket for basket configs, cash for long-short configs) is Anupam's 10-31 ruling;
   - that mean must be positive after 2 x COST per round trip - the returns are already net of
     COST per unit of turnover, which is exactly that, so this bar is implied by the first;
-  - section 2's deflation bar is the DSR >= 0.95 the survey already applies.
+  - section 2's deflation bar (the carried ~35-trial budget) is NOT applied - open for Anupam.
+    The survey keeps its own per-family DSR >= 0.95, deflated over each family's 3-36 configs.
 No retention bar. Missing or broken out-of-sample data fails the gate (fail closed).
 `verdict` keeps its meaning (the DSR + PBO verdict, BENCH-002); `survey_verdict` is the label
 after every gate, and `gate` records which gate produced it (knowledge_base.csv).
@@ -37,7 +40,7 @@ WARMUP = 252          # drop first year (indicator warm-up) before judging
 OOS_FRAC = 0.30       # last 30% of history is the untouched holdout
 PPY = 252
 HOLDOUT_K = 2.0       # PRE_REGISTRATION section 2: mean excess > 2 x its day-clustered standard error
-HOLDOUT_MIN_DAYS = 60  # PRE_REGISTRATION section 1: below 60 days every statistic is weather -> fail closed
+HOLDOUT_MIN_DAYS = 60  # PRE_REGISTRATION section 2 ("at >= 60 entry days"; section 1) -> fewer fails closed
 GATE_DSR_PBO = "dsr_pbo"            # the gate that judged every row before SLAB-001: DSR >= 0.95 and PBO < 0.5
 GATE_HOLDOUT = "dsr_pbo_holdout"    # SLAB-001 (2026-10-31): those two AND the PRE_REGISTRATION section 2 holdout
 KB_COLS_V1 = ["run_date", "family", "n_configs", "best_sharpe_annual", "deflated_sharpe",
@@ -348,8 +351,8 @@ def write_report(out):
     L = [f"# Strategy Lab — honest survey", "",
          f"**Window:** {out['window']}  ·  **{out['n_tickers']} tickers**  ·  "
          f"cost {out['cost_bps']} bps/turnover  ·  built {out['built']}", "",
-         f"**Benchmark:** SPY buy-and-hold Sharpe = **{out['spy_buyhold_sharpe']}** "
-         f"(the number any strategy has to beat to be worth the trouble).", "",
+         f"**SPY buy-and-hold Sharpe (full window):** {out['spy_buyhold_sharpe']} - context only; "
+         f"it is not a bar. The holdout gate below judges each config against its own universe.", "",
          "Each family was tested across its full parameter grid. `Deflated Sharpe` "
          "discounts the best config for how many were tried (≥0.95 = significant). "
          "`PBO` is the probability the in-sample winner underperforms out of sample "
@@ -376,7 +379,7 @@ def write_report(out):
                      f"OOS Sharpe {r['oos_sharpe']} (kept {int(r['oos_retention']*100)}% of in-sample). "
                      f"Worth paper-trading forward, not betting on.")
     else:
-        L.append("- Nothing cleared both gates. That is the honest, expected result for "
+        L.append("- Nothing cleared every gate. That is the honest, expected result for "
                  "daily strategies on liquid large-caps — the most arbitraged data there is. "
                  "The value here is the *map* of what's been ruled out, not a signal.")
     L += ["", "## Read this before believing any survivor", "",
@@ -385,10 +388,10 @@ def write_report(out):
           "momentum** and **short-term reversal** failed out of sample). That is the signal "
           "that the machinery is honest. But the survivors carry heavy caveats:",
           "",
-          "- **They are not alpha — they are risk-managed long equity beta.** Every survivor "
-          "(MA-trend, vol-managed SPY, turn-of-month) is *long-only*. They beat SPY by "
-          "sidestepping drawdowns or sitting out risky stretches, not by predicting anything. "
-          "The strategies that would be true market-neutral edge are the ones that **failed**.",
+          "- **A long-only survivor is not alpha — it is risk-managed long equity beta.** Any "
+          "edge it shows comes from sidestepping drawdowns or sitting out risky stretches, not "
+          "from predicting anything. The strategies that would be true market-neutral edge are "
+          "the ones that **failed**.",
           "- **Survivorship bias.** The universe is *today's* watchlist — names that already "
           "won their way onto it. Backtesting them 15 years inflates every long-equity result.",
           "- **The out-of-sample window (≈2022–2026) contains one big bear market.** Trend and "
@@ -418,11 +421,15 @@ def write_report(out):
           "Verdict: interesting, not proven. A point-in-time universe (incl. delisted names) "
           "is the test that would make or break it.", "",
           "## What may be worth watching", "",
-          "Ranked by out-of-sample Sharpe (survivors + suspects). 'May work' means "
-          "'survived the holdout here' — it is a forward-test candidate, never a prediction:"]
-    for r in [x for x in out["results"] if x["oos_sharpe"] > out["spy_buyhold_sharpe"]][:5]:
-        L.append(f"- {r['family']} (`{r['oos_best_config']}`): OOS {r['oos_sharpe']} "
-                 f"vs SPY {out['spy_buyhold_sharpe']} — {r['verdict']}")
+          "Families whose in-sample winner passed the holdout gate, whatever their DSR + PBO "
+          "verdict. 'May work' means 'passed the holdout here' — it is a forward-test "
+          "candidate, never a prediction:"]
+    watch = [x for x in out["results"] if x["holdout"] == "pass"][:5]
+    for r in watch:
+        L.append(f"- {r['family']} (`{r['oos_best_config']}`): excess {r['holdout_excess_ann']:+.1%}/yr "
+                 f"vs {r['holdout_benchmark']} (SE {r['holdout_se_ann']:.1%}) — {r['survey_verdict']}")
+    if not watch:
+        L.append("- None passed the holdout gate this run.")
     L += ["", "---", "*A research survey, not investment advice. Survivors are candidates "
           "for forward paper-trading and deeper validation, nothing more.*", ""]
     open(os.path.join(BASE, "reports", "report.md"), "w").write("\n".join(L))

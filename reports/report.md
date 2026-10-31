@@ -1,5 +1,7 @@
 # Strategy Lab — honest survey
 
+> **Correction (2026-10-31, SLAB-001).** This report was generated on 2026-07-07, when *survives* meant Deflated Sharpe ≥ 0.95 and PBO < 0.5 only: the out-of-sample holdout below was shown but decided nothing, and the SPY Sharpe of 0.921 is the full-window figure, not a bar. Under the holdout gate Anupam ruled on 2026-10-31 (see the README), replayed on this run's universe and holdout slice, none of the three survivors listed below survives — each moves to *suspect*. Every number below is the 2026-07-07 run's, unchanged.
+
 **Window:** 2011-07-08 … 2026-07-07  ·  **119 tickers**  ·  cost 5 bps/turnover  ·  built 2026-07-07 23:18 PDT
 
 **Benchmark:** SPY buy-and-hold Sharpe = **0.921** (the number any strategy has to beat to be worth the trouble).
