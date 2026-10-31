@@ -357,8 +357,9 @@ def write_report(out):
          "discounts the best config for how many were tried (≥0.95 = significant). "
          "`PBO` is the probability the in-sample winner underperforms out of sample "
          "(>0.5 = overfit). `OOS Sharpe` is the in-sample winner's Sharpe on the "
-         "untouched last 30% of history. A real edge needs DSR high, PBO low, and "
-         "OOS Sharpe that survives.", "",
+         "untouched last 30% of history. A real edge needs DSR high, PBO low, and a "
+         "pass on the holdout gate below: excess return over its own universe above "
+         "twice its standard error.", "",
          f"**Holdout gate (SLAB-001):** {out.get('holdout_gate', '')}", "",
          "| Family | Configs | Best Sharpe (IS) | Deflated Sharpe | PBO | OOS Sharpe | Retained | "
          "Verdict (DSR+PBO) | Holdout vs own universe | Survey verdict |",
