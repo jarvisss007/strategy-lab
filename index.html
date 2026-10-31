@@ -44,12 +44,20 @@
 </header>
 <div class="sub" id="built"></div>
 
+<div class="legend" style="border-color:var(--warn);">
+  <b>Correction (2026-10-31, SLAB-001).</b> The list at the bottom is the families that passed Deflated Sharpe
+  and PBO. Until 2026-10-31 that alone was called <i>survives</i>: the out-of-sample holdout was shown but decided
+  nothing, and the SPY Sharpe chip is the full-window figure, not a bar. Under the holdout gate Anupam ruled on
+  2026-10-31 (see the README), none of the three 2026-07-07 survivors survives; each is <i>suspect</i>.
+  The numbers on this page are unchanged.
+</div>
+
 <div class="legend">
   <b>How to read this.</b> Every strategy family was tested across its whole parameter grid.
   <b>Deflated Sharpe</b> discounts the best config for how many were tried — ≥&nbsp;0.95 means significant
   after that penalty. <b>PBO</b> is the probability the in-sample winner underperforms out of sample —
   &gt;&nbsp;0.5 is a red flag. <b>OOS Sharpe</b> is the winner's Sharpe on the untouched last 30% of history.
-  A real edge needs a high Deflated Sharpe, a low PBO, <i>and</i> an OOS Sharpe that survives.
+  A real edge needs a high Deflated Sharpe, a low PBO, <i>and</i> a pass on the holdout gate: excess return over its own universe above twice its standard error (SLAB-001, 2026-10-31).
   The <b>Day-of-week</b> row is a deliberate noise control — it should be rejected.
 </div>
 
@@ -58,7 +66,7 @@
   <th>PBO</th><th>Min backtest yrs</th><th>OOS Sharpe</th><th>Retained</th><th>Verdict</th>
 </tr></thead><tbody id="rows"></tbody></table>
 
-<h2>What survived both gates</h2>
+<h2>Passed Deflated Sharpe and PBO (not the holdout gate)</h2>
 <div id="survived"></div>
 
 <footer id="foot"></footer>
