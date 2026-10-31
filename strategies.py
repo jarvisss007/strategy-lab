@@ -237,3 +237,57 @@ FAMILIES = {
     "Turn-of-month seasonality": turn_of_month,
     "Day-of-week (control)": day_of_week,
 }
+
+
+# --------------------------------------------------------------- holdout benchmarks (SLAB-001)
+# Anupam's ruling 2026-10-31: the holdout judges each config against ITS OWN universe, and
+# long-short configs against cash. SPY is the benchmark only for configs that trade SPY alone.
+#   "SPY"    - holds SPY only (scaled or timed)    -> SPY buy-and-hold
+#   "basket" - long-only in the equal-weight panel -> the equal-weight basket, always held
+#   "cash"   - long AND short positions            -> cash (0: no return is credited on idle cash)
+# A config label no rule matches has no benchmark, and the holdout gate fails it closed.
+UNIVERSE_RULES = (
+    (r"^TSMOM .* long$", "basket"),
+    (r"^TSMOM .* ls$", "cash"),
+    (r"^XSMOM ", "cash"),
+    (r"^STR ", "cash"),
+    (r"^52wHigh-(mom|revert) ", "cash"),
+    (r"^(NearHigh|DeepDip)-long ", "basket"),
+    (r"^MAtrend basket ", "basket"),
+    (r"^MAtrend SPY ", "SPY"),
+    (r"^Donchian ", "basket"),
+    (r"^VolMgd SPY ", "SPY"),
+    (r"^TurnOfMonth ", "basket"),
+    (r"^DayOfWeek ", "SPY"),
+)
+BENCHMARK_NAMES = {"SPY": "SPY buy-and-hold", "basket": "equal-weight basket buy-and-hold",
+                   "cash": "cash (0%)"}
+
+
+def universe_of(config):
+    """The universe a config label trades: "SPY", "basket" or "cash" (long-short), else None."""
+    import re
+    for pattern, universe in UNIVERSE_RULES:
+        if re.search(pattern, str(config)):
+            return universe
+    return None
+
+
+def universe_columns(universe, prices):
+    """The panel columns whose prices a config of this universe depends on (the coverage check)."""
+    return ["SPY"] if universe == "SPY" else list(prices.columns)
+
+
+def buy_and_hold(universe, prices, rets):
+    """Daily net return of the universe's benchmark, built the same way the configs are."""
+    if universe == "cash":
+        return pd.Series(0.0, index=rets.index)
+    if universe == "SPY":
+        if "SPY" not in prices.columns or "SPY" not in rets.columns:
+            raise ValueError("SPY is not in the panel")      # never a silent zero benchmark
+        W = pd.DataFrame(0.0, index=prices.index, columns=prices.columns)
+        W["SPY"] = 1.0
+        return backtest(W, rets)
+    if universe == "basket":
+        return backtest(_norm_long((prices > 0).astype(float)), rets)   # turn_of_month's base, every day
+    raise ValueError(f"unknown universe {universe!r}")
