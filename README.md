@@ -11,6 +11,21 @@ verdicts for spy-trading and zero-dte-lab. A strategy is only called a survivor
 if it clears **both** gates: significant after Deflated Sharpe *and* keeps its
 Sharpe on an out-of-sample holdout it was never fit on.
 
+**Correction (2026-10-31): the sentence above states the intended gate, not the one
+the code runs.** In `lab.py` today, *survives* means exactly: Deflated Sharpe ≥ 0.95
+**and** PBO < 0.5 (`overfit.py` `_verdict`). The 70/30 out-of-sample holdout is
+computed and shown (OOS Sharpe, retention) but decides no label, and the report's
+benchmark "SPY buy-and-hold Sharpe 0.921" is SPY over the full window, not over the
+holdout slice the OOS Sharpes are measured on; on that slice (2022-04-20 → 2026-07-07)
+SPY's Sharpe is 0.879. So the three 2026-07-07 survivors — Moving-average trend (OOS
+1.468), Turn-of-month seasonality (1.214) and Volatility-managed SPY (0.950) — passed
+DSR and PBO only. Each is above SPY's 0.879 on that slice, but the holdout has never
+been applied as a gate, and SPY is the matching benchmark only for the SPY-only
+configs (the first two hold the equal-weight basket). Which benchmark, which measure
+and what margin the holdout gate should use is an open rule choice, not yet made; no
+verdict has been changed. Until it is, read *survives* as "survives deflation and PBO",
+nothing more.
+
 ## Pipeline
 
 1. **`fetch_data.py`** — pulls 15y adjusted daily closes for the Stock Radar
