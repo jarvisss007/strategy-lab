@@ -15,7 +15,7 @@ Tape: **calm-down** · session 2026-10-30 · 12 agents · opened 173, closed 29 
 
 _Read n_events, not n: `n` counts rows, `d` counts the distinct entry DAYS behind them. Rows on one day share a regime and are one observation, not many (Firm Brain #4)._
 
-- **calm-up**: FRESH_HIGH +89 (n=405, d=105) · SHORT_EXT +26 (n=173, d=65) · PANIC_LITE -48 (n=2010, d=140) · PANIC_BOUNCE -61 (n=965, d=122) · BOLL_SNAP -90 (n=456, d=118) · DOUBLE_DIP -96 (n=812, d=122) · RSI2_DIP -115 (n=416, d=41) · REVERSAL_3 -115 (n=218, d=36) · PULLBACK_50 -129 (n=163, d=37) · DEEP_DIP -179 (n=123, d=73) · TREND_RIDER -249 (n=98, d=35)
+- **calm-up**: FRESH_HIGH +89 (n=405, d=105) · SHORT_EXT +26 (n=173, d=65) · PANIC_LITE -48 (n=2010, d=140) · PANIC_BOUNCE -61 (n=965, d=122) · BOLL_SNAP -90 (n=456, d=118) · DOUBLE_DIP -96 (n=812, d=122) · RSI2_DIP -115 (n=415, d=41) · REVERSAL_3 -115 (n=217, d=36) · PULLBACK_50 -129 (n=163, d=37) · DEEP_DIP -179 (n=123, d=73) · TREND_RIDER -249 (n=98, d=35)
 - **calm-down**: DEEP_DIP +331 (n=24, d=15) · BOLL_SNAP +243 (n=104, d=18) · DOUBLE_DIP +170 (n=166, d=20) · PULLBACK_50 +68 (n=31, d=8) · REVERSAL_3 +54 (n=44, d=7) · PANIC_BOUNCE +46 (n=182, d=18) · PANIC_LITE +20 (n=327, d=20) · RSI2_DIP +10 (n=96, d=8) · FRESH_HIGH -112 (n=36, d=13)
 - **storm-up**: PANIC_LITE +162 (n=98, d=4) · PANIC_BOUNCE +123 (n=69, d=4) · DOUBLE_DIP +110 (n=54, d=4) · BOLL_SNAP -72 (n=23, d=4) · STORM_DIP -296 (n=89, d=4)
 - **storm-down**: DEEP_DIP +823 (n=35, d=19) · DOUBLE_DIP +382 (n=266, d=30) · BOLL_SNAP +369 (n=255, d=27) · STORM_DIP +341 (n=429, d=31) · PANIC_BOUNCE +189 (n=268, d=29) · PANIC_LITE +134 (n=588, d=34) · FRESH_HIGH -142 (n=38, d=21)
