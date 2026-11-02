@@ -1,5 +1,5 @@
 {
- "built": "2026-11-02 00:18 PST",
+ "built": "2026-11-02 06:03 PST",
  "gap_threshold": 0.04,
  "vol_threshold": 2.0,
  "event_study": {
@@ -2542,7 +2542,7 @@
      "next_day": -0.72
     },
     "down": {
-     "same_day": -2.6,
+     "same_day": -2.59,
      "next_day": 0.22
     }
    }
@@ -7146,6 +7146,11 @@
   },
   {
    "date": "2026-11-05",
+   "ticker": "KTOS",
+   "when": "time-after-hours"
+  },
+  {
+   "date": "2026-11-05",
    "ticker": "SMR",
    "when": "time-after-hours"
   },
@@ -7196,11 +7201,6 @@
   },
   {
    "date": "2026-11-10",
-   "ticker": "NBIS",
-   "when": "time-not-supplied"
-  },
-  {
-   "date": "2026-11-10",
    "ticker": "CRWV",
    "when": "time-after-hours"
   },
@@ -7241,11 +7241,16 @@
   },
   {
    "date": "2026-11-12",
+   "ticker": "NBIS",
+   "when": "time-pre-market"
+  },
+  {
+   "date": "2026-11-12",
    "ticker": "ONDS",
    "when": "time-pre-market"
   }
  ],
- "upcoming_all_count": 2812,
+ "upcoming_all_count": 2813,
  "calendar_status": "ok",
  "calendar_days_ok": 10,
  "calendar_days_err": 0,
