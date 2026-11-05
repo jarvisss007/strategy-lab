@@ -82,7 +82,8 @@
    "entry_px": 7737.5,
    "mtm": -0.00358,
    "days_left": 2,
-   "regime": "calm-down"
+   "regime": "calm-down",
+   "tags": "void"
   },
   {
    "strategy": "TREND_RIDER",
@@ -310,7 +311,8 @@
    "entry_px": 29967.0,
    "mtm": -0.04783,
    "days_left": 10,
-   "regime": "calm-up"
+   "regime": "calm-up",
+   "tags": "void"
   },
   {
    "strategy": "TREND_RIDER",
@@ -334,7 +336,8 @@
    "entry_px": 7764.0,
    "mtm": -0.00699,
    "days_left": 1,
-   "regime": "calm-up"
+   "regime": "calm-up",
+   "tags": "void"
   },
   {
    "strategy": "PULLBACK_50",
