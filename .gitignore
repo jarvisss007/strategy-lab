@@ -10,6 +10,7 @@ data/intraday_60m.json
 refresh.log
 .refresh_done_*
 .arena_done_*
+.plans_open_done_*
 hub_data.js
 archive/
 

@@ -174,6 +174,21 @@ if [ ! -f "$ARENA_MARK" ] && [ "$ARENA_MIN" -ge 785 ]; then
   find /Users/anupampatil/strategy-lab -maxdepth 1 -name ".arena_done_*" -mtime +2 -delete
 fi
 
+# EARN-015 (2026-11-05): earnings-plan passes after the open. Every other weekday run of
+# check_plans.py is before or 3 minutes after the bell (this body ~06:08, NARASIMHA 06:00, the
+# morning agent 06:33), and since EARN-015 a plan whose session is still forming waits instead of
+# expiring or triggering on an unconfirmed open. From 06:50 PT this pass re-runs on every launchd
+# trigger while check_plans exits nonzero (3 = a plan still waits on a forming bar or a failed
+# read; 2 = stale radar), and stamps the day once a pass decides every plan. The session settles
+# at 13:05 PT (sessions.SETTLED_PT), so a deferred trigger lands on the first trigger after that,
+# before the 14:10 council records its book (OPT-022 b / OPT-026).
+PLANS_MARK=/Users/anupampatil/strategy-lab/.plans_open_done_$(date '+%Y-%m-%d')
+if [ ! -f "$PLANS_MARK" ] && [ "$(date +%u)" -le 5 ] && [ "$ARENA_MIN" -ge 410 ]; then
+  echo "=== plans post-open $(date '+%Y-%m-%d %H:%M:%S') ===" >> /Users/anupampatil/strategy-lab/refresh.log
+  /opt/anaconda3/bin/python /Users/anupampatil/stock-radar/check_plans.py --exit-undecided >> /Users/anupampatil/strategy-lab/refresh.log 2>&1 && touch "$PLANS_MARK"
+  find /Users/anupampatil/strategy-lab -maxdepth 1 -name ".plans_open_done_*" -mtime +2 -delete
+fi
+
 DONE_MARK=/Users/anupampatil/strategy-lab/.refresh_done_$(date '+%Y-%m-%d')
 if [ -f "$DONE_MARK" ] && [ "$(date +%u)" -le 5 ] && [ "$(date -r "$DONE_MARK" '+%H')" -ge 6 ]; then
   exit 0
