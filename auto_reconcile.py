@@ -78,6 +78,8 @@ def feed():
         if not tk:
             continue
         pairs = [(t, c) for t, c in zip(e.get("series_t", []), e.get("series_c", [])) if c]
+        if tk.endswith("=F"):   # ARENA-011 (2026-11-04): a futures fill reconciles only onto a settled bar (radar settled_bar), never a live print
+            pairs = [(t, c) for t, c in pairs if d2iso(t) <= (e.get("settled_bar") or "")]
         by_iso[tk] = {d2iso(t): c for t, c in pairs}
         by_t[tk] = dict(pairs)
     strip = {s["ticker"]: s for s in (d.get("strip") or [])} if isinstance(d, dict) else {}

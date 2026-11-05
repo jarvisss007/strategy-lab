@@ -99,6 +99,20 @@ def d2iso(epoch_day):
     return (DAY0 + timedelta(days=int(epoch_day))).isoformat()
 
 
+def settled_only(e):
+    """ARENA-010 / ARENA-011 (ruled by Claude under Anupam's 2026-10-26 delegation; built 2026-11-04 on his "solve all problems",
+    prereg-reviewed). A futures (=F) series is cut at radar.json's settled_bar, so every futures entry, mark and exit is dated on a
+    settled session at that session's close - never a live Globex print. The NYSE wall-clock gate in main() cannot see this: futures
+    trade nearly round the clock, and the 06:10 PT sweep read a bar the session had not settled. Relies on stock-radar collector.py
+    dating settled_bar in UTC like series_t (fixed the same day). No settled_bar means no futures bar is used (fail closed, named
+    on the run line by main()). Equities pass through unchanged."""
+    if not str(e.get("ticker", "")).endswith("=F"):
+        return e
+    sb = e.get("settled_bar") or ""
+    keep = [k for k, t in enumerate(e.get("series_t", [])) if d2iso(t) <= sb]
+    return {**e, "series_t": [e["series_t"][k] for k in keep], "series_c": [e["series_c"][k] for k in keep]}
+
+
 def signals_at(c, i, storm):
     """Strategies triggering on bar i of close series c (needs i ≥ 51).
     `storm` = VIX ≥ 20 on that bar's date."""
@@ -370,7 +384,10 @@ def main():
             a, b = spy_by_day[pa[-1]], spy_by_day[pb[-1]]
         return b / a - 1
 
-    eq = [e for e in radar["equities"] if len(e.get("series_c", [])) > 60]
+    eq = [e for e in map(settled_only, radar["equities"]) if len(e.get("series_c", [])) > 60]   # ARENA-010/011: futures end at settled_bar
+    no_settle = [e["ticker"] for e in radar["equities"] if str(e.get("ticker", "")).endswith("=F") and not e.get("settled_bar")]
+    if no_settle:   # a refusal that prints nothing is a refusal nobody audits
+        print(f"arena: futures not traded this run - radar.json carries no settled_bar for {', '.join(no_settle)} (ARENA-010/011)")
 
     # ---------------- 1 · backtest: full replay, every trade kept -------------
     bt = {k: [] for k in STRATS}
