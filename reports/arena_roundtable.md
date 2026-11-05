@@ -2,7 +2,7 @@
 
 Tape: **calm-down** · session 2026-11-04 · 12 agents · opened 107, closed 140 this session · 217 open · 4099 forward closes all-time
 
-> **This lab is 70% of the desk's scored record (4099 of 5837 scored rows in the Calibration Observatory).** Any pooled desk statistic is therefore mostly a statement about the Arena, not about the desk. Read the other labs' standings on their own n.
+> **This lab is 70% of the desk's scored record (4099 of 5845 scored rows in the Calibration Observatory).** Any pooled desk statistic is therefore mostly a statement about the Arena, not about the desk. Read the other labs' standings on their own n.
 
 **Drain (ARENA-003).** 0 of 217 open rows read `days_left <= 0`; 0 of those are PAST due (negative). 140 closed this session, 4099 all-time. No due rows on the book. This pass ran outside market hours, so every due row was eligible to close.
 
