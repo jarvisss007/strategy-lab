@@ -1,5 +1,5 @@
 {
- "built": "2026-11-02 06:03 PST",
+ "built": "2026-11-04 18:55 PST",
  "gap_threshold": 0.04,
  "vol_threshold": 2.0,
  "event_study": {
@@ -7020,51 +7020,6 @@
  },
  "upcoming_universe": [
   {
-   "date": "2026-11-02",
-   "ticker": "AAPL",
-   "when": "time-after-hours"
-  },
-  {
-   "date": "2026-11-02",
-   "ticker": "PLTR",
-   "when": "time-after-hours"
-  },
-  {
-   "date": "2026-11-02",
-   "ticker": "ON",
-   "when": "time-after-hours"
-  },
-  {
-   "date": "2026-11-02",
-   "ticker": "TSEM",
-   "when": "time-pre-market"
-  },
-  {
-   "date": "2026-11-03",
-   "ticker": "AMD",
-   "when": "time-after-hours"
-  },
-  {
-   "date": "2026-11-03",
-   "ticker": "ANET",
-   "when": "time-after-hours"
-  },
-  {
-   "date": "2026-11-03",
-   "ticker": "SHOP",
-   "when": "time-pre-market"
-  },
-  {
-   "date": "2026-11-03",
-   "ticker": "XYZ",
-   "when": "time-after-hours"
-  },
-  {
-   "date": "2026-11-03",
-   "ticker": "SMCI",
-   "when": "time-after-hours"
-  },
-  {
    "date": "2026-11-04",
    "ticker": "ARM",
    "when": "time-after-hours"
@@ -7146,11 +7101,6 @@
   },
   {
    "date": "2026-11-05",
-   "ticker": "KTOS",
-   "when": "time-after-hours"
-  },
-  {
-   "date": "2026-11-05",
    "ticker": "SMR",
    "when": "time-after-hours"
   },
@@ -7201,6 +7151,11 @@
   },
   {
    "date": "2026-11-10",
+   "ticker": "TDG",
+   "when": "time-pre-market"
+  },
+  {
+   "date": "2026-11-10",
    "ticker": "CRWV",
    "when": "time-after-hours"
   },
@@ -7225,11 +7180,6 @@
    "when": "time-not-supplied"
   },
   {
-   "date": "2026-11-11",
-   "ticker": "TDG",
-   "when": "time-not-supplied"
-  },
-  {
    "date": "2026-11-12",
    "ticker": "AMAT",
    "when": "time-after-hours"
@@ -7248,9 +7198,19 @@
    "date": "2026-11-12",
    "ticker": "ONDS",
    "when": "time-pre-market"
+  },
+  {
+   "date": "2026-11-17",
+   "ticker": "NVDA",
+   "when": "time-after-hours"
+  },
+  {
+   "date": "2026-11-17",
+   "ticker": "HD",
+   "when": "time-pre-market"
   }
  ],
- "upcoming_all_count": 2813,
+ "upcoming_all_count": 2470,
  "calendar_status": "ok",
  "calendar_days_ok": 10,
  "calendar_days_err": 0,
