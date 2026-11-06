@@ -41,6 +41,7 @@ RADAR = os.path.join(HOME, "stock-radar", "data", "radar.json")
 REPORTS = os.path.join(LAB, "reports")
 STATE_F = os.path.join(REPORTS, "arena_state.json")
 TRADES_F = os.path.join(REPORTS, "arena_trades.csv")
+VOIDS_F = os.path.join(REPORTS, "arena_voids.csv")
 COST = 0.001
 MAX_OPEN = 40      # raised 25→40 on 2026-07-25 (tempo sign-off in REGISTRY.md)
 
@@ -51,6 +52,28 @@ def is_void(row):
     The reason lives in reports/arena_voids.csv, keyed on (strategy, ticker, entry_date, exit_date). A void is KEPT in the book and
     OUT of every statistic: the forward stats, regime rhythm, streaks and tables below are computed from the non-void rows only."""
     return "void" in {t.strip().lower() for t in re.split(r"[,;|/\s]+", row.get("tags") or "") if t.strip()}
+
+
+def close_voids(closed, by="arena.py"):
+    """ARENA-012 / ARENA-014 (2026-11-05). A position voided while OPEN got its arena_voids.csv reason with a blank exit_date
+    (/void-row, 11-04). When it closes the tag rides into the closed row (is_void), but that row keys to a different
+    (strategy, ticker, entry_date, exit_date), so the reason record lost it (PULLBACK_50 ES=F 10-29 -> 11-05). Fill the exit into
+    the open-row reason: no new reason, no new void, nothing in arena_trades.csv touched. Returns the number of rows filled."""
+    by_key = {(p["strategy"], p["ticker"], p["entry_date"]): p for p in closed if is_void(p)}
+    if not by_key or not os.path.exists(VOIDS_F):
+        return 0
+    rows = list(csv.DictReader(open(VOIDS_F, newline="")))
+    n = 0
+    for r in rows:
+        p = by_key.get((r["strategy"], r["ticker"], r["entry_date"]))
+        if p and not r["exit_date"]:
+            r["exit_date"], r["exit_px_recorded"], r["net_recorded"] = p["exit_date"], p["exit_px"], p["net"]
+            r["evidence"] = (f"{r['evidence']} CLOSED {p['exit_date']} at {p['exit_px']} (net {p['net']}), the void tag carried "
+                             f"into the closed row; exit filled in here by {by} (ARENA-012).")
+            n += 1
+    if n:
+        atomic_csv(VOIDS_F, list(rows[0].keys()), rows)
+    return n
 
 
 # TAG-001, 2026-08-11. Every rule declares its own [tech]/[fund] tag HERE, at the
@@ -534,6 +557,7 @@ def main():
             row["tags"] = ",".join(t for t in (row["tags"], "void") if t)
         out_rows.append(row)
     atomic_csv(TRADES_F, cols, out_rows, extrasaction="ignore")
+    close_voids(closed_now)
 
     cur_reg, _ = regime(spy["series_t"][-1])
 
