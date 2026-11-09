@@ -1,46 +1,46 @@
 {
- "generated": "2026-11-02 13:50 PT",
+ "generated": "2026-11-09 13:50 PT",
  "open": [
   {
    "ticker": "LIN",
    "entry_px": 474.65,
-   "now_px": 519.72,
-   "pnl_pct": 9.5,
+   "now_px": 520.33,
+   "pnl_pct": 9.62,
    "opened": "2026-09-30"
   },
   {
    "ticker": "MOH",
    "entry_px": 189.1,
-   "now_px": 208.45,
-   "pnl_pct": 10.23,
+   "now_px": 203.35,
+   "pnl_pct": 7.54,
    "opened": "2026-09-30"
   },
   {
    "ticker": "NKE",
    "entry_px": 35.4,
-   "now_px": 39.12,
-   "pnl_pct": 10.51,
+   "now_px": 39.88,
+   "pnl_pct": 12.66,
    "opened": "2026-09-30"
   },
   {
    "ticker": "PEP",
    "entry_px": 126.72,
-   "now_px": 140.42,
-   "pnl_pct": 10.81,
+   "now_px": 141.88,
+   "pnl_pct": 11.96,
    "opened": "2026-09-30"
   },
   {
    "ticker": "TXT",
    "entry_px": 76.2,
-   "now_px": 88.53,
-   "pnl_pct": 16.18,
+   "now_px": 85.41,
+   "pnl_pct": 12.09,
    "opened": "2026-09-30"
   },
   {
    "ticker": "UNH",
    "entry_px": 367.08,
-   "now_px": 400.44,
-   "pnl_pct": 9.09,
+   "now_px": 397.62,
+   "pnl_pct": 8.32,
    "opened": "2026-09-30"
   }
  ],
