@@ -1,4 +1,4 @@
-# Arena Roundtable — 2026-11-08
+# Arena Roundtable — 2026-11-09
 
 Tape: **storm-down** · session 2026-11-06 · 12 agents · opened 55, closed 93 this session · 268 open · 4234 forward closes all-time
 
@@ -53,7 +53,7 @@ _Rows that share an entry date share one tape (Firm Brain #4). S17: each entry d
 - REVERSAL_3: per-entry-day mean -62 bps over 64 entry days (row mean -60, n=432) · win rate per entry day 36% (row hit 43%)
 - BOLL_SNAP: per-entry-day mean -54 bps over 62 entry days (row mean +38, n=337) · win rate per entry day 44% (row hit 48%)
 - PULLBACK_50: per-entry-day mean -83 bps over 65 entry days (row mean -73, n=286) · win rate per entry day 49% (row hit 47%)
-- Exits on copied/zero-volume bars: **0** of 3743 forward exits tested; 491 exit(s) have no bar in data/open, close and volume.csv to test, counted untested, not clean
+- Exits on copied/zero-volume bars: **0** of 4139 forward exits tested; 95 exit(s) have no bar in data/open, close and volume.csv to test, counted untested, not clean
 
 ## Notes to the desk
 
