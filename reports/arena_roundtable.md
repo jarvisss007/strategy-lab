@@ -1,10 +1,10 @@
-# Arena Roundtable — 2026-11-13
+# Arena Roundtable — 2026-11-14
 
-Tape: **calm-down** · session 2026-11-13 · 12 agents · opened 68, closed 27 this session · 198 open · 4518 forward closes all-time
+Tape: **calm-down** · session 2026-11-13 · 12 agents · opened 69, closed 27 this session · 199 open · 4518 forward closes all-time
 
-> **This lab is 71% of the desk's scored record (4491 of 6283 scored rows in the Calibration Observatory).** Any pooled desk statistic is therefore mostly a statement about the Arena, not about the desk. Read the other labs' standings on their own n.
+> **This lab is 72% of the desk's scored record (4518 of 6315 scored rows in the Calibration Observatory).** Any pooled desk statistic is therefore mostly a statement about the Arena, not about the desk. Read the other labs' standings on their own n.
 
-**Drain (ARENA-003).** 0 of 198 open rows read `days_left <= 0`; 0 of those are PAST due (negative). 27 closed this session, 4518 all-time. No due rows on the book. This pass ran outside market hours, so every due row was eligible to close.
+**Drain (ARENA-003).** 0 of 199 open rows read `days_left <= 0`; 0 of those are PAST due (negative). 27 closed this session, 4518 all-time. No due rows on the book. This pass ran outside market hours, so every due row was eligible to close.
 
 - Tape today: CALM-DOWN. Our pooled record in this weather — hot hands: BOLL_SNAP (+253), DOUBLE_DIP (+27), REVERSAL_3 (-5); cold hands: FRESH_HIGH (-144), DEEP_DIP (-202). (History, not prophecy.)
 - FRESH_HIGH and SHORT_EXT enter on the same bar 46% of the time — one trade, two directions. The pooled ledger says the long side wins that argument; the skeptic keeps paying for the lesson.
@@ -15,7 +15,7 @@ Tape: **calm-down** · session 2026-11-13 · 12 agents · opened 68, closed 27 t
 
 _Read n_events, not n: `n` counts rows, `d` counts the distinct entry DAYS behind them. Rows on one day share a regime and are one observation, not many (Firm Brain #4)._
 
-- **calm-up**: FRESH_HIGH +104 (n=354, d=97) · SHORT_EXT +18 (n=171, d=63) · PANIC_LITE -45 (n=1917, d=131) · PANIC_BOUNCE -62 (n=916, d=113) · BOLL_SNAP -84 (n=416, d=109) · DOUBLE_DIP -98 (n=762, d=115) · REVERSAL_3 -176 (n=135, d=27) · RSI2_DIP -186 (n=277, d=31) · PULLBACK_50 -224 (n=124, d=28) · DEEP_DIP -240 (n=119, d=65) · TREND_RIDER -249 (n=83, d=27)
+- **calm-up**: FRESH_HIGH +104 (n=354, d=97) · SHORT_EXT +18 (n=171, d=63) · PANIC_LITE -45 (n=1917, d=131) · PANIC_BOUNCE -62 (n=916, d=113) · BOLL_SNAP -84 (n=416, d=109) · DOUBLE_DIP -98 (n=762, d=115) · REVERSAL_3 -176 (n=135, d=27) · RSI2_DIP -186 (n=277, d=31) · PULLBACK_50 -224 (n=124, d=28) · DEEP_DIP -240 (n=119, d=65) · TREND_RIDER -250 (n=83, d=27)
 - **calm-down**: BOLL_SNAP +253 (n=124, d=22) · DOUBLE_DIP +27 (n=215, d=25) · REVERSAL_3 -5 (n=63, d=12) · TREND_RIDER -14 (n=25, d=11) · RSI2_DIP -36 (n=124, d=14) · PULLBACK_50 -54 (n=41, d=12) · PANIC_LITE -70 (n=487, d=26) · PANIC_BOUNCE -114 (n=280, d=23) · FRESH_HIGH -144 (n=46, d=16) · DEEP_DIP -202 (n=36, d=20)
 - **storm-up**: PANIC_LITE +162 (n=98, d=4) · PANIC_BOUNCE +123 (n=69, d=4) · DOUBLE_DIP +114 (n=53, d=4) · BOLL_SNAP -72 (n=23, d=4) · STORM_DIP -296 (n=89, d=4)
 - **storm-down**: DEEP_DIP +868 (n=43, d=19) · BOLL_SNAP +477 (n=306, d=30) · DOUBLE_DIP +342 (n=346, d=33) · PANIC_BOUNCE +327 (n=309, d=31) · STORM_DIP +277 (n=498, d=34) · PANIC_LITE +178 (n=630, d=37) · RSI2_DIP +10 (n=41, d=4) · FRESH_HIGH -62 (n=42, d=22)
@@ -64,7 +64,7 @@ _Rows that share an entry date share one tape (Firm Brain #4). S17: each entry d
 - STORM_DIP to the desk: my weather is storm-down (+277 bps, n=498); keep me on a short leash in storm-up (-296). Status: UNPROVEN — FAILED the deflation gate 2026-08-08 (DSR 0.233, PBO 0.474).
 - FRESH_HIGH to the desk: my weather is storm-up (+962 bps, n=16); keep me on a short leash in calm-down (-144). Status: WATCH — positive but not significant.
 - SHORT_EXT to the desk: my weather is storm-down (+231 bps, n=9); keep me on a short leash in calm-down (-323). Status: DEAD — loses to costs/SPY.
-- TREND_RIDER to the desk: my weather is calm-down (-14 bps, n=25); keep me on a short leash in calm-up (-249). Status: DEAD — loses to costs/SPY.
+- TREND_RIDER to the desk: my weather is calm-down (-14 bps, n=25); keep me on a short leash in calm-up (-250). Status: DEAD — loses to costs/SPY.
 - RSI2_DIP to the desk: my weather is storm-down (+10 bps, n=41); keep me on a short leash in calm-up (-186). Status: DEAD — loses to costs/SPY.
 - REVERSAL_3 to the desk: my weather is calm-down (-5 bps, n=63); keep me on a short leash in calm-up (-176). Status: DEAD — loses to costs/SPY.
 - BOLL_SNAP to the desk: my weather is storm-down (+477 bps, n=306); keep me on a short leash in calm-up (-84). Status: UNPROVEN — FAILED the deflation gate 2026-08-08 (DSR 0.233, PBO 0.474).
