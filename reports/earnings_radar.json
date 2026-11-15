@@ -1,5 +1,5 @@
 {
- "built": "2026-11-09 08:34 PST",
+ "built": "2026-11-15 10:44 PST",
  "gap_threshold": 0.04,
  "vol_threshold": 2.0,
  "event_study": {
@@ -7020,71 +7020,6 @@
  },
  "upcoming_universe": [
   {
-   "date": "2026-11-09",
-   "ticker": "CEG",
-   "when": "time-pre-market"
-  },
-  {
-   "date": "2026-11-09",
-   "ticker": "RKLB",
-   "when": "time-after-hours"
-  },
-  {
-   "date": "2026-11-09",
-   "ticker": "ASTS",
-   "when": "time-after-hours"
-  },
-  {
-   "date": "2026-11-10",
-   "ticker": "TDG",
-   "when": "time-pre-market"
-  },
-  {
-   "date": "2026-11-10",
-   "ticker": "CRWV",
-   "when": "time-after-hours"
-  },
-  {
-   "date": "2026-11-10",
-   "ticker": "QBTS",
-   "when": "time-pre-market"
-  },
-  {
-   "date": "2026-11-10",
-   "ticker": "RGTI",
-   "when": "time-after-hours"
-  },
-  {
-   "date": "2026-11-10",
-   "ticker": "LPTH",
-   "when": "time-after-hours"
-  },
-  {
-   "date": "2026-11-12",
-   "ticker": "CSCO",
-   "when": "time-after-hours"
-  },
-  {
-   "date": "2026-11-12",
-   "ticker": "AMAT",
-   "when": "time-after-hours"
-  },
-  {
-   "date": "2026-11-12",
-   "ticker": "NU",
-   "when": "time-after-hours"
-  },
-  {
-   "date": "2026-11-12",
-   "ticker": "NBIS",
-   "when": "time-pre-market"
-  },
-  {
-   "date": "2026-11-12",
-   "ticker": "ONDS",
-   "when": "time-pre-market"
-  },
-  {
    "date": "2026-11-17",
    "ticker": "NVDA",
    "when": "time-after-hours"
@@ -7118,11 +7053,31 @@
    "date": "2026-11-19",
    "ticker": "CPRT",
    "when": "time-not-supplied"
+  },
+  {
+   "date": "2026-11-23",
+   "ticker": "HPE",
+   "when": "time-after-hours"
+  },
+  {
+   "date": "2026-11-23",
+   "ticker": "SYM",
+   "when": "time-after-hours"
+  },
+  {
+   "date": "2026-11-24",
+   "ticker": "DELL",
+   "when": "time-after-hours"
+  },
+  {
+   "date": "2026-11-24",
+   "ticker": "ADI",
+   "when": "time-pre-market"
   }
  ],
- "upcoming_all_count": 1439,
+ "upcoming_all_count": 420,
  "calendar_status": "ok",
- "calendar_days_ok": 10,
+ "calendar_days_ok": 9,
  "calendar_days_err": 0,
  "calendar_days_failed": []
 }
