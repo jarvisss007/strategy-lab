@@ -1,8 +1,8 @@
-# Arena Roundtable — 2026-11-15
+# Arena Roundtable — 2026-11-16
 
 Tape: **calm-down** · session 2026-11-13 · 12 agents · opened 69, closed 27 this session · 199 open · 4518 forward closes all-time
 
-> **This lab is 72% of the desk's scored record (4518 of 6315 scored rows in the Calibration Observatory).** Any pooled desk statistic is therefore mostly a statement about the Arena, not about the desk. Read the other labs' standings on their own n.
+> **This lab is 71% of the desk's scored record (4518 of 6328 scored rows in the Calibration Observatory).** Any pooled desk statistic is therefore mostly a statement about the Arena, not about the desk. Read the other labs' standings on their own n.
 
 **Drain (ARENA-003).** 0 of 199 open rows read `days_left <= 0`; 0 of those are PAST due (negative). 27 closed this session, 4518 all-time. No due rows on the book. This pass ran outside market hours, so every due row was eligible to close.
 
@@ -53,7 +53,7 @@ _Rows that share an entry date share one tape (Firm Brain #4). S17: each entry d
 - REVERSAL_3: per-entry-day mean -36 bps over 68 entry days (row mean -52, n=441) · win rate per entry day 40% (row hit 44%)
 - BOLL_SNAP: per-entry-day mean -18 bps over 67 entry days (row mean +123, n=382) · win rate per entry day 46% (row hit 53%)
 - PULLBACK_50: per-entry-day mean -56 bps over 70 entry days (row mean -52, n=303) · win rate per entry day 53% (row hit 48%)
-- Exits on copied/zero-volume bars: **0** of 4171 forward exits tested; 347 exit(s) have no bar in data/open, close and volume.csv to test, counted untested, not clean
+- Exits on copied/zero-volume bars: **0** of 4420 forward exits tested; 98 exit(s) have no bar in data/open, close and volume.csv to test, counted untested, not clean
 
 ## Notes to the desk
 
