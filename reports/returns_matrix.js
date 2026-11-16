@@ -1399,59 +1399,59 @@ window.RETURNS_DATA = {
  "pattern": [
   {
    "horizon": 1,
-   "n": 467060,
+   "n": 466996,
    "corr": -0.0133,
-   "pvalue": 1.1471729134321118e-19,
+   "pvalue": 9.329513999875963e-20,
    "sign_hit": 48.4,
    "kind": "reversal"
   },
   {
    "horizon": 2,
-   "n": 233438,
+   "n": 233406,
    "corr": -0.0017,
-   "pvalue": 0.42085794755292005,
+   "pvalue": 0.4133606291556022,
    "sign_hit": 49.8,
    "kind": "reversal"
   },
   {
    "horizon": 5,
    "n": 93190,
-   "corr": -0.0032,
-   "pvalue": 0.33400135399282743,
-   "sign_hit": 49.7,
+   "corr": -0.0051,
+   "pvalue": 0.11719901237764062,
+   "sign_hit": 49.8,
    "kind": "reversal"
   },
   {
    "horizon": 10,
    "n": 46505,
-   "corr": 0.034,
-   "pvalue": 2.3968506711980336e-13,
-   "sign_hit": 50.7,
+   "corr": 0.0352,
+   "pvalue": 2.9982599933852834e-14,
+   "sign_hit": 50.6,
    "kind": "momentum"
   },
   {
    "horizon": 21,
    "n": 22001,
-   "corr": -0.0024,
-   "pvalue": 0.7269414161999475,
-   "sign_hit": 51.0,
-   "kind": "reversal"
+   "corr": 0.0028,
+   "pvalue": 0.6729096494458721,
+   "sign_hit": 51.2,
+   "kind": "momentum"
   },
   {
    "horizon": 63,
    "n": 7147,
-   "corr": 0.0164,
-   "pvalue": 0.1669302807620147,
-   "sign_hit": 53.7,
+   "corr": 0.0158,
+   "pvalue": 0.18154548778470336,
+   "sign_hit": 53.6,
    "kind": "momentum"
   }
  ],
  "big_move": {
   "after_big_up_next1d": 0.103,
   "after_big_up_next5d": 0.592,
-  "after_big_down_next1d": 0.177,
-  "after_big_down_next5d": 0.915,
+  "after_big_down_next1d": 0.178,
+  "after_big_down_next5d": 0.917,
   "baseline_next1d": 0.102,
-  "baseline_next5d": 0.506
+  "baseline_next5d": 0.507
  }
 };
