@@ -3225,7 +3225,7 @@
    "entry_date": "2026-11-16",
    "entry_t": 20773,
    "entry_px": 7439.0,
-   "mtm": 0.0,
+   "mtm": -0.002,
    "days_left": 2,
    "regime": "storm-down"
   }
