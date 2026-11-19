@@ -1,11 +1,11 @@
 {
- "built": "2026-11-18 16:47 PST",
+ "built": "2026-11-19 13:57 PST",
  "range": "15y",
- "n_tickers": 154,
+ "n_tickers": 153,
  "n_dates": 3774,
- "start": "2011-11-18",
- "end": "2026-11-18",
- "settled_session": "2026-11-18",
+ "start": "2011-11-21",
+ "end": "2026-11-19",
+ "settled_session": "2026-11-19",
  "tickers": [
   "SPY",
   "MSFT",
@@ -63,7 +63,6 @@
   "TSEM",
   "WDC",
   "STX",
-  "SNDK",
   "AAPL",
   "DELL",
   "GLW",
@@ -162,5 +161,7 @@
   "CPRT",
   "CRUS"
  ],
- "failed": []
+ "failed": [
+  "SNDK"
+ ]
 }
