@@ -1,5 +1,5 @@
 {
- "built": "2026-11-16 06:36 PST",
+ "built": "2026-11-22 10:43 PST",
  "gap_threshold": 0.04,
  "vol_threshold": 2.0,
  "event_study": {
@@ -7020,41 +7020,6 @@
  },
  "upcoming_universe": [
   {
-   "date": "2026-11-17",
-   "ticker": "NVDA",
-   "when": "time-after-hours"
-  },
-  {
-   "date": "2026-11-17",
-   "ticker": "HD",
-   "when": "time-pre-market"
-  },
-  {
-   "date": "2026-11-18",
-   "ticker": "PANW",
-   "when": "time-after-hours"
-  },
-  {
-   "date": "2026-11-19",
-   "ticker": "WMT",
-   "when": "time-pre-market"
-  },
-  {
-   "date": "2026-11-19",
-   "ticker": "BABA",
-   "when": "time-pre-market"
-  },
-  {
-   "date": "2026-11-19",
-   "ticker": "INTU",
-   "when": "time-after-hours"
-  },
-  {
-   "date": "2026-11-19",
-   "ticker": "CPRT",
-   "when": "time-not-supplied"
-  },
-  {
    "date": "2026-11-23",
    "ticker": "HPE",
    "when": "time-after-hours"
@@ -7073,9 +7038,34 @@
    "date": "2026-11-24",
    "ticker": "ADI",
    "when": "time-pre-market"
+  },
+  {
+   "date": "2026-12-01",
+   "ticker": "CRWD",
+   "when": "time-after-hours"
+  },
+  {
+   "date": "2026-12-01",
+   "ticker": "MRVL",
+   "when": "time-after-hours"
+  },
+  {
+   "date": "2026-12-01",
+   "ticker": "OKTA",
+   "when": "time-after-hours"
+  },
+  {
+   "date": "2026-12-01",
+   "ticker": "CPRT",
+   "when": "time-pre-market"
+  },
+  {
+   "date": "2026-12-03",
+   "ticker": "IOT",
+   "when": "time-after-hours"
   }
  ],
- "upcoming_all_count": 450,
+ "upcoming_all_count": 230,
  "calendar_status": "ok",
  "calendar_days_ok": 9,
  "calendar_days_err": 0,
