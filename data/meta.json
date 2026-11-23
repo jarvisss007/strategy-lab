@@ -1,9 +1,9 @@
 {
- "built": "2026-11-23 05:50 PST",
+ "built": "2026-11-23 06:33 PST",
  "range": "15y",
  "n_tickers": 154,
- "n_dates": 3775,
- "start": "2011-11-21",
+ "n_dates": 3773,
+ "start": "2011-11-23",
  "end": "2026-11-20",
  "settled_session": "2026-11-20",
  "tickers": [
