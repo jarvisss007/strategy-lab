@@ -1,8 +1,8 @@
-# Arena Roundtable — 2026-11-26
+# Arena Roundtable — 2026-11-27
 
 Tape: **storm-down** · session 2026-11-25 · 12 agents · opened 32, closed 79 this session · 186 open · 5194 forward closes all-time
 
-> **This lab is 73% of the desk's scored record (5194 of 7134 scored rows in the Calibration Observatory).** Any pooled desk statistic is therefore mostly a statement about the Arena, not about the desk. Read the other labs' standings on their own n.
+> **This lab is 73% of the desk's scored record (5194 of 7154 scored rows in the Calibration Observatory).** Any pooled desk statistic is therefore mostly a statement about the Arena, not about the desk. Read the other labs' standings on their own n.
 
 **Drain (ARENA-003).** 0 of 186 open rows read `days_left <= 0`; 0 of those are PAST due (negative). 79 closed this session, 5194 all-time. No due rows on the book. This pass ran outside market hours, so every due row was eligible to close.
 
